@@ -32,10 +32,16 @@ TARGET      	:=  $(notdir $(CURDIR))
 BUILD       	:=  build
 LIBBUTANO   	:=  ../../butano
 PYTHON      	:=  python3
-SOURCES     	:=  src
-INCLUDES    	:=  include
+SOURCES     	:=  src \
+					src/utilities
+
+INCLUDES    	:=  include \
+					include/utilities
+					
 DATA        	:=
-GRAPHICS    	:=  graphics
+GRAPHICS    	:=	graphics \
+					graphics/utilities
+
 AUDIO       	:=  audio
 DMGAUDIO    	:=  dmg_audio
 ROMTITLE    	:=  BUMPER NEKO ARENA
