@@ -269,3 +269,6 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,linux,windows,c++,python
 
 notas.txt
+*.elf
+*.gba
+*.sav
