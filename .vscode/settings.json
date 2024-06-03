@@ -1,0 +1,35 @@
+{
+    "C_Cpp.errorSquiggles": "enabled",
+    "files.exclude": {
+        "*.sav": true,
+        "**/*.o":true,
+        "**/*.s":true,
+        "**/*.d":true,
+        "**/*.bin":true
+    },
+    "files.associations": {
+        "deque": "cpp",
+        "string": "cpp",
+        "vector": "cpp",
+        "new": "cpp",
+        "array": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "utility": "cpp"
+    },
+    "C_Cpp.files.exclude": {
+        "*.sav": true,
+        "**/*.o":true,
+        "**/*.s":true,
+        "**/*.d":true,
+        "**/*.bin":true,
+        "**/.vscode": true,
+        "**/.vs": true
+    },
+    "search.exclude": {
+        "**/*.o":true,
+        "**/*.s":true,
+        "**/*.d":true,
+        "**/*.bin":true
+     }
+}
