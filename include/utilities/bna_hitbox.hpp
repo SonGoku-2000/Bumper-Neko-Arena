@@ -1,3 +1,5 @@
+#pragma once
+
 #include "bna_vector2.hpp"
 #include "bn_vector.h"
 
