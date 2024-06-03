@@ -1,7 +1,11 @@
 #include "bna_hitbox.hpp"
 #include "bn_math.h"
 
-bn::vector<Vector2, 4> Hitbox::getVertices() const {
+bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation = 0)
+    : _center(center), _size(size), _rotation(rotation) {
+}
+
+bn::vector<bna::Vector2, 4> bna::Hitbox::getVertices() const {
     bn::vector<Vector2, 4> vertices;
     Vector2 halfSize = _size * bn::fixed(0.5);
 
@@ -13,7 +17,7 @@ bn::vector<Vector2, 4> Hitbox::getVertices() const {
     return vertices;
 }
 
-bn::vector<Vector2, 4> Hitbox::getVertices2() const {
+bn::vector<bna::Vector2, 4> bna::Hitbox::getVertices2() const {
     bn::vector<Vector2, 4> vertices;
     vertices.push_back({ 10,10 });
     vertices.push_back({ 10,-10 });
@@ -28,16 +32,16 @@ bn::vector<Vector2, 4> Hitbox::getVertices2() const {
         /* code */
 
 
-        p.set_x(p.x()-_center.x());
-        p.set_y(p.y()-_center.y());
+        p.set_x(p.x() - _center.x());
+        p.set_y(p.y() - _center.y());
 
         // Rotar punto
         bn::fixed xnew = p.x() * c - p.y() * s;
         bn::fixed ynew = p.x() * s + p.y() * c;
 
         // Trasladar punto de vuelta
-        p.set_x( xnew + _center.x());
-        p.set_y( ynew + _center.y());
+        p.set_x(xnew + _center.x());
+        p.set_y(ynew + _center.y());
     }
     return vertices;
 }
