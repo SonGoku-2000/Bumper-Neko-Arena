@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bna_hitbox.hpp"
+#include "bna_vector2.hpp"
 #include "bn_vector.h"
 
 namespace bna {
@@ -14,6 +15,9 @@ namespace bna {
 
         private:
         bn::fixed_point _pos;
+        bn::fixed _rotation; // en grados
+        bna::Vector2 _eje;
+
         Hitbox _hitbox;
         bn::vector<bna::Hitbox,4>* _obstaculos;
     };
