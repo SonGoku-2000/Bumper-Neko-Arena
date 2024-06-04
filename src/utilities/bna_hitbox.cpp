@@ -1,11 +1,33 @@
 #include "bna_hitbox.hpp"
 #include "bn_math.h"
 
-bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation = 0)
+bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation)
     : _center(center), _size(size), _rotation(rotation) {
+    _vertices = _generateVertices();
+}
+
+void bna::Hitbox::setRotation(bn::fixed angle) {
+    _rotation = angle;
+    _vertices = _generateVertices();
+}
+
+bn::fixed bna::Hitbox::getRotation() {
+    return _rotation;
 }
 
 bn::vector<bna::Vector2, 4> bna::Hitbox::getVertices() const {
+    return _vertices;
+}
+
+bna::Vector2 bna::Hitbox::getCenter() {
+    return _center;
+}
+
+void bna::Hitbox::setCenter(bna::Vector2 center) {
+    _center = center;
+}
+
+bn::vector<bna::Vector2, 4> bna::Hitbox::_generateVertices() const {
     bn::vector<Vector2, 4> vertices;
     Vector2 halfSize = _size * bn::fixed(0.5);
 
@@ -17,7 +39,7 @@ bn::vector<bna::Vector2, 4> bna::Hitbox::getVertices() const {
     return vertices;
 }
 
-bn::vector<bna::Vector2, 4> bna::Hitbox::getVertices2() const {
+bn::vector<bna::Vector2, 4> bna::Hitbox::_generateVertices2() const {
     bn::vector<Vector2, 4> vertices;
     vertices.push_back({ 10,10 });
     vertices.push_back({ 10,-10 });
