@@ -7,12 +7,12 @@
 namespace bna {
     class Hitbox {
         public:
-        Hitbox(Vector2 center, Vector2 size);
-        Hitbox(Vector2 center, Vector2 size, bn::fixed rotation);
         Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug);
+        Hitbox(Vector2 center, Vector2 size,bool debug);
+        Hitbox(Vector2 center, Vector2 size, bn::fixed rotation);
+        Hitbox(Vector2 center, Vector2 size);
 
         bn::vector<Vector2, 4> getVertices() const;
-        bn::vector<Vector2, 4> getVertices2();
 
         void setRotation(bn::fixed angle);
         bn::fixed getRotation();
@@ -30,5 +30,7 @@ namespace bna {
 
         bn::vector<Vector2, 4> _generateVertices() const;
         bn::vector<Vector2, 4> _generateVertices2() const;
+
+        void _updateSpritesPos();
     };
 } // namespace bna

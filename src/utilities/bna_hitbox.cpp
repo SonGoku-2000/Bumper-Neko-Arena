@@ -1,18 +1,34 @@
 #include "bna_hitbox.hpp"
 #include "bn_math.h"
+#include "bn_sprite_items_indicador.h"
 
-bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation)
-    : _center(center), _size(size), _rotation(rotation) {
+bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug) :
+    _center(center), _size(size), _rotation(rotation) {
     _vertices = _generateVertices();
+    if (debug) {
+        for (int i = 0; i < _spritesVertices.max_size(); i++) {
+            _spritesVertices.push_back(bn::sprite_items::indicador.create_sprite(_vertices[i]));
+        }
+    }
+}
+
+bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bool debug) :
+    Hitbox(center, size, 0, debug) {
+}
+
+bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation) :
+    Hitbox(center, size, rotation, false) {
 }
 
 bna::Hitbox::Hitbox(Vector2 center, Vector2 size) :
-    Hitbox(center, size, 0) {
+    Hitbox(center, size, 0, false) {
 }
+
 
 void bna::Hitbox::setRotation(bn::fixed angle) {
     _rotation = angle;
     _vertices = _generateVertices();
+    _updateSpritesPos();
 }
 
 bn::fixed bna::Hitbox::getRotation() {
@@ -29,6 +45,8 @@ bna::Vector2 bna::Hitbox::getCenter() {
 
 void bna::Hitbox::setCenter(bna::Vector2 center) {
     _center = center;
+    _vertices = _generateVertices();
+    _updateSpritesPos();
 }
 
 bn::vector<bna::Vector2, 4> bna::Hitbox::_generateVertices() const {
@@ -70,4 +88,10 @@ bn::vector<bna::Vector2, 4> bna::Hitbox::_generateVertices2() const {
         p.set_y(ynew + _center.y());
     }
     return vertices;
+}
+
+void bna::Hitbox::_updateSpritesPos() {
+    for (int i = 0; i < _spritesVertices.size(); i++) {
+        _spritesVertices[i].set_position(_vertices[i]);
+    }
 }
