@@ -23,6 +23,7 @@ namespace bna {
         Vector2 getCenter();
 
         void setPosition(Vector2 position);
+        void setPosition(bn::fixed_point position);
         Vector2 getPosition();
 
         bool checkCollision(Hitbox hitbox);

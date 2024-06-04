@@ -70,6 +70,12 @@ void bna::Hitbox::setPosition(bna::Vector2 center) {
     _updateSpritesPos();
 }
 
+void bna::Hitbox::setPosition(bn::fixed_point center) {
+    _center = {center.x(),center.y()};
+    _vertices = _generateVertices();
+    _updateSpritesPos();
+}
+
 
 
 bool bna::Hitbox::checkCollision(bna::Hitbox hitbox) {
