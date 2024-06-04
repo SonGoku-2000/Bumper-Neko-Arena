@@ -49,6 +49,7 @@ bn::vector<bna::Vector2, 4> bna::Hitbox::getVertices() const {
     return _vertices;
 }
 
+
 bna::Vector2 bna::Hitbox::getCenter() {
     return _center;
 }
@@ -58,6 +59,18 @@ void bna::Hitbox::setCenter(bna::Vector2 center) {
     _vertices = _generateVertices();
     _updateSpritesPos();
 }
+
+bna::Vector2 bna::Hitbox::getPosition() {
+    return _center;
+}
+
+void bna::Hitbox::setPosition(bna::Vector2 center) {
+    _center = center;
+    _vertices = _generateVertices();
+    _updateSpritesPos();
+}
+
+
 
 bool bna::Hitbox::checkCollision(bna::Hitbox hitbox) {
     return bna::checkCollision(*this, hitbox);

@@ -22,6 +22,9 @@ namespace bna {
         void setCenter(Vector2 center);
         Vector2 getCenter();
 
+        void setPosition(Vector2 position);
+        Vector2 getPosition();
+
         bool checkCollision(Hitbox hitbox);
 
         private:
