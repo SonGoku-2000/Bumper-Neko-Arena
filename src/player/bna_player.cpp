@@ -1,7 +1,7 @@
 #include "bna_player.hpp"
 
 #include "bn_keypad.h"
-
+#include "bn_log.h"
 namespace bna {
     constexpr bn::fixed VELOCIDAD = 1;
     constexpr bn::fixed GIRO = 1.5;
@@ -18,9 +18,11 @@ bna::Player::Player() :
 void bna::Player::update() {
     if (bn::keypad::left_held()) {
         _rotation += GIRO;
+        _rotation = _rotation.modulo(360);
     }
     else if (bn::keypad::right_held()) {
         _rotation -= GIRO;
+        _rotation = _rotation.modulo(360);
     }
 
     if (bn::keypad::up_held()) {
@@ -34,11 +36,27 @@ void bna::Player::update() {
     }
 
     _eje = _eje.rotate(_rotation);
-    _pos.set_x(_pos.x() + (_eje.x() * VELOCIDAD));
-    _pos.set_y(_pos.y() + (_eje.y() * VELOCIDAD));
+
+    bn::fixed_point newPos = _pos;
+    newPos.set_x(newPos.x() + (_eje.x() * VELOCIDAD));
+    newPos.set_y(newPos.y() + (_eje.y() * VELOCIDAD));
 
     _hitbox.setRotation(_rotation);
-    _hitbox.setPosition(_pos);
+    _hitbox.setPosition(newPos);
+
+    bool bucleCompletado = true;
+    for (int i = 0; i < _obstaculos->size(); i++) {
+        if (_hitbox.checkCollision(_obstaculos->at(i))) {
+            bucleCompletado = false;
+        }
+    }
+
+    if (bucleCompletado) {
+        _pos = newPos;
+    }
+    else {
+        _hitbox.setPosition(_pos);
+    }
 }
 
 void bna::Player::spawn(bn::vector<bna::Hitbox, 4>& obstaculos) {
