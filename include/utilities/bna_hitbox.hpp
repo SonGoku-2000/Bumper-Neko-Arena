@@ -7,8 +7,10 @@
 namespace bna {
     class Hitbox {
         public:
+        Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug, int color);
         Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug);
-        Hitbox(Vector2 center, Vector2 size,bool debug);
+        Hitbox(Vector2 center, Vector2 size, bool debug, int color);
+        Hitbox(Vector2 center, Vector2 size, bool debug);
         Hitbox(Vector2 center, Vector2 size, bn::fixed rotation);
         Hitbox(Vector2 center, Vector2 size);
 

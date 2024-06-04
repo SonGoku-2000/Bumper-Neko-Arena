@@ -2,26 +2,35 @@
 #include "bn_math.h"
 #include "bn_sprite_items_indicador.h"
 
-bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug) :
+
+bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug, int color) :
     _center(center), _size(size), _rotation(rotation) {
     _vertices = _generateVertices();
     if (debug) {
         for (int i = 0; i < _spritesVertices.max_size(); i++) {
-            _spritesVertices.push_back(bn::sprite_items::indicador.create_sprite(_vertices[i]));
+            _spritesVertices.push_back(bn::sprite_items::indicador.create_sprite(_vertices[i], color));
         }
     }
 }
 
+bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug) :
+    Hitbox(center, size, rotation, debug, 0) {
+}
+
+bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bool debug, int color) :
+    Hitbox(center, size, 0, debug, color) {
+}
+
 bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bool debug) :
-    Hitbox(center, size, 0, debug) {
+    Hitbox(center, size, 0, debug, 0) {
 }
 
 bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation) :
-    Hitbox(center, size, rotation, false) {
+    Hitbox(center, size, rotation, false, 0) {
 }
 
 bna::Hitbox::Hitbox(Vector2 center, Vector2 size) :
-    Hitbox(center, size, 0, false) {
+    Hitbox(center, size, 0, false, 0) {
 }
 
 
