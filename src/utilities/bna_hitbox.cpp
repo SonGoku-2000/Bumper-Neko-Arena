@@ -6,6 +6,10 @@ bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation)
     _vertices = _generateVertices();
 }
 
+bna::Hitbox::Hitbox(Vector2 center, Vector2 size) :
+    Hitbox(center, size, 0) {
+}
+
 void bna::Hitbox::setRotation(bn::fixed angle) {
     _rotation = angle;
     _vertices = _generateVertices();
