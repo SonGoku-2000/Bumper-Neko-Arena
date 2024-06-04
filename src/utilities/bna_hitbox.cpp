@@ -1,6 +1,7 @@
 #include "bna_hitbox.hpp"
 #include "bn_math.h"
 #include "bn_sprite_items_indicador.h"
+#include "bna_colissions.hpp"
 
 
 bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug, int color) :
@@ -56,6 +57,10 @@ void bna::Hitbox::setCenter(bna::Vector2 center) {
     _center = center;
     _vertices = _generateVertices();
     _updateSpritesPos();
+}
+
+bool bna::Hitbox::checkCollision(bna::Hitbox hitbox) {
+    return bna::checkCollision(*this, hitbox);
 }
 
 bn::vector<bna::Vector2, 4> bna::Hitbox::_generateVertices() const {
