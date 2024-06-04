@@ -33,9 +33,11 @@ BUILD       	:=  build
 LIBBUTANO   	:=  ../../butano
 PYTHON      	:=  python3
 SOURCES     	:=  src \
+					src/player \
 					src/utilities
 
 INCLUDES    	:=  include \
+					include/player \
 					include/utilities
 					
 DATA        	:=
