@@ -4,6 +4,8 @@
 #include "bn_log.h"
 namespace bna {
     constexpr bn::fixed VELOCIDAD = 1;
+    constexpr bn::fixed ACELERACION = 0.1;
+    constexpr bn::fixed FRICCION = 0.98;
     constexpr bn::fixed GIRO = 1.5;
 } // namespace bna
 
@@ -38,8 +40,14 @@ void bna::Player::update() {
     _eje = _eje.rotate(_rotation);
 
     bn::fixed_point newPos = _pos;
-    newPos.set_x(newPos.x() + (_eje.x() * VELOCIDAD));
-    newPos.set_y(newPos.y() + (_eje.y() * VELOCIDAD));
+    _dx = _dx * FRICCION;
+    _dx += ACELERACION * _eje.x();
+
+    _dy = _dy * FRICCION;
+    _dy += ACELERACION * _eje.y();
+
+    newPos.set_x(newPos.x() + _dx);
+    newPos.set_y(newPos.y() + _dy);
 
     _hitbox.setRotation(_rotation);
     _hitbox.setPosition(newPos);

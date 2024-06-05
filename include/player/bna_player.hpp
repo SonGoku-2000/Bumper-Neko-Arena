@@ -17,6 +17,8 @@ namespace bna {
         bn::fixed_point _pos;
         bn::fixed _rotation; // en grados
         bna::Vector2 _eje;
+        bn::fixed _dx;
+        bn::fixed _dy;
 
         Hitbox _hitbox;
         bn::vector<bna::Hitbox,4>* _obstaculos;
