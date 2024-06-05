@@ -25,5 +25,10 @@ namespace bna {
 
         Vector2 rotate(bn::fixed angle) const;
         Vector2 rotate_rad(bn::fixed rad) const;
+
+        bn::fixed length() const;
+        bn::fixed squaredLength() const;
+
+        Vector2 normalize() const;
     };
 } // namespace bna
