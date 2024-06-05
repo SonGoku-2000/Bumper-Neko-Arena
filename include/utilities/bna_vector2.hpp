@@ -23,6 +23,10 @@ namespace bna {
         //     return bn::fixed_point(*this);
         // }
 
+        bn::fixed dot(const Vector2& other) const {
+            return x() * other.x() + y() * other.y();
+        }
+
         Vector2 rotate(bn::fixed angle) const;
         Vector2 rotate_rad(bn::fixed rad) const;
 
