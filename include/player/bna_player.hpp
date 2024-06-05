@@ -17,6 +17,8 @@ namespace bna {
         bn::fixed_point _pos;
         bn::fixed _rotation; // en grados
         bna::Vector2 _eje;
+
+        bn::fixed _speed;
         bn::fixed _dx;
         bn::fixed _dy;
 

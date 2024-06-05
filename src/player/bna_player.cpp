@@ -5,7 +5,7 @@
 namespace bna {
     constexpr bn::fixed VELOCIDAD = 1;
     constexpr bn::fixed ACELERACION = 0.1;
-    constexpr bn::fixed FRICCION = 0.98;
+    constexpr bn::fixed FRICCION = 0.99;
     constexpr bn::fixed GIRO = 1.5;
 } // namespace bna
 
@@ -28,23 +28,25 @@ void bna::Player::update() {
     }
 
     if (bn::keypad::up_held()) {
-        _eje = bna::Vector2(0, -1);
+        _eje = bna::Vector2(-1, 0);
     }
     else if (bn::keypad::down_held()) {
-        _eje = bna::Vector2(0, 1);
+        _eje = bna::Vector2(1, 0);
     }
     else {
         _eje = bna::Vector2(0, 0);
     }
 
-    _eje = _eje.rotate(_rotation);
 
     bn::fixed_point newPos = _pos;
-    _dx = _dx * FRICCION;
-    _dx += ACELERACION * _eje.x();
+    _speed = _speed * FRICCION;
+    _speed += ACELERACION * _eje.x();
 
-    _dy = _dy * FRICCION;
-    _dy += ACELERACION * _eje.y();
+    bna::Vector2 movimiento(0, _speed);
+    movimiento = movimiento.rotate(_rotation);
+    _dx = movimiento.x();
+
+    _dy = movimiento.y();
 
     newPos.set_x(newPos.x() + _dx);
     newPos.set_y(newPos.y() + _dy);
