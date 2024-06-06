@@ -4,6 +4,9 @@
 #include "bna_vector2.hpp"
 #include "bn_vector.h"
 
+#include "bna_car.hpp"
+
+
 namespace bna {
     class Player {
         public:
@@ -11,19 +14,14 @@ namespace bna {
         ~Player() = default;
 
         void update();
-        void spawn(bn::vector<bna::Hitbox,4>& obstaculos);
+        void spawn(bn::vector<bna::Hitbox, 4>& obstaculos);
 
         private:
-        bn::fixed_point _pos;
-        bn::fixed _rotation; // en grados
         bna::Vector2 _eje;
 
-        bn::fixed _speed;
-        bn::fixed _dx;
-        bn::fixed _dy;
+        bn::vector<bna::Hitbox, 4>* _obstaculos;
 
-        Hitbox _hitbox;
-        bn::vector<bna::Hitbox,4>* _obstaculos;
+        bna::Car _cuerpo;
     };
 } // namespace bna
 
