@@ -14,12 +14,12 @@ namespace bna {
         ~Player() = default;
 
         void update();
-        void spawn(bn::vector<bna::Hitbox, 4>& obstaculos);
+        void spawn(bn::vector<bna::Car, 4>& carros);
 
         private:
         bna::Vector2 _eje;
 
-        bn::vector<bna::Hitbox, 4>* _obstaculos;
+        bn::vector<bna::Car, 4>* _carros;
 
         bna::Car _cuerpo;
     };

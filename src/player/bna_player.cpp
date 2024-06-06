@@ -16,7 +16,7 @@ void bna::Player::update() {
     _cuerpo.update(_eje);
 }
 
-void bna::Player::spawn(bn::vector<bna::Hitbox, 4>& obstaculos) {
-    _obstaculos = &obstaculos;
+void bna::Player::spawn(bn::vector<bna::Car, 4>& carros) {
+    _carros = &carros;
 }
 
