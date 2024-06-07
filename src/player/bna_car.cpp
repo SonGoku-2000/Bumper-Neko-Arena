@@ -1,7 +1,7 @@
 #include "bna_car.hpp"
 
 namespace bna {
-    constexpr bn::fixed VELOCIDAD = 1;
+    constexpr bn::fixed VELOCIDAD_MAX = 1;
     constexpr bn::fixed ACELERACION = 0.1;
     constexpr bn::fixed FRICCION = 0.99;
     constexpr bn::fixed GIRO = 1.5;
@@ -20,8 +20,12 @@ void bna::Car::update(bna::Vector2 eje) {
     _rotation = _rotation.modulo(360);
 
     bn::fixed_point newPos = _pos;
-    _speed = _speed * FRICCION;
-    _speed += ACELERACION * _eje.y();
+    _speed = _speed + ACELERACION * _eje.y();
+    _speed = bn::max(bn::min(_speed, bna::VELOCIDAD_MAX), -bna::VELOCIDAD_MAX);
+
+    if (_eje.y() == 0) {
+        _speed *= bna::FRICCION;
+    }
 
     bna::Vector2 movimiento(0, _speed);
     movimiento = movimiento.rotate(_rotation);
