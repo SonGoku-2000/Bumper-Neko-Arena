@@ -67,7 +67,7 @@ bn::fixed_point bna::Car::getPosition() {
 }
 
 bn::fixed bna::Car::getMass() {
-    return 1;
+    return _peso;
 }
 
 void bna::Car::applyExternalForce(bn::fixed_point externalForce) {
