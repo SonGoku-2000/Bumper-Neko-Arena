@@ -1,5 +1,7 @@
 #pragma once
 
+#include "bn_sprite_ptr.h"
+
 #include "bn_fixed_point.h"
 #include "bn_fixed.h"
 
@@ -43,6 +45,8 @@ namespace bna {
         bn::fixed _peso;
 
         Hitbox _hitbox;
+
+        bn::sprite_ptr _sprite;
     };
 } // namespace bna
 

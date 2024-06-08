@@ -1,6 +1,8 @@
 #include "bna_car.hpp"
 #include "bn_math.h"
 
+#include "bn_sprite_items_carro_base.h"
+
 namespace bna {
     constexpr bn::fixed VELOCIDAD_MAX = 2;
     constexpr bn::fixed ACELERACION = 0.1;
@@ -13,7 +15,8 @@ namespace bna {
 bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed peso) :
     _pos(pos),
     _peso(peso),
-    _hitbox(hitbox) {
+    _hitbox(hitbox),
+    _sprite(bn::sprite_items::carro_base.create_sprite(pos)) {
     _externalForce = bn::fixed_point(0, 0);
     _dx = 0;
     _dy = 0;
@@ -51,6 +54,14 @@ void bna::Car::update(bna::Vector2 eje) {
     _hitbox.setPosition(newPos);
 
     _pos = newPos;
+
+    _sprite.set_position(_pos);
+    if (_rotation < 0) {
+        _sprite.set_rotation_angle(_rotation + 360);
+    }
+    else {
+        _sprite.set_rotation_angle(_rotation);
+    }
 }
 
 bna::Hitbox bna::Car::getHitbox() const {
