@@ -36,3 +36,7 @@ bna::Vector2  bna::Vector2::normalize() const {
     }
     return Vector2(); // Si la longitud es cero, devuelve un vector cero
 }
+
+bn::fixed bna::Vector2::angle() const {
+    return bn::degrees_atan2(int(y()*100),int( x()*100));
+}

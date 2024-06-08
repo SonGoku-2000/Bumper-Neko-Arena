@@ -34,5 +34,7 @@ namespace bna {
         bn::fixed squaredLength() const;
 
         Vector2 normalize() const;
+
+        bn::fixed angle() const;
     };
 } // namespace bna
