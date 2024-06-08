@@ -5,6 +5,7 @@ namespace bna {
     constexpr bn::fixed VELOCIDAD_MAX = 1;
     constexpr bn::fixed ACELERACION = 0.1;
     constexpr bn::fixed FRICCION = 0.99;
+    constexpr bn::fixed FRICCION_LADO = 0.99;
     constexpr bn::fixed GIRO = 1.5;
 } // namespace bna
 
@@ -46,12 +47,18 @@ void bna::Car::update(bna::Vector2 eje) {
 
     _hitbox.setRotation(_rotation);
     _hitbox.setPosition(newPos);
-    
+
     _pos = newPos;
 }
 
 bna::Hitbox bna::Car::getHitbox() const {
     return _hitbox;
+}
+
+void bna::Car::checkCollision(bna::Car& otherCar) {
+    if (isColliding(otherCar)) {
+        resolveCollision(otherCar);
+    }
 }
 
 bool bna::Car::isColliding(const Car& other) const {

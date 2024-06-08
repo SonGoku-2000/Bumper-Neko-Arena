@@ -14,6 +14,8 @@ namespace bna {
 
         void update(bna::Vector2 eje);
 
+        void checkCollision(Car& otherCar);
+
         bool isColliding(const Car& other) const;
 
         void resolveCollision(Car& other);
