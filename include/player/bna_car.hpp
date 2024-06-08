@@ -14,6 +14,20 @@ namespace bna {
 
         void update(bna::Vector2 eje);
 
+        bool isColliding(const Car& other) const;
+
+        void resolveCollision(Car& other);
+
+        bna::Hitbox getHitbox() const;
+
+        bn::fixed_point getPosition();
+
+        bna::Vector2 getSpeed();
+
+        bn::fixed getMass();
+
+        void applyExternalForce(bn::fixed_point force);
+
         private:
         bn::fixed_point _pos;
         bn::fixed _rotation; // en grados
@@ -22,6 +36,7 @@ namespace bna {
         bn::fixed _speed;
         bn::fixed _dx;
         bn::fixed _dy;
+        bn::fixed_point _externalForce;
 
         bn::fixed _peso;
 
