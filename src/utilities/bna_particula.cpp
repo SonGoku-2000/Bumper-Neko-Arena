@@ -2,6 +2,11 @@
 
 #include "bn_math.h"
 
+const bn::fixed WIDTH = bn::display::width();
+const bn::fixed HEIGHT = bn::display::height();
+const bn::fixed TIME_STEP = 0.1;
+
+
 Particle::Particle(bn::fixed new_x, bn::fixed new_y, bn::fixed new_vx, bn::fixed new_vy, bn::fixed new_radius, bn::fixed new_mass)
     : x(new_x), y(new_y), vx(new_vx), vy(new_vy), radius(new_radius), mass(new_mass) {
 }
@@ -53,4 +58,15 @@ void Particle::resolveCollision(Particle& other) {
     vy -= impulse * other.mass * ny;
     other.vx += impulse * mass * nx;
     other.vy += impulse * mass * ny;
+}
+
+void update(bn::vector<Particle, 2>& particulas) {
+    for (int i = 0; i < particulas.size(); ++i) {
+        particulas[i].move();
+        for (int j = i + 1; j < particulas.size(); ++j) {
+            if (particulas[i].isColliding(particulas[j])) {
+                particulas[i].resolveCollision(particulas[j]);
+            }
+        }
+    }
 }

@@ -4,9 +4,7 @@
 
 #include "bn_display.h"
 
-const bn::fixed WIDTH = bn::display::width();
-const bn::fixed HEIGHT = bn::display::height();
-const bn::fixed TIME_STEP = 0.1;
+#include "bn_vector.h"
 
 class Particle {
     public:
@@ -24,3 +22,4 @@ class Particle {
     void resolveCollision(Particle& other);
 };
 
+void update(bn::vector<Particle, 2>& particulas);
