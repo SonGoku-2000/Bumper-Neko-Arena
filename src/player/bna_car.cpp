@@ -2,10 +2,11 @@
 #include "bn_math.h"
 
 namespace bna {
-    constexpr bn::fixed VELOCIDAD_MAX = 1;
+    constexpr bn::fixed VELOCIDAD_MAX = 2;
     constexpr bn::fixed ACELERACION = 0.1;
     constexpr bn::fixed FRICCION = 0.99;
-    constexpr bn::fixed FRICCION_LADO = 0.99;
+    constexpr bn::fixed FRICCION_LADO = 0.2;
+    constexpr bn::fixed MULTIPLICADOR_REBOTE = 1.5;
     constexpr bn::fixed GIRO = 1.5;
 } // namespace bna
 
@@ -16,6 +17,7 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed peso) :
     _externalForce = bn::fixed_point(0, 0);
     _dx = 0;
     _dy = 0;
+    _rotation = 0;
 }
 
 void bna::Car::update(bna::Vector2 eje) {
@@ -78,7 +80,7 @@ bn::fixed bna::Car::getMass() {
 }
 
 void bna::Car::applyExternalForce(bn::fixed_point externalForce) {
-    _externalForce += externalForce;
+    _externalForce += externalForce * MULTIPLICADOR_REBOTE;
 }
 
 void bna::Car::resolveCollision(Car& other) {
