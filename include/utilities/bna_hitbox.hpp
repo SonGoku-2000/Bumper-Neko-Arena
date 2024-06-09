@@ -17,14 +17,14 @@ namespace bna {
         bn::vector<Vector2, 4> getVertices() const;
 
         void setRotation(bn::fixed angle);
-        bn::fixed getRotation();
+        bn::fixed getRotation() const;
 
         void setCenter(Vector2 center);
-        Vector2 getCenter();
+        Vector2 getCenter() const;
 
         void setPosition(Vector2 position);
         void setPosition(bn::fixed_point position);
-        Vector2 getPosition();
+        Vector2 getPosition() const;
 
         bool checkCollision(Hitbox hitbox);
 

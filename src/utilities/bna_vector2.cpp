@@ -38,5 +38,10 @@ bna::Vector2  bna::Vector2::normalize() const {
 }
 
 bn::fixed bna::Vector2::angle() const {
-    return bn::degrees_atan2(int(y()*100),int( x()*100));
+    return bn::degrees_atan2(int(y() * 100), int(x() * 100));
+}
+
+bna::Vector2 bna::Vector2::withMagnitude(bn::fixed newMagnitude) const {
+    Vector2 unit = normalize();
+    return Vector2(unit.x() * newMagnitude, unit.y() * newMagnitude);
 }
