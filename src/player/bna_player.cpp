@@ -16,10 +16,7 @@ void bna::Player::update() {
     _cuerpo.update(_eje);
 
     for (int i = 0; i < _carros->size(); ++i) {
-        if(i==0){
         _carros->at(i).update({ 0,0 });
-
-        }
         _carros->at(i).checkCollision(_cuerpo);
     }
     _cameraManager->update(_cuerpo.getPosition());

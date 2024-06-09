@@ -2,9 +2,10 @@
 #include "bn_math.h"
 
 #include "bn_sprite_items_carro_base.h"
+#include "bn_log.h"
 
 namespace bna {
-    constexpr bn::fixed VELOCIDAD_MAX = 2;
+    constexpr bn::fixed VELOCIDAD_MAX = 3;
     constexpr bn::fixed ACELERACION = 0.1;
     constexpr bn::fixed FRICCION = 0.99;
     constexpr bn::fixed FRICCION_LADO = 0.2;
@@ -58,13 +59,12 @@ void bna::Car::update(bna::Vector2 eje) {
 
     newPos.set_x(newPos.x() + _externalForce.x());
     newPos.set_y(newPos.y() + _externalForce.y());
-    _externalForce *= FRICCION;
+
     _hitbox.setRotation(_rotation);
     _hitbox.setPosition(newPos);
-    _checkBorders();
-
 
     _pos = newPos;
+    _checkBorders();
 
     _sprite.set_position(_pos);
     if (_rotation < 0) {
@@ -137,20 +137,35 @@ void bna::Car::resolveCollision(Car& other) {
     ));
 }
 
-#include "bn_log.h"
 void bna::Car::_checkBorders() {
     const bn::vector<bna::Vector2, 4> vertices = getHitbox().getVertices();
     int width = _mapBorders.width() / 2;
     int height = _mapBorders.height() / 2;
 
+    if (_pos.x() < -width) {
+        _pos.set_x(-width + bn::max(_hitbox.height(), _hitbox.width()));
+    }
+    else if (_pos.x() > width) {
+        _pos.set_x(width - bn::max(_hitbox.height(), _hitbox.width()));
+    }
+
+    if (_pos.y() < -height) {
+        _pos.set_y(-height + bn::max(_hitbox.height(), _hitbox.width()));
+    }
+    else if (_pos.y() > height) {
+        _pos.set_y(height - bn::max(_hitbox.height(), _hitbox.width()));
+    }
+
+    _hitbox.setPosition(_pos);
+
     for (int i = 0; i < vertices.size(); i++) {
         if (vertices[i].x() < -width || vertices[i].x() > width) {
-            // _speed *= FRICCION;
             applyExternalForce(bn::fixed_point(-_dx, 0));
+            return;
         }
         if (vertices[i].y() < -height || vertices[i].y() > height) {
             applyExternalForce(bn::fixed_point(0, -_dy));
+            return;
         }
-        return;
     }
 }
