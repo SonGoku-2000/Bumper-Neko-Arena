@@ -2,7 +2,10 @@
 
 #include "bna_vector2.hpp"
 #include "bn_vector.h"
+
 #include "bn_sprite_ptr.h"
+#include "bn_camera_ptr.h"
+
 
 namespace bna {
     class Hitbox {
@@ -17,16 +20,22 @@ namespace bna {
         bn::vector<Vector2, 4> getVertices() const;
 
         void setRotation(bn::fixed angle);
-        bn::fixed getRotation();
+        bn::fixed getRotation() const;
 
         void setCenter(Vector2 center);
-        Vector2 getCenter();
+        Vector2 getCenter() const;
 
         void setPosition(Vector2 position);
         void setPosition(bn::fixed_point position);
-        Vector2 getPosition();
+        Vector2 getPosition() const;
+
+        bn::size size() const;
+        bn::fixed width() const;
+        bn::fixed height() const;
 
         bool checkCollision(Hitbox hitbox);
+
+        void setCamera(bn::camera_ptr& camera);
 
         private:
         Vector2 _center;

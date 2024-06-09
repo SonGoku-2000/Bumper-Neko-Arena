@@ -2,6 +2,7 @@
 #include "bn_math.h"
 #include "bn_sprite_items_indicador.h"
 #include "bna_colissions.hpp"
+#include "bn_size.h"
 
 
 bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug, int color) :
@@ -35,13 +36,19 @@ bna::Hitbox::Hitbox(Vector2 center, Vector2 size) :
 }
 
 
+void bna::Hitbox::setCamera(bn::camera_ptr& camera) {
+    for (int i = 0; i < _spritesVertices.size(); i++) {
+        _spritesVertices[i].set_camera(camera);
+    }
+}
+
 void bna::Hitbox::setRotation(bn::fixed angle) {
     _rotation = angle;
     _vertices = _generateVertices();
     _updateSpritesPos();
 }
 
-bn::fixed bna::Hitbox::getRotation() {
+bn::fixed bna::Hitbox::getRotation() const {
     return _rotation;
 }
 
@@ -50,7 +57,7 @@ bn::vector<bna::Vector2, 4> bna::Hitbox::getVertices() const {
 }
 
 
-bna::Vector2 bna::Hitbox::getCenter() {
+bna::Vector2 bna::Hitbox::getCenter() const {
     return _center;
 }
 
@@ -60,7 +67,7 @@ void bna::Hitbox::setCenter(bna::Vector2 center) {
     _updateSpritesPos();
 }
 
-bna::Vector2 bna::Hitbox::getPosition() {
+bna::Vector2 bna::Hitbox::getPosition() const {
     return _center;
 }
 
@@ -71,9 +78,22 @@ void bna::Hitbox::setPosition(bna::Vector2 center) {
 }
 
 void bna::Hitbox::setPosition(bn::fixed_point center) {
-    _center = {center.x(),center.y()};
+    _center = bna::Vector2(center.x(), center.y());
     _vertices = _generateVertices();
     _updateSpritesPos();
+}
+
+
+bn::size bna::Hitbox::size() const {
+    return bn::size(_size.x().ceil_integer(), _size.y().ceil_integer());
+}
+
+bn::fixed bna::Hitbox::height() const {
+    return size().height();
+}
+
+bn::fixed bna::Hitbox::width() const {
+    return size().width();
 }
 
 

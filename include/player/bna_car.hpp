@@ -1,7 +1,11 @@
 #pragma once
 
+#include "bn_sprite_ptr.h"
+#include "bn_camera_ptr.h"
+
 #include "bn_fixed_point.h"
 #include "bn_fixed.h"
+#include "bn_size.h"
 
 #include "bna_vector2.hpp"
 #include "bna_hitbox.hpp"
@@ -13,6 +17,8 @@ namespace bna {
         ~Car() = default;
 
         void update(bna::Vector2 eje);
+
+        void spawn(bn::camera_ptr& camera, bn::size tamanoMapa);
 
         void checkCollision(Car& otherCar);
 
@@ -43,6 +49,12 @@ namespace bna {
         bn::fixed _peso;
 
         Hitbox _hitbox;
+
+        bn::sprite_ptr _sprite;
+
+        bn::size _mapBorders;
+
+        void _checkBorders();
     };
 } // namespace bna
 
