@@ -2,6 +2,7 @@
 #include "bn_math.h"
 #include "bn_sprite_items_indicador.h"
 #include "bna_colissions.hpp"
+#include "bn_size.h"
 
 
 bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug, int color) :
@@ -81,6 +82,21 @@ void bna::Hitbox::setPosition(bn::fixed_point center) {
     _vertices = _generateVertices();
     _updateSpritesPos();
 }
+
+
+bn::size bna::Hitbox::size() const {
+    return bn::size(_size.x().ceil_integer(), _size.y().ceil_integer());
+}
+
+bn::fixed bna::Hitbox::height() const {
+    return size().height();
+}
+
+bn::fixed bna::Hitbox::width() const {
+    return size().width();
+}
+
+
 
 bool bna::Hitbox::checkCollision(bna::Hitbox hitbox) {
     return bna::checkCollision(*this, hitbox);

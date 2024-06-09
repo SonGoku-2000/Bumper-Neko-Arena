@@ -29,6 +29,10 @@ namespace bna {
         void setPosition(bn::fixed_point position);
         Vector2 getPosition() const;
 
+        bn::size size() const;
+        bn::fixed width() const;
+        bn::fixed height() const;
+
         bool checkCollision(Hitbox hitbox);
 
         void setCamera(bn::camera_ptr& camera);
