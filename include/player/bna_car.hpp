@@ -5,6 +5,7 @@
 
 #include "bn_fixed_point.h"
 #include "bn_fixed.h"
+#include "bn_size.h"
 
 #include "bna_vector2.hpp"
 #include "bna_hitbox.hpp"
@@ -17,7 +18,7 @@ namespace bna {
 
         void update(bna::Vector2 eje);
 
-        void spawn(bn::camera_ptr& camera);
+        void spawn(bn::camera_ptr& camera, bn::size tamanoMapa);
 
         void checkCollision(Car& otherCar);
 
@@ -50,6 +51,10 @@ namespace bna {
         Hitbox _hitbox;
 
         bn::sprite_ptr _sprite;
+
+        bn::size _mapBorders;
+
+        void _checkBorders();
     };
 } // namespace bna
 

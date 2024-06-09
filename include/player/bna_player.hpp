@@ -5,6 +5,7 @@
 
 #include "bna_hitbox.hpp"
 #include "bna_vector2.hpp"
+#include "bn_size.h"
 
 #include "bn_vector.h"
 #include "bn_optional.h"
@@ -19,7 +20,7 @@ namespace bna {
         ~Player() = default;
 
         void update();
-        void spawn(bn::vector<bna::Car, 4>& carros, bn::camera_ptr& camera);
+        void spawn(bn::vector<bna::Car, 4>& carros, bn::camera_ptr& camera, bn::size size);
 
         private:
         bna::Vector2 _eje;

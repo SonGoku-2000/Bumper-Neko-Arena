@@ -23,9 +23,10 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed peso) :
     _rotation = 0;
 }
 
-void bna::Car::spawn(bn::camera_ptr& camera){
+void bna::Car::spawn(bn::camera_ptr& camera, bn::size tamanoMapa) {
     _sprite.set_camera(camera);
     _hitbox.setCamera(camera);
+    _mapBorders = tamanoMapa;
 }
 
 void bna::Car::update(bna::Vector2 eje) {
@@ -45,18 +46,23 @@ void bna::Car::update(bna::Vector2 eje) {
     bna::Vector2 movimiento(0, _speed);
     movimiento = movimiento.rotate(_rotation);
     _dx = movimiento.x();
-    _dx += _externalForce.x();
+    // _dx += _externalForce.x();
 
     _dy = movimiento.y();
-    _dy += _externalForce.y();
+    // _dy += _externalForce.y();
 
     _externalForce *= FRICCION;
 
     newPos.set_x(newPos.x() + _dx);
     newPos.set_y(newPos.y() + _dy);
 
+    newPos.set_x(newPos.x() + _externalForce.x());
+    newPos.set_y(newPos.y() + _externalForce.y());
+    _externalForce *= FRICCION;
     _hitbox.setRotation(_rotation);
     _hitbox.setPosition(newPos);
+    _checkBorders();
+
 
     _pos = newPos;
 
@@ -129,4 +135,22 @@ void bna::Car::resolveCollision(Car& other) {
         impulse * getMass() * nx,
         impulse * getMass() * ny
     ));
+}
+
+#include "bn_log.h"
+void bna::Car::_checkBorders() {
+    const bn::vector<bna::Vector2, 4> vertices = getHitbox().getVertices();
+    int width = _mapBorders.width() / 2;
+    int height = _mapBorders.height() / 2;
+
+    for (int i = 0; i < vertices.size(); i++) {
+        if (vertices[i].x() < -width || vertices[i].x() > width) {
+            // _speed *= FRICCION;
+            applyExternalForce(bn::fixed_point(-_dx, 0));
+        }
+        if (vertices[i].y() < -height || vertices[i].y() > height) {
+            applyExternalForce(bn::fixed_point(0, -_dy));
+        }
+        return;
+    }
 }

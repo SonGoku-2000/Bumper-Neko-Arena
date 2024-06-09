@@ -9,6 +9,7 @@
 #include "bna_player.hpp"
 #include "bna_car.hpp"
 #include "bn_camera_ptr.h"
+#include "bna_test_map.hpp"
 
 // limite sprites 128
 
@@ -30,12 +31,13 @@ int main() {
 
     bn::camera_ptr camara = bn::camera_ptr::create(0, 0);
 
+    bna::TestMap map;
 
     bna::Player player;
-    player.spawn(carros, camara);
+    player.spawn(carros, camara, map.getSize());
 
     for (int i = 0; i < carros.size(); i++) {
-        carros[i].spawn(camara);
+        carros[i].spawn(camara, map.getSize());
     }
 
     while (true) {
