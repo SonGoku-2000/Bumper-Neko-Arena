@@ -23,6 +23,11 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed peso) :
     _rotation = 0;
 }
 
+void bna::Car::spawn(bn::camera_ptr& camera){
+    _sprite.set_camera(camera);
+    _hitbox.setCamera(camera);
+}
+
 void bna::Car::update(bna::Vector2 eje) {
     _eje = eje;
 

@@ -35,6 +35,12 @@ bna::Hitbox::Hitbox(Vector2 center, Vector2 size) :
 }
 
 
+void bna::Hitbox::setCamera(bn::camera_ptr& camera) {
+    for (int i = 0; i < _spritesVertices.size(); i++) {
+        _spritesVertices[i].set_camera(camera);
+    }
+}
+
 void bna::Hitbox::setRotation(bn::fixed angle) {
     _rotation = angle;
     _vertices = _generateVertices();

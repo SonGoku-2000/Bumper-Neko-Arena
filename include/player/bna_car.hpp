@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bn_sprite_ptr.h"
+#include "bn_camera_ptr.h"
 
 #include "bn_fixed_point.h"
 #include "bn_fixed.h"
@@ -15,6 +16,8 @@ namespace bna {
         ~Car() = default;
 
         void update(bna::Vector2 eje);
+
+        void spawn(bn::camera_ptr& camera);
 
         void checkCollision(Car& otherCar);
 
