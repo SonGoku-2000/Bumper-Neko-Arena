@@ -19,12 +19,12 @@ void bna::Player::update() {
         _carros->at(i).update({ 0,0 });
         _carros->at(i).checkCollision(_cuerpo);
     }
-    _camera->set_position(_cuerpo.getPosition());
+    _cameraManager->update(_cuerpo.getPosition());
 }
 
 void bna::Player::spawn(bn::vector<bna::Car, 4>& carros,bn::camera_ptr& camera) {
     _carros = &carros;
-    _camera = camera;
+    _cameraManager = bna::CameraManager(camera,bn::size(300,300));
     _cuerpo.spawn(camera);
 }
 

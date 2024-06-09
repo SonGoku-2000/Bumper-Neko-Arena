@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bn_camera_ptr.h"
+#include "bna_camera_manager.hpp"
 
 #include "bna_hitbox.hpp"
 #include "bna_vector2.hpp"
@@ -27,7 +28,8 @@ namespace bna {
 
         bna::Car _cuerpo;
 
-        bn::optional<bn::camera_ptr> _camera;
+        bn::optional<bna::CameraManager> _cameraManager;
+
     };
 } // namespace bna
 
