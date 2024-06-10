@@ -16,7 +16,6 @@ void bna::Player::update() {
     _cuerpo.update(_eje);
 
     for (int i = 0; i < _enemies->size(); ++i) {
-        _enemies->at(i).update();
         _enemies->at(i).checkCollision(_cuerpo);
     }
     _cameraManager->update(_cuerpo.getPosition());

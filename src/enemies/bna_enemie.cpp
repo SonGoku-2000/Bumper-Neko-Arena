@@ -20,6 +20,10 @@ void bna::Enemie::checkCollision(bna::Car& car) {
     _cuerpo.checkCollision(car);
 }
 
+void bna::Enemie::checkCollision(bna::Enemie& car) {
+    car.getCar().checkCollision(_cuerpo);
+}
+
 bna::Car& bna::Enemie::getCar() {
     return _cuerpo;
 }

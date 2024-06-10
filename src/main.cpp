@@ -10,6 +10,7 @@
 #include "bna_enemie.hpp"
 #include "bn_camera_ptr.h"
 #include "bna_test_map.hpp"
+#include "bna_enemies_manager.hpp"
 
 // limite sprites 128
 
@@ -20,6 +21,9 @@ int main() {
     bn::vector<bna::Enemie, 4> carros;
     carros.push_back(bna::Enemie(bn::fixed_point(60, 0)));
     carros.push_back(bna::Enemie(bn::fixed_point(90, 0)));
+    carros.push_back(bna::Enemie(bn::fixed_point(120, 0)));
+
+    bna::EnemiesManager enemiesManager(carros);
 
     bn::camera_ptr camara = bn::camera_ptr::create(0, 0);
 
@@ -28,12 +32,12 @@ int main() {
     bna::Player player;
     player.spawn(carros, camara, map.getSize());
 
-    for (int i = 0; i < carros.size(); i++) {
-        carros[i].spawn(carros, player, camara, map.getSize());
-    }
+    enemiesManager.spawn(carros, player, camara, map.getSize());
 
     while (true) {
         player.update();
+
+        enemiesManager.update();
 
         bn::core::update();
     }

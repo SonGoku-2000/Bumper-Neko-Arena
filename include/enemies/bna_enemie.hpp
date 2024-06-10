@@ -13,6 +13,7 @@ namespace bna {
         void update();
         void spawn(bn::vector<bna::Enemie, 4>& carros, bna::Player& player, bn::camera_ptr& camera, bn::size size);
         void checkCollision(bna::Car& car);
+        void checkCollision(bna::Enemie& car);
 
         bna::Car& getCar();
 
