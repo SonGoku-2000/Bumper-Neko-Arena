@@ -7,7 +7,7 @@
 #include "bna_hitbox.hpp"
 #include "bna_vector2.hpp"
 #include "bna_player.hpp"
-#include "bna_car.hpp"
+#include "bna_enemie.hpp"
 #include "bn_camera_ptr.h"
 #include "bna_test_map.hpp"
 
@@ -17,17 +17,9 @@
 int main() {
     bn::core::init();
     bn::bg_palettes::set_transparent_color(bn::colors::gray);
-    bn::vector<bna::Car, 4> carros;
-    carros.push_back(bna::Car(
-        bna::Hitbox(bna::Vector2(60, 0), bna::Vector2(10, 20), true),
-        { 60, 0 },
-        5
-    ));
-    carros.push_back(bna::Car(
-        bna::Hitbox(bna::Vector2(90, 0), bna::Vector2(10, 20), true),
-        { 90, 0 },
-        5
-    ));
+    bn::vector<bna::Enemie, 4> carros;
+    carros.push_back(bna::Enemie(bn::fixed_point(60, 0)));
+    carros.push_back(bna::Enemie(bn::fixed_point(90, 0)));
 
     bn::camera_ptr camara = bn::camera_ptr::create(0, 0);
 
@@ -37,7 +29,7 @@ int main() {
     player.spawn(carros, camara, map.getSize());
 
     for (int i = 0; i < carros.size(); i++) {
-        carros[i].spawn(camara, map.getSize());
+        carros[i].spawn(carros, player, camara, map.getSize());
     }
 
     while (true) {
