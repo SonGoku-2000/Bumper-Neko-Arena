@@ -67,12 +67,7 @@ void bna::Car::update(bna::Vector2 eje) {
     _checkBorders();
 
     _sprite.set_position(_pos);
-    if (_rotation < 0) {
-        _sprite.set_rotation_angle(_rotation + 360);
-    }
-    else {
-        _sprite.set_rotation_angle(_rotation);
-    }
+    _sprite.set_rotation_angle(getRotation());
 }
 
 bna::Hitbox bna::Car::getHitbox() const {
@@ -105,6 +100,15 @@ void bna::Car::setPosition(bn::fixed_point position) {
 
 bn::fixed bna::Car::getMass() {
     return _peso;
+}
+
+bn::fixed bna::Car::getRotation() const {
+    if (_rotation < 0) {
+        return _rotation + 360;
+    }
+    else {
+        return _rotation;
+    }
 }
 
 void bna::Car::applyExternalForce(bn::fixed_point externalForce) {
