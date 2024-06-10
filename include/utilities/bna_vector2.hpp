@@ -39,6 +39,7 @@ namespace bna {
         Vector2 normalize() const;
 
         bn::fixed angle() const;
+        bn::fixed anglePositive() const;
 
         Vector2 withMagnitude(bn::fixed newMagnitude) const;
     };
