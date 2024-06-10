@@ -28,6 +28,7 @@ int main() {
     bn::camera_ptr camara = bn::camera_ptr::create(0, 0);
 
     bna::TestMap map;
+    map.setCamera(camara);
 
     bna::Player player;
     player.spawn(carros, camara, map.getSize());
