@@ -8,6 +8,9 @@ bna::Vector2::Vector2(bn::fixed x, bn::fixed y) : bn::fixed_point(x, y) {}
 
 bna::Vector2::Vector2(bn::fixed_point vector) : bn::fixed_point(vector) {}
 
+bna::Vector2::Vector2(bn::fixed_point p1, bn::fixed_point p2) :
+    bn::fixed_point(p2.x() - p1.x(), p2.y() - p1.y()) {}
+
 bna::Vector2::Vector2() : bn::fixed_point(0, 0) {}
 
 bna::Vector2 bna::Vector2::rotate(bn::fixed angle) const {

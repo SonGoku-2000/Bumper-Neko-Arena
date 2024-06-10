@@ -8,6 +8,7 @@ namespace bna {
 
         Vector2();
         Vector2(bn::fixed x, bn::fixed y);
+        Vector2(bn::fixed_point p1, bn::fixed_point p2);
         Vector2(bn::fixed_point vector);
 
         Vector2 operator*(bn::fixed scalar) const {
