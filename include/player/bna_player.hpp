@@ -23,6 +23,8 @@ namespace bna {
         void update();
         void spawn(bn::vector<bna::Enemie, 4>& enemie, bn::camera_ptr& camera, bn::size size);
 
+        bn::fixed_point getPosition();
+
         private:
         bna::Vector2 _eje;
 

@@ -46,3 +46,7 @@ void bna::Player::spawn(bn::vector<bna::Enemie, 4>& enemie, bn::camera_ptr& came
     _cuerpo.spawn(camera, size);
 }
 
+bn::fixed_point bna::Player::getPosition() {
+    return _cuerpo.getPosition();
+}
+
