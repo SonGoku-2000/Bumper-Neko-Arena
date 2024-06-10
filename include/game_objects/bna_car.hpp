@@ -29,6 +29,7 @@ namespace bna {
         bna::Hitbox getHitbox() const;
 
         bn::fixed_point getPosition();
+        void setPosition(bn::fixed_point position);
 
         bna::Vector2 getSpeed();
 

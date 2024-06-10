@@ -90,11 +90,17 @@ bool bna::Car::isColliding(const Car& other) const {
 }
 
 bna::Vector2 bna::Car::getSpeed() {
-    return Vector2(_dx+_externalForce.x(), _dy+_externalForce.y());
+    return Vector2(_dx + _externalForce.x(), _dy + _externalForce.y());
 }
 
 bn::fixed_point bna::Car::getPosition() {
     return _pos;
+}
+
+void bna::Car::setPosition(bn::fixed_point position) {
+    _pos = position;
+    _hitbox.setPosition(position);
+    _sprite.set_position(position);
 }
 
 bn::fixed bna::Car::getMass() {
