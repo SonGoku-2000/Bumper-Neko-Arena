@@ -94,7 +94,9 @@ namespace bna {
             smallestAxis = smallestAxis * -1;
         }
 
-        collisionPoint.collisionPoint = hb2.getPosition() + smallestAxis * minOverlap;
+    //     collisionPoint.collisionPoint = hb2.getPosition() + smallestAxis * minOverlap;
+        collisionPoint.collisionPoint = hb1.getPosition() + smallestAxis * minOverlap;
+
         return collisionPoint; // Hay colisión
     }
 
