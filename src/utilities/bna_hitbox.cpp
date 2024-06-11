@@ -11,6 +11,7 @@ bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug
     if (debug) {
         for (int i = 0; i < _spritesVertices.max_size(); i++) {
             _spritesVertices.push_back(bn::sprite_items::indicador.create_sprite(_vertices[i], color));
+            _spritesVertices[i].put_above();
         }
     }
 }
@@ -98,7 +99,7 @@ bn::fixed bna::Hitbox::width() const {
 
 
 
-bool bna::Hitbox::checkCollision(bna::Hitbox hitbox) {
+bool bna::Hitbox::checkCollision(bna::Hitbox hitbox) const{
     return bna::checkCollision(*this, hitbox);
 }
 
