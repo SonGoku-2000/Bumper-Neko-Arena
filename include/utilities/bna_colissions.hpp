@@ -6,6 +6,7 @@
 namespace bna {
     namespace helper {
         bn::vector<bna::Vector2, 4> getAxes(const bn::vector<bna::Vector2, 4>& vertices);
+        bn::vector<bna::Vector2, 4> getAxesNormalized(const bn::vector<bna::Vector2, 4>& vertices);
 
         std::pair<bn::fixed, bn::fixed> project(const bn::vector<bna::Vector2, 4>& vertices, const bna::Vector2& axis);
 

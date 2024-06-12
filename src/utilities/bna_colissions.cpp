@@ -8,8 +8,17 @@ namespace bna {
                 bna::Vector2 p1 = vertices[i];
                 bna::Vector2 p2 = vertices[(i + 1) % vertices.size()];
                 bna::Vector2 edge = p2 - p1;
+                axes[i] = bna::Vector2(-edge.y(), edge.x()); // Normal al borde
+            }
+            return axes;
+        };
+        bn::vector<bna::Vector2, 4> getAxesNormalized(const bn::vector<bna::Vector2, 4>& vertices) {
+            bn::vector<bna::Vector2, 4> axes(vertices.size());
+            for (int i = 0; i < vertices.size(); i++) {
+                bna::Vector2 p1 = vertices[i];
+                bna::Vector2 p2 = vertices[(i + 1) % vertices.size()];
+                bna::Vector2 edge = p2 - p1;
                 bna::Vector2 normal = bna::Vector2(-edge.y(), edge.x()).normalize();
-                // bna::Vector2 normal = bna::Vector2(-edge.y(), edge.x());
                 axes[i] = bna::Vector2(normal); // Normal al borde
             }
             return axes;
@@ -52,8 +61,8 @@ namespace bna {
         bn::vector<bna::Vector2, 4> vertices1 = hb1.getVertices();
         bn::vector<bna::Vector2, 4> vertices2 = hb2.getVertices();
 
-        bn::vector<bna::Vector2, 8> axes = helper::getAxes(vertices1);
-        bn::vector<bna::Vector2, 4> axes2 = helper::getAxes(vertices2);
+        bn::vector<bna::Vector2, 8> axes = helper::getAxesNormalized(vertices1);
+        bn::vector<bna::Vector2, 4> axes2 = helper::getAxesNormalized(vertices2);
 
         // Convine two vectors in one
         for (int i = 0; i < axes2.size(); i++) {
@@ -94,7 +103,8 @@ namespace bna {
             smallestAxis = smallestAxis * -1;
         }
 
-    //     collisionPoint.collisionPoint = hb2.getPosition() + smallestAxis * minOverlap;
+        //     collisionPoint.collisionPoint = hb2.getPosition() + smallestAxis * minOverlap;
+ 
         collisionPoint.collisionPoint = hb1.getPosition() + smallestAxis * minOverlap;
 
         return collisionPoint; // Hay colisión
