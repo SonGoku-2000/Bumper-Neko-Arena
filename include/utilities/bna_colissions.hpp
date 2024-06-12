@@ -20,6 +20,7 @@ namespace bna {
     struct CollisionPoint {
         bool collided;
         Vector2 collisionPoint;
+        Vector2 correctionVector;
     };
     CollisionPoint checkCollisionPoint(const bna::Hitbox& hb1, const bna::Hitbox& hb2);
 

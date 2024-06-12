@@ -97,16 +97,16 @@ namespace bna {
                 }
             }
         }
+
         collisionPoint.collided = true;
+
         Vector2 direction = hb2.getPosition() - hb1.getPosition();
         if (direction.dot(smallestAxis) < 0) {
             smallestAxis = smallestAxis * -1;
         }
 
-        //     collisionPoint.collisionPoint = hb2.getPosition() + smallestAxis * minOverlap;
- 
-        collisionPoint.collisionPoint = hb1.getPosition() + smallestAxis * minOverlap;
-
+        collisionPoint.correctionVector = smallestAxis * minOverlap;
+        collisionPoint.collisionPoint =  hb1.getPosition() - collisionPoint.correctionVector;
         return collisionPoint; // Hay colisión
     }
 
