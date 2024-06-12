@@ -8,6 +8,7 @@ namespace bna {
                 bna::Vector2 p1 = vertices[i];
                 bna::Vector2 p2 = vertices[(i + 1) % vertices.size()];
                 bna::Vector2 edge = p2 - p1;
+                bna::Vector2 normal(-edge.y(), edge.x());
                 axes[i] = bna::Vector2(-edge.y(), edge.x()); // Normal al borde
             }
             return axes;
@@ -106,7 +107,7 @@ namespace bna {
         }
 
         collisionPoint.correctionVector = smallestAxis * minOverlap;
-        collisionPoint.collisionPoint =  hb1.getPosition() - collisionPoint.correctionVector;
+        collisionPoint.collisionPoint =  hb1.getPosition() + collisionPoint.correctionVector;
         return collisionPoint; // Hay colisión
     }
 
