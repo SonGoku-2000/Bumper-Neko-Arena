@@ -11,6 +11,7 @@
 #include "bna_hitbox.hpp"
 
 namespace bna {
+    struct CollisionPoint;
     class Car {
         public:
         Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed peso);
@@ -21,10 +22,13 @@ namespace bna {
         void spawn(bn::camera_ptr& camera, bn::size tamanoMapa);
 
         void checkCollision(Car& otherCar);
+        void checkCollision(Hitbox& otherCar);
 
         bool isColliding(const Car& other) const;
+        CollisionPoint isColliding(const Hitbox& other) const;
 
         void resolveCollision(Car& other);
+        void resolveCollision(CollisionPoint collisionPoint);
 
         bna::Hitbox getHitbox() const;
 

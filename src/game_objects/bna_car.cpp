@@ -3,6 +3,8 @@
 
 #include "bn_sprite_items_carro_base.h"
 #include "bn_log.h"
+#include "bna_colissions.hpp"
+
 
 namespace bna {
     constexpr bn::fixed VELOCIDAD_MAX = 3;
@@ -74,15 +76,28 @@ bna::Hitbox bna::Car::getHitbox() const {
     return _hitbox;
 }
 
+
 void bna::Car::checkCollision(bna::Car& otherCar) {
     if (isColliding(otherCar)) {
         resolveCollision(otherCar);
     }
 }
 
+void bna::Car::checkCollision(bna::Hitbox& otherHitbox) {
+    bna::CollisionPoint collisionPoint = isColliding(otherHitbox);
+    if (collisionPoint.collided) {
+        resolveCollision( collisionPoint);
+    }
+}
+
 bool bna::Car::isColliding(const Car& other) const {
     return other.getHitbox().checkCollision(getHitbox());
 }
+
+bna::CollisionPoint bna::Car::isColliding(const bna::Hitbox& other) const {
+    return other.checkCollisionPoint(getHitbox());
+}
+
 
 bna::Vector2 bna::Car::getSpeed() {
     return Vector2(_dx + _externalForce.x(), _dy + _externalForce.y());
@@ -115,6 +130,7 @@ void bna::Car::applyExternalForce(bn::fixed_point externalForce) {
     _externalForce += externalForce * MULTIPLICADOR_REBOTE;
 }
 
+
 void bna::Car::resolveCollision(Car& other) {
     bn::fixed dx = _pos.x() - other.getPosition().x();
     bn::fixed dy = _pos.y() - other.getPosition().y();
@@ -146,6 +162,36 @@ void bna::Car::resolveCollision(Car& other) {
         impulse * getMass() * ny
     ));
 }
+
+void bna::Car::resolveCollision(bna::CollisionPoint collisionPoint) {
+    bn::fixed dx = collisionPoint.correctionVector.x();
+    bn::fixed dy = collisionPoint.correctionVector.y();
+    bn::fixed distance = bn::sqrt(dx * dx + dy * dy);
+
+    if (distance == 0) return;
+
+    // // Normal vector
+    bn::fixed nx = dx / distance;
+    bn::fixed ny = dy / distance;
+
+    // // Relative velocity
+    bna::Vector2 relativeVelocity = getSpeed();
+    bn::fixed dotProduct = relativeVelocity.dot(bna::Vector2(nx, ny));
+
+    // // If the particles are moving apart, no need to resolve collision
+    if (dotProduct > 0) return;
+
+    // Impulse scalar
+    bn::fixed impulse = 2 * dotProduct / (getMass() + getMass());  // mass is 1 for both
+
+    // Apply Force
+    applyExternalForce(bn::fixed_point(
+        -impulse * getMass() * nx,
+        -impulse * getMass() * ny
+    ));
+    _pos += collisionPoint.correctionVector;
+}
+
 
 void bna::Car::_checkBorders() {
     const bn::vector<bna::Vector2, 4> vertices = getHitbox().getVertices();
