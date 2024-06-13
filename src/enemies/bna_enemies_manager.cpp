@@ -14,12 +14,17 @@ void bna::EnemiesManager::update() {
         for (int j = i + 1; j < _enemies->size(); ++j) {
             _enemies->at(i).checkCollision(_enemies->at(j).getCar());
         }
+
+        for (int j = 0; j < _walls->size(); j++) {
+            _enemies->at(i).checkCollision(_walls->at(j));
+        }
     }
 }
 
-void bna::EnemiesManager::spawn(bn::vector<bna::Enemie, 4>& carros, bna::Player& player, bn::camera_ptr& camera, bn::size size) {
+void bna::EnemiesManager::spawn(bn::vector<bna::Enemie, 4>& carros, bna::Player& player, bn::vector<bna::Hitbox, 4>& walls, bn::camera_ptr& camera, bn::size size) {
     for (int i = 0; i < _enemies->size(); i++) {
-        _enemies->at(i).spawn(carros, player, camera, size);
+        _enemies->at(i).spawn(carros, player, walls, camera, size);
     }
 
+    _walls = &walls;
 }

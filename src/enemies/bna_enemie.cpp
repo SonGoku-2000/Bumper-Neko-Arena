@@ -53,14 +53,19 @@ void bna::Enemie::update() {
     _cuerpo.update(eje);
 }
 
-void bna::Enemie::spawn(bn::vector<bna::Enemie, 4>& carros, bna::Player& player, bn::camera_ptr& camera, bn::size size) {
+void bna::Enemie::spawn(bn::vector<bna::Enemie, 4>& carros, bna::Player& player, bn::vector<bna::Hitbox, 4>& walls, bn::camera_ptr& camera, bn::size size) {
     _carros = &carros;
     _player = &player;
+    _walls = &walls;
     _cuerpo.spawn(camera, size);
 }
 
 void bna::Enemie::checkCollision(bna::Car& car) {
     _cuerpo.checkCollision(car);
+}
+
+void bna::Enemie::checkCollision(bna::Hitbox& hitbox) {
+    _cuerpo.checkCollision(hitbox);
 }
 
 void bna::Enemie::checkCollision(bna::Enemie& car) {

@@ -31,9 +31,9 @@ int main() {
     map.setCamera(camara);
 
     bna::Player player;
-    player.spawn(carros, camara, map.getSize());
+    player.spawn(carros, map.getWalls(), camara, map.getSize());
 
-    enemiesManager.spawn(carros, player, camara, map.getSize());
+    enemiesManager.spawn(carros, player, map.getWalls(), camara, map.getSize());
 
     while (true) {
         player.update();
