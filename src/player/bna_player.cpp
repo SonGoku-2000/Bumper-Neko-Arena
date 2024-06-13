@@ -37,11 +37,17 @@ void bna::Player::update() {
     for (int i = 0; i < _enemies->size(); ++i) {
         _enemies->at(i).checkCollision(_cuerpo);
     }
+
+    for (int i = 0; i < _walls->size(); i++) {
+        _cuerpo.checkCollision(_walls->at(i));
+    }
+
     _cameraManager->update(_cuerpo.getPosition());
 }
 
-void bna::Player::spawn(bn::vector<bna::Enemie, 4>& enemie, bn::camera_ptr& camera, bn::size size) {
+void bna::Player::spawn(bn::vector<bna::Enemie, 4>& enemie, bn::vector<bna::Hitbox, 4>& walls, bn::camera_ptr& camera, bn::size size) {
     _enemies = &enemie;
+    _walls = &walls;
     _cameraManager = bna::CameraManager(camera, size);
     _cuerpo.spawn(camera, size);
 }
