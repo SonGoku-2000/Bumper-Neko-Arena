@@ -99,9 +99,15 @@ bn::fixed bna::Hitbox::width() const {
 
 
 
-bool bna::Hitbox::checkCollision(bna::Hitbox hitbox) const{
+bool bna::Hitbox::checkCollision(bna::Hitbox hitbox) const {
     return bna::checkCollision(*this, hitbox);
 }
+
+
+bna::CollisionPoint bna::Hitbox::checkCollisionPoint(Hitbox hitbox) const {
+    return bna::checkCollisionPoint(*this, hitbox);
+}
+
 
 bn::vector<bna::Vector2, 4> bna::Hitbox::_generateVertices() const {
     bn::vector<Vector2, 4> vertices;

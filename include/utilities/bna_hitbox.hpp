@@ -8,6 +8,7 @@
 
 
 namespace bna {
+    struct CollisionPoint;
     class Hitbox {
         public:
         Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug, int color);
@@ -34,6 +35,7 @@ namespace bna {
         bn::fixed height() const;
 
         bool checkCollision(Hitbox hitbox) const;
+        CollisionPoint checkCollisionPoint(Hitbox hitbox) const;
 
         void setCamera(bn::camera_ptr& camera);
 
