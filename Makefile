@@ -33,12 +33,16 @@ BUILD       	:=  build
 LIBBUTANO   	:=  ../../butano
 PYTHON      	:=  python3
 SOURCES     	:=  src \
-SOURCES     	:=  src/maps \
+	 				src/enemies \
+	 				src/game_objects \
+	 				src/maps \
 					src/player \
 					src/utilities
 
 INCLUDES    	:=  include \
-INCLUDES    	:=  include/maps \
+					include/enemies \
+					include/game_objects \
+					include/maps \
 					include/player \
 					include/utilities
 					

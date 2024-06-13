@@ -11,6 +11,7 @@
 #include "bn_optional.h"
 
 #include "bna_car.hpp"
+#include "bna_enemie.hpp"
 
 
 namespace bna {
@@ -20,17 +21,20 @@ namespace bna {
         ~Player() = default;
 
         void update();
-        void spawn(bn::vector<bna::Car, 4>& carros, bn::camera_ptr& camera, bn::size size);
+        void spawn(bn::vector<bna::Enemie, 4>& enemie, bn::vector<bna::Hitbox, 4>& _walls, bn::camera_ptr& camera, bn::size size);
+
+        bn::fixed_point getPosition();
 
         private:
         bna::Vector2 _eje;
 
-        bn::vector<bna::Car, 4>* _carros;
+        bn::vector<bna::Enemie, 4>* _enemies;
 
         bna::Car _cuerpo;
 
         bn::optional<bna::CameraManager> _cameraManager;
 
+        bn::vector<bna::Hitbox, 4>* _walls;
     };
 } // namespace bna
 
