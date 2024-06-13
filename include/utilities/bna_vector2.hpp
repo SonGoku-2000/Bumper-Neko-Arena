@@ -15,6 +15,10 @@ namespace bna {
             return Vector2(x() * scalar, y() * scalar);
         }
 
+        Vector2 operator*(int scalar) const {
+            return Vector2(x() * scalar, y() * scalar);
+        }
+
         Vector2 operator+(const Vector2& other) const {
             return Vector2(x() + other.x(), y() + other.y());
         }
