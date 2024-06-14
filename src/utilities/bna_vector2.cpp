@@ -43,7 +43,7 @@ bna::Vector2  bna::Vector2::normalize() const {
 }
 
 bn::fixed bna::Vector2::angle() const {
-    return  bn::degrees_atan2(int(y() * 100), int(x() * 100));
+    return  bn::degrees_atan2(int(y()), int(x()));
 }
 
 bn::fixed bna::Vector2::anglePositive() const {
