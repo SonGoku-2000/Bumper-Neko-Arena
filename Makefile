@@ -35,15 +35,17 @@ PYTHON      	:=  python3
 SOURCES     	:=  src \
 	 				src/enemies \
 	 				src/game_objects \
-	 				src/maps \
 					src/player \
+					src/scenes \
+					src/scenes/maps \
 					src/utilities
 
 INCLUDES    	:=  include \
 					include/enemies \
 					include/game_objects \
-					include/maps \
 					include/player \
+					include/scenes \
+					include/scenes/maps \
 					include/utilities
 					
 DATA        	:=
