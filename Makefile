@@ -32,7 +32,7 @@ TARGET      	:=  $(notdir $(CURDIR))
 BUILD       	:=  build
 LIBBUTANO   	:=  ../../butano
 PYTHON      	:=  python3
-SOURCES     	:=  src \
+SOURCES     	:=  src ../../common/src \
 	 				src/enemies \
 	 				src/game_objects \
 					src/player \
@@ -40,7 +40,7 @@ SOURCES     	:=  src \
 					src/scenes/maps \
 					src/utilities
 
-INCLUDES    	:=  include \
+INCLUDES    	:=  include ../../common/include \
 					include/enemies \
 					include/game_objects \
 					include/player \
@@ -49,7 +49,7 @@ INCLUDES    	:=  include \
 					include/utilities
 					
 DATA        	:=
-GRAPHICS    	:=	graphics \
+GRAPHICS    	:=	graphics ../../common/graphics\
 					graphics/utilities
 
 AUDIO       	:=  audio
