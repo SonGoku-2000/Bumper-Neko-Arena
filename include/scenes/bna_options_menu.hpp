@@ -6,16 +6,14 @@
 #include "bna_indicator.hpp"
 
 namespace bna {
-    class MainMenu : public scene {
+    class OptionsMenu : public scene {
         public:
-        MainMenu();
+        OptionsMenu();
         [[nodiscard]] bn::optional<scene_type> update() final;
 
         private:
-        TextManager _textoTitulo;
-        TextManager _textoJugar;
-        TextManager _textoOpciones;
-        TextManager _textoCreditos;
+        TextManager _textoBrillo;
+        TextManager _textoVolver;
 
         int _idOpcion;
 
