@@ -4,8 +4,11 @@
 
 namespace bna {
     namespace brightness_manager {
+        constexpr bn::fixed MAX_BRIGHTNESS = 0.4;
+
         void set_brightness(bn::fixed brightness);
         bn::fixed get_brightness();
+        int get_brightness_percent();
     } // namespace brightness_manager
 
 } // namespace bna
