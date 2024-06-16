@@ -19,7 +19,7 @@ namespace bna {
         TextManager(bn::fixed x, bn::fixed y, bn::string<111> text, bn::sprite_font font, int split);
 
         void updateText(bn::string<111> texto);
-        void updateText(bn::string<111> texto, const int split);
+        void updateText(bn::string<111> texto, int split);
         void setVisible(bool visible);
         int length();
         bn::string<111> getText();
@@ -35,6 +35,7 @@ namespace bna {
         private:
         bn::fixed _posX;
         bn::fixed _posY;
+        int _current_split;
         bn::sprite_text_generator _text_generator;
         bn::vector<bn::sprite_ptr, 111> _text_sprites;
         bn::string<111> _text;
