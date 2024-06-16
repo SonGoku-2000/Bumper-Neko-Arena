@@ -8,6 +8,8 @@ namespace bna {
 
         void set_brightness(bn::fixed brightness);
         bn::fixed get_brightness();
+
+        void set_brightness_percent(int brightness);
         int get_brightness_percent();
     } // namespace brightness_manager
 
