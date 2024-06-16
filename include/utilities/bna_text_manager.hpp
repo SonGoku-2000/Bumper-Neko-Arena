@@ -1,7 +1,9 @@
 #pragma once
 
 #include "bn_sprite_text_generator.h"
+#include "bn_sprite_palette_ptr.h"
 
+#include "bn_optional.h"
 #include "bn_fixed.h"
 #include "bn_sprite_ptr.h"
 #include "bn_string.h"
@@ -27,6 +29,8 @@ namespace bna {
         void set_y(bn::fixed y);
 
         void set_aligment(bn::sprite_text_generator::alignment_type alignment);
+        void set_palette_item(bn::sprite_palette_item palette);
+        void reset_palette_item();
 
         private:
         bn::fixed _posX;
@@ -34,6 +38,7 @@ namespace bna {
         bn::sprite_text_generator _text_generator;
         bn::vector<bn::sprite_ptr, 111> _text_sprites;
         bn::string<111> _text;
+        bn::optional<bn::sprite_palette_item> _originalPalette;
 
         /**
          * @brief Retorna un porcion del string ingresado limitado por [inicio, final].

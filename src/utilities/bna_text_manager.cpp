@@ -24,12 +24,13 @@ bna::TextManager::TextManager(bn::fixed x, bn::fixed y, bn::string<111> texto, b
 }
 
 bna::TextManager::TextManager(bn::fixed x, bn::fixed y, bn::string<111> texto, bn::sprite_font font, int split) :
-    _text_generator(font) {
+    _text_generator(font){
     _posX = x;
     _posY = y;
     _text_generator.set_bg_priority(bna::Planes::FIRST);
     _text_generator.set_alignment(bn::sprite_text_generator::alignment_type::LEFT);
     updateText(texto, split);
+    _originalPalette = font.item().palette_item();
 }
 
 
@@ -62,6 +63,16 @@ void bna::TextManager::updateText(bn::string<111> texto, const int split) {
 
 void bna::TextManager::set_aligment(bn::sprite_text_generator::alignment_type alignment) {
     _text_generator.set_alignment(alignment);
+    updateText(_text);
+}
+
+void bna::TextManager::set_palette_item(bn::sprite_palette_item palette) {
+    _text_generator.set_palette_item(palette);
+    updateText(_text);
+}
+
+void bna::TextManager::reset_palette_item(){
+    _text_generator.set_palette_item(_originalPalette.value());
     updateText(_text);
 }
 
