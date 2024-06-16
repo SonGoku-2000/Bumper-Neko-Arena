@@ -17,6 +17,10 @@ namespace bna {
         TextManager(bn::fixed x, bn::fixed y, bn::string<111> text);
         TextManager(bn::fixed x, bn::fixed y, bn::string<111> text, bn::sprite_font font);
         TextManager(bn::fixed x, bn::fixed y, bn::string<111> text, bn::sprite_font font, int split);
+        TextManager(bn::fixed_point position);
+        TextManager(bn::fixed_point position, bn::string<111> text);
+        TextManager(bn::fixed_point position, bn::string<111> text, bn::sprite_font font);
+        TextManager(bn::fixed_point position, bn::string<111> text, bn::sprite_font font, int split);
 
         void updateText(bn::string<111> texto);
         void updateText(bn::string<111> texto, int split);

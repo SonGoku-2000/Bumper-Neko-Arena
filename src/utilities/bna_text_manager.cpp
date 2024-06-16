@@ -14,13 +14,22 @@ bna::TextManager::TextManager() :
 bna::TextManager::TextManager(bn::fixed x, bn::fixed y) :
     TextManager(x, y, "", common::variable_8x16_sprite_font, 0) {
 }
+bna::TextManager::TextManager(bn::fixed_point pos) :
+    TextManager(pos.x(), pos.y(), "", common::variable_8x16_sprite_font, 0) {
+}
 
 bna::TextManager::TextManager(bn::fixed x, bn::fixed y, bn::string<111> texto) :
     TextManager(x, y, texto, common::variable_8x16_sprite_font, 0) {
 }
+bna::TextManager::TextManager(bn::fixed_point pos, bn::string<111> texto) :
+    TextManager(pos.x(), pos.y(), texto, common::variable_8x16_sprite_font, 0) {
+}
 
 bna::TextManager::TextManager(bn::fixed x, bn::fixed y, bn::string<111> texto, bn::sprite_font font) :
     TextManager(x, y, texto, font, 0) {
+}
+bna::TextManager::TextManager(bn::fixed_point pos, bn::string<111> texto, bn::sprite_font font) :
+    TextManager(pos.x(), pos.y(), texto, font, 0) {
 }
 
 bna::TextManager::TextManager(bn::fixed x, bn::fixed y, bn::string<111> texto, bn::sprite_font font, int split) :
@@ -32,6 +41,9 @@ bna::TextManager::TextManager(bn::fixed x, bn::fixed y, bn::string<111> texto, b
     _text_generator.set_alignment(bn::sprite_text_generator::alignment_type::LEFT);
     updateText(texto, split);
     _originalPalette = font.item().palette_item();
+}
+bna::TextManager::TextManager(bn::fixed_point pos, bn::string<111> texto, bn::sprite_font font, int split) :
+    TextManager(pos.x(), pos.y(), texto, font, split) {
 }
 
 
