@@ -20,5 +20,7 @@ namespace bna {
         bn::vector<bna::Indicator, 4> _indicadores;
         bn::optional<bn::sprite_ptr> _puntero;
         bool _continuar;
+
+        void _updateBrightnessText();
     };
 }

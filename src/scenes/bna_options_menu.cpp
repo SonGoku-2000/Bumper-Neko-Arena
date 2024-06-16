@@ -9,6 +9,10 @@
 #include "bn_keypad.h"
 #include "bna_loop_value.hpp"
 
+#include "bn_string.h"
+
+
+
 bna::OptionsMenu::OptionsMenu() {
     _continuar = false;
     _idOpcion = 0;
@@ -22,8 +26,10 @@ bna::OptionsMenu::OptionsMenu() {
     _textoBrillo = bna::TextManager(
         _indicadores[0].x() + OFFSET_HORIZONTAL_TEXTO,
         _indicadores[0].y(),
-        "Brightness"
+        "Brightness: "
     );
+
+    _updateBrightnessText();
 
     _textoVolver = bna::TextManager(
         _indicadores[1].x() + OFFSET_HORIZONTAL_TEXTO,
@@ -53,9 +59,11 @@ bn::optional<bna::scene_type> bna::OptionsMenu::update() {
             constexpr bn::fixed CAMBIO_BRILLO = bn::fixed(0.005);
             if (bn::keypad::right_held()) {
                 bna::brightness_manager::set_brightness(brillo + CAMBIO_BRILLO);
+                _updateBrightnessText();
             }
             else if (bn::keypad::left_held()) {
                 bna::brightness_manager::set_brightness(brillo - CAMBIO_BRILLO);
+                _updateBrightnessText();
             }
         }
 
@@ -68,5 +76,9 @@ bn::optional<bna::scene_type> bna::OptionsMenu::update() {
         bn::core::update();
     }
     return bna::scene_type::TEST_MAP;
+}
+
+void bna::OptionsMenu::_updateBrightnessText() {
+    _textoBrillo.updateText("Brightness: " + bn::to_string<30>(bna::brightness_manager::get_brightness_percent()));
 }
 
