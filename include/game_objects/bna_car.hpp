@@ -14,7 +14,8 @@ namespace bna {
     struct CollisionPoint;
     class Car {
         public:
-        Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed peso);
+        Car(Hitbox hitbox, bn::fixed_point position, bn::fixed weight);
+        Car(Hitbox hitbox, bn::fixed_point position, bn::fixed maxSpeed, bn::fixed aceleration, bn::fixed turn, bn::fixed weight);
         ~Car() = default;
 
         void update(bna::Vector2 eje);
@@ -53,7 +54,10 @@ namespace bna {
         bn::fixed _dy;
         bn::fixed_point _externalForce;
 
-        bn::fixed _peso;
+        bn::fixed _maxSpeed;
+        bn::fixed _aceleration;
+        bn::fixed _turn;
+        bn::fixed _weight;
 
         Hitbox _hitbox;
 

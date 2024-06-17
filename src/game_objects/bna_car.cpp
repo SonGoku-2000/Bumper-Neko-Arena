@@ -7,17 +7,22 @@
 
 
 namespace bna {
-    constexpr bn::fixed VELOCIDAD_MAX = 3;
-    constexpr bn::fixed ACELERACION = 0.1;
+    namespace default_values {
+        constexpr bn::fixed MAX_SPEED = 3;
+        constexpr bn::fixed ACELERATION = 0.1;
+        constexpr bn::fixed TURN = 1.5;
+    } // namespace default
     constexpr bn::fixed FRICCION = 0.99;
     constexpr bn::fixed FRICCION_LADO = 0.2;
     constexpr bn::fixed MULTIPLICADOR_REBOTE = 1.5;
-    constexpr bn::fixed GIRO = 1.5;
 } // namespace bna
 
-bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed peso) :
+bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed weight) :
     _pos(pos),
-    _peso(peso),
+    _maxSpeed(bna::default_values::MAX_SPEED),
+    _aceleration(bna::default_values::ACELERATION),
+    _turn(bna::default_values::TURN),
+    _weight(weight),
     _hitbox(hitbox),
     _sprite(bn::sprite_items::carro_base.create_sprite(pos)) {
     _externalForce = bn::fixed_point(0, 0);
@@ -25,6 +30,21 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed peso) :
     _dy = 0;
     _rotation = 0;
 }
+
+bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed maxSpeed, bn::fixed aceleration, bn::fixed turn, bn::fixed weight) :
+    _pos(pos),
+    _maxSpeed(maxSpeed),
+    _aceleration(aceleration),
+    _turn(turn),
+    _weight(weight),
+    _hitbox(hitbox),
+    _sprite(bn::sprite_items::carro_base.create_sprite(pos)) {
+    _externalForce = bn::fixed_point(0, 0);
+    _dx = 0;
+    _dy = 0;
+    _rotation = 0;
+}
+
 
 void bna::Car::spawn(bn::camera_ptr& camera, bn::size tamanoMapa) {
     _sprite.set_camera(camera);
@@ -35,12 +55,12 @@ void bna::Car::spawn(bn::camera_ptr& camera, bn::size tamanoMapa) {
 void bna::Car::update(bna::Vector2 eje) {
     _eje = eje;
 
-    _rotation += eje.x() * GIRO;
+    _rotation += eje.x() * _turn;
     _rotation = _rotation.modulo(360);
 
     bn::fixed_point newPos = _pos;
-    _speed = _speed + ACELERACION * _eje.y();
-    _speed = bn::max(bn::min(_speed, bna::VELOCIDAD_MAX), -bna::VELOCIDAD_MAX);
+    _speed = _speed + _aceleration * _eje.y();
+    _speed = bn::max(-_maxSpeed, bn::min(_speed, _maxSpeed));
 
     if (_eje.y() == 0) {
         _speed *= bna::FRICCION;
@@ -82,7 +102,7 @@ void bna::Car::checkCollision(bna::Car& otherCar) {
 void bna::Car::checkCollision(bna::Hitbox& otherHitbox) {
     bna::CollisionPoint collisionPoint = isColliding(otherHitbox);
     if (collisionPoint.collided) {
-        resolveCollision( collisionPoint);
+        resolveCollision(collisionPoint);
     }
 }
 
@@ -215,7 +235,7 @@ void bna::Car::setPosition(bn::fixed_point position) {
 }
 
 bn::fixed bna::Car::getMass() {
-    return _peso;
+    return _weight;
 }
 
 bn::fixed bna::Car::getRotation() const {
