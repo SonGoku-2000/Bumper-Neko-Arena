@@ -1,5 +1,7 @@
 #include "bna_colissions.hpp"
 #include "bn_log.h"
+#include "bn_profiler.h"
+
 namespace bna {
     namespace helper {
         bn::vector<bna::Vector2, 4> getAxes(const bn::vector<bna::Vector2, 4>& vertices) {
@@ -58,13 +60,58 @@ namespace bna {
         };
     }
 
+    CollisionPoint checkCollisionPointV2(const bna::Hitbox& hb1, const bna::Hitbox& hb2) {
+
+        float overlap = INFINITY;
+
+        for (int a = 0; a < poly1->transFormedPooints.size(); a++) {
+            int b = (a + 1) % poly1->transFormedPooints.size();
+            vec2d axisProj = { -(poly1->transFormedPooints[b].y - poly1->transFormedPooints[a].y), poly1->transFormedPooints[b].x - poly1->transFormedPooints[a].x };
+
+            // Optional normalisation of projection axis enhances stability slightly
+            //float d = sqrtf(axisProj.x * axisProj.x + axisProj.y * axisProj.y);
+            //axisProj = { axisProj.x / d, axisProj.y / d };
+
+            // Work out min and max 1D points for r1
+            float min_r1 = INFINITY, max_r1 = -INFINITY;
+            for (int p = 0; p < poly1->transFormedPooints.size(); p++) {
+                float q = (poly1->transFormedPooints[p].x * axisProj.x + poly1->transFormedPooints[p].y * axisProj.y);
+                min_r1 = std::min(min_r1, q);
+                max_r1 = std::max(max_r1, q);
+            }
+
+            // Work out min and max 1D points for r2
+            float min_r2 = INFINITY, max_r2 = -INFINITY;
+            for (int p = 0; p < poly2->transFormedPooints.size(); p++) {
+                float q = (poly2->transFormedPooints[p].x * axisProj.x + poly2->transFormedPooints[p].y * axisProj.y);
+                min_r2 = std::min(min_r2, q);
+                max_r2 = std::max(max_r2, q);
+            }
+
+            // Calculate actual overlap along projected axis, and store the minimum
+            overlap = std::min(std::min(max_r1, max_r2) - std::max(min_r1, min_r2), overlap);
+
+            if (!(max_r2 >= min_r1 && max_r1 >= min_r2))
+                return false;
+        }
+
+        // If we got here, the objects have collided, we will displace r1
+        // by overlap along the vector between the two object centers
+        vec2d d = { r2.pos.x - r1.pos.x, r2.pos.y - r1.pos.y };
+        float s = sqrtf(d.x * d.x + d.y * d.y);
+        r1.pos.x -= overlap * d.x / s;
+        r1.pos.y -= overlap * d.y / s;
+        return false;
+    }
+
     CollisionPoint checkCollisionPoint(const bna::Hitbox& hb1, const bna::Hitbox& hb2) {
         bn::vector<bna::Vector2, 4> vertices1 = hb1.getVertices();
         bn::vector<bna::Vector2, 4> vertices2 = hb2.getVertices();
 
+        BN_PROFILER_START("ColPoint GetAxesNormalized");
         bn::vector<bna::Vector2, 8> axes = helper::getAxesNormalized(vertices1);
         bn::vector<bna::Vector2, 4> axes2 = helper::getAxesNormalized(vertices2);
-
+        BN_PROFILER_STOP();
         // Convine two vectors in one
         for (int i = 0; i < axes2.size(); i++) {
             axes.push_back(axes2[i]);
@@ -77,11 +124,13 @@ namespace bna {
         bool inicializadoMinOverlap = false;
 
         // BN_LOG("----");
+        BN_PROFILER_START("ColPoint Checkoverlap");
         for (const Vector2& axis : axes) {
             auto [minA, maxA] = helper::project(vertices1, axis);
             auto [minB, maxB] = helper::project(vertices2, axis);
 
             if (maxA < minB || maxB < minA) {
+                BN_PROFILER_STOP();
                 return collisionPoint; // No hay colisión
             }
             else {
@@ -98,16 +147,19 @@ namespace bna {
                 }
             }
         }
+        BN_PROFILER_STOP();
 
         collisionPoint.collided = true;
 
+        BN_PROFILER_START("ColPoint Check overlap");
         Vector2 direction = hb2.getPosition() - hb1.getPosition();
         if (direction.dot(smallestAxis) < 0) {
             smallestAxis = smallestAxis * -1;
         }
 
         collisionPoint.correctionVector = smallestAxis * minOverlap;
-        collisionPoint.collisionPoint =  hb1.getPosition() + collisionPoint.correctionVector;
+        collisionPoint.collisionPoint = hb1.getPosition() + collisionPoint.correctionVector;
+        BN_PROFILER_STOP();
         return collisionPoint; // Hay colisión
     }
 
