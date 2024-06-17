@@ -1,6 +1,7 @@
 #include "bna_colissions.hpp"
 #include "bn_log.h"
 #include "bn_profiler.h"
+#include "bn_math.h"
 
 namespace bna {
     namespace helper {
@@ -61,47 +62,88 @@ namespace bna {
     }
 
     CollisionPoint checkCollisionPointV2(const bna::Hitbox& hb1, const bna::Hitbox& hb2) {
+        bn::vector<bna::Vector2, 4> vertices1 = hb1.getVertices();
+        bn::vector<bna::Vector2, 4> vertices2 = hb2.getVertices();
 
-        float overlap = INFINITY;
+        CollisionPoint collisionPoint;
+        collisionPoint.collided = false;
 
-        for (int a = 0; a < poly1->transFormedPooints.size(); a++) {
-            int b = (a + 1) % poly1->transFormedPooints.size();
-            vec2d axisProj = { -(poly1->transFormedPooints[b].y - poly1->transFormedPooints[a].y), poly1->transFormedPooints[b].x - poly1->transFormedPooints[a].x };
-
-            // Optional normalisation of projection axis enhances stability slightly
-            //float d = sqrtf(axisProj.x * axisProj.x + axisProj.y * axisProj.y);
-            //axisProj = { axisProj.x / d, axisProj.y / d };
-
-            // Work out min and max 1D points for r1
-            float min_r1 = INFINITY, max_r1 = -INFINITY;
-            for (int p = 0; p < poly1->transFormedPooints.size(); p++) {
-                float q = (poly1->transFormedPooints[p].x * axisProj.x + poly1->transFormedPooints[p].y * axisProj.y);
-                min_r1 = std::min(min_r1, q);
-                max_r1 = std::max(max_r1, q);
+        bn::fixed overlap;
+        bool overlap_inicializado = false;
+        // BN_LOG("------");
+        BN_PROFILER_START("ColPointV2");
+        for (int shape = 0; shape < 2; shape++) {
+            if (shape == 1) {
+                vertices1 = hb2.getVertices();
+                vertices2 = hb1.getVertices();
             }
+            for (int a = 0; a < vertices1.size(); a++) {
+                int b = (a + 1) % vertices1.size();
+                bna::Vector2 axisProj = { -(vertices1[b].y() - vertices1[a].y()), vertices1[b].x() - vertices1[a].x() };
 
-            // Work out min and max 1D points for r2
-            float min_r2 = INFINITY, max_r2 = -INFINITY;
-            for (int p = 0; p < poly2->transFormedPooints.size(); p++) {
-                float q = (poly2->transFormedPooints[p].x * axisProj.x + poly2->transFormedPooints[p].y * axisProj.y);
-                min_r2 = std::min(min_r2, q);
-                max_r2 = std::max(max_r2, q);
+                // Optional normalisation of projection axis enhances stability slightly
+                //bn::fixed d = sqrtf(axisProj.x * axisProj.x + axisProj.y * axisProj.y);
+                //axisProj = { axisProj.x / d, axisProj.y / d };
+
+                // Work out min and max 1D points for r1
+                bn::fixed min_r1;
+                bn::fixed max_r1;
+                bool r1_inicializado = false;
+                for (int p = 0; p < vertices1.size(); p++) {
+                    bn::fixed q = (vertices1[p].x() * axisProj.x() + vertices1[p].y() * axisProj.y());
+                    if (!r1_inicializado) {
+                        min_r1 = min_r1;
+                        max_r1 = max_r1;
+                        r1_inicializado = true;
+                    }
+                    else {
+                        min_r1 = bn::min(min_r1, q);
+                        max_r1 = bn::max(max_r1, q);
+                    }
+                }
+
+                // Work out min and max 1D points for r2
+                bn::fixed min_r2;
+                bn::fixed max_r2;
+                bool r2_inicializado = false;
+                for (int p = 0; p < vertices2.size(); p++) {
+                    bn::fixed q = (vertices2[p].x() * axisProj.x() + vertices2[p].y() * axisProj.y());
+                    if (!r2_inicializado) {
+                        min_r2 = bn::min(min_r2, q);
+                        max_r2 = bn::max(max_r2, q);
+                        r2_inicializado = true;
+                    }
+                    else {
+                        min_r2 = bn::min(min_r2, q);
+                        max_r2 = bn::max(max_r2, q);
+                    }
+                }
+                // BN_LOG(overlap);
+                // Calculate actual overlap along projected axis, and store the minimum
+                if (!overlap_inicializado) {
+                    overlap = bn::min(max_r1, max_r2) - bn::max(min_r1, min_r2);
+                    overlap_inicializado = true;
+                }
+                else {
+                    overlap = bn::min(bn::min(max_r1, max_r2) - bn::max(min_r1, min_r2), overlap);
+                }
+
+                if (!(max_r2 >= min_r1 && max_r1 >= min_r2))
+                    return collisionPoint;
             }
-
-            // Calculate actual overlap along projected axis, and store the minimum
-            overlap = std::min(std::min(max_r1, max_r2) - std::max(min_r1, min_r2), overlap);
-
-            if (!(max_r2 >= min_r1 && max_r1 >= min_r2))
-                return false;
         }
+        BN_PROFILER_STOP();
 
         // If we got here, the objects have collided, we will displace r1
         // by overlap along the vector between the two object centers
-        vec2d d = { r2.pos.x - r1.pos.x, r2.pos.y - r1.pos.y };
-        float s = sqrtf(d.x * d.x + d.y * d.y);
-        r1.pos.x -= overlap * d.x / s;
-        r1.pos.y -= overlap * d.y / s;
-        return false;
+        collisionPoint.collided = true;
+
+        bna::Vector2 d = { hb2.getPosition().x() - hb1.getPosition().x(), hb2.getPosition().y() - hb1.getPosition().y() };
+        bn::fixed s = sqrt(d.x() * d.x() + d.y() * d.y());
+        collisionPoint.correctionVector = d * -overlap / s;
+        // hb1.pos.x -= overlap * d.x() / s;
+        // hb1.pos.y -= overlap * d.y() / s;
+        return collisionPoint;
     }
 
     CollisionPoint checkCollisionPoint(const bna::Hitbox& hb1, const bna::Hitbox& hb2) {
@@ -162,6 +204,8 @@ namespace bna {
         BN_PROFILER_STOP();
         return collisionPoint; // Hay colisión
     }
+
+    
 
     bool checkCollision(const bna::Hitbox& hb1, const bna::Hitbox& hb2) {
 
