@@ -116,18 +116,17 @@ bn::vector<bna::Vector2, 4> bna::Hitbox::getVertices() const {
 }
 
 bn::vector<bna::Vector2, 4> bna::Hitbox::getAxesNormalized() {
-    BN_PROFILER_START("HitGetAxisNorm");
     if (!_axesNormalidedUpdated) {
         _axesNormalidedUpdated = true;
-        for (int i = 0; i < _vertices.size(); i++) {
-            bna::Vector2 p1 = _vertices[i];
-            bna::Vector2 p2 = _vertices[(i + 1) % _vertices.size()];
+        int size = _vertices.size();
+        for (int i = 0; i < size; i++) {
+            const bna::Vector2& p1 = _vertices[i];
+            const bna::Vector2& p2 = _vertices[(i + 1) % size];
             bna::Vector2 edge = p2 - p1;
             bna::Vector2 normal = bna::Vector2(-edge.y(), edge.x()).normalize();
-            _axesNormalized[i] = bna::Vector2(normal); // Normal al borde
+            _axesNormalized[i] = normal; // Normal al borde
         }
     }
-    BN_PROFILER_STOP();
     return _axesNormalized;
 }
 
