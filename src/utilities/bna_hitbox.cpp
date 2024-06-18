@@ -8,7 +8,7 @@
 
 bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug, int color) :
     _center(center), _size(size), _rotation(rotation),
-    _axesNormalized(_vertices.max_size()){
+    _axesNormalized(_vertices.max_size()) {
     _vertices = _generateVertices();
     _axesNormalidedUpdated = false;
 
@@ -113,13 +113,13 @@ bn::vector<bna::Vector2, 4> bna::Hitbox::getAxesNormalized() {
     BN_PROFILER_START("HitGetAxisNorm");
     if (!_axesNormalidedUpdated) {
         _axesNormalidedUpdated = true;
-    }
-    for (int i = 0; i < _vertices.size(); i++) {
-        bna::Vector2 p1 = _vertices[i];
-        bna::Vector2 p2 = _vertices[(i + 1) % _vertices.size()];
-        bna::Vector2 edge = p2 - p1;
-        bna::Vector2 normal = bna::Vector2(-edge.y(), edge.x()).normalize();
-        _axesNormalized[i] = bna::Vector2(normal); // Normal al borde
+        for (int i = 0; i < _vertices.size(); i++) {
+            bna::Vector2 p1 = _vertices[i];
+            bna::Vector2 p2 = _vertices[(i + 1) % _vertices.size()];
+            bna::Vector2 edge = p2 - p1;
+            bna::Vector2 normal = bna::Vector2(-edge.y(), edge.x()).normalize();
+            _axesNormalized[i] = bna::Vector2(normal); // Normal al borde
+        }
     }
     BN_PROFILER_STOP();
     return _axesNormalized;
@@ -130,9 +130,12 @@ bna::Vector2 bna::Hitbox::getCenter() const {
 }
 
 void bna::Hitbox::setCenter(bna::Vector2 center) {
-    _center = center;
-    _vertices = _generateVertices();
-    _updateSpritesPos();
+    if (_center != center) {
+        _axesNormalidedUpdated = false;
+        _center = center;
+        _vertices = _generateVertices();
+        _updateSpritesPos();
+    }
 }
 
 bna::Vector2 bna::Hitbox::getPosition() const {
@@ -140,15 +143,11 @@ bna::Vector2 bna::Hitbox::getPosition() const {
 }
 
 void bna::Hitbox::setPosition(bna::Vector2 center) {
-    _center = center;
-    _vertices = _generateVertices();
-    _updateSpritesPos();
+    setCenter(center);
 }
 
 void bna::Hitbox::setPosition(bn::fixed_point center) {
-    _center = bna::Vector2(center.x(), center.y());
-    _vertices = _generateVertices();
-    _updateSpritesPos();
+    setCenter(bna::Vector2(center.x(), center.y()));
 }
 
 
