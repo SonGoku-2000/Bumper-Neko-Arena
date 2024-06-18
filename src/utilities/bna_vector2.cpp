@@ -3,6 +3,7 @@
 #include "bn_math.h"
 
 #include "bna_math_constants.hpp"
+#include "bn_log.h"
 
 bna::Vector2::Vector2(bn::fixed x, bn::fixed y) : bn::fixed_point(x, y) {}
 
@@ -14,9 +15,14 @@ bna::Vector2::Vector2(bn::fixed_point p1, bn::fixed_point p2) :
 bna::Vector2::Vector2() : bn::fixed_point(0, 0) {}
 
 bna::Vector2 bna::Vector2::rotate(bn::fixed angle) const {
-    // bn::fixed rad = angle *  bn::fixed(3.14159265) / bn::fixed(180.0);
-    bn::fixed cosA = degrees_sin(angle);
-    bn::fixed sinA = degrees_cos(angle);
+    bn::fixed cosA = bn::degrees_sin(angle);
+    bn::fixed sinA = bn::degrees_cos(angle);
+    return Vector2(x() * cosA - y() * sinA, x() * sinA + y() * cosA);
+}
+
+bna::Vector2 bna::Vector2::rotate(bn::fixed cosTheta, bn::fixed sinTheta) const {
+    bn::fixed cosA = sinTheta;
+    bn::fixed sinA = cosTheta;
     return Vector2(x() * cosA - y() * sinA, x() * sinA + y() * cosA);
 }
 
