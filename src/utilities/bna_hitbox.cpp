@@ -45,10 +45,13 @@ bn::vector<bna::Vector2, 4> bna::Hitbox::_generateVertices() const {
     bn::vector<Vector2, 4> vertices;
     Vector2 halfSize = _size * bn::fixed(0.5);
 
-    vertices.push_back(Vector2(-halfSize.x(), -halfSize.y()).rotate(_rotation) + _center);
-    vertices.push_back(Vector2(halfSize.x(), -halfSize.y()).rotate(_rotation) + _center);
-    vertices.push_back(Vector2(halfSize.x(), halfSize.y()).rotate(_rotation) + _center);
-    vertices.push_back(Vector2(-halfSize.x(), halfSize.y()).rotate(_rotation) + _center);
+    bn::fixed cosTheta2 = bn::degrees_cos(_rotation);
+    bn::fixed sinTheta2 = bn::degrees_sin(_rotation);
+
+    vertices.push_back(Vector2(-halfSize.x(), -halfSize.y()).rotate(cosTheta2, sinTheta2) + _center);
+    vertices.push_back(Vector2(halfSize.x(), -halfSize.y()).rotate(cosTheta2, sinTheta2) + _center);
+    vertices.push_back(Vector2(halfSize.x(), halfSize.y()).rotate(cosTheta2, sinTheta2) + _center);
+    vertices.push_back(Vector2(-halfSize.x(), halfSize.y()).rotate(cosTheta2, sinTheta2) + _center);
 
     return vertices;
 }
@@ -96,9 +99,12 @@ void bna::Hitbox::setCamera(bn::camera_ptr& camera) {
 }
 
 void bna::Hitbox::setRotation(bn::fixed angle) {
-    _rotation = angle;
-    _vertices = _generateVertices();
-    _updateSpritesPos();
+    if (_rotation != angle) {
+        _rotation = angle;
+        _axesNormalidedUpdated = false;
+        _vertices = _generateVertices();
+        _updateSpritesPos();
+    }
 }
 
 bn::fixed bna::Hitbox::getRotation() const {
