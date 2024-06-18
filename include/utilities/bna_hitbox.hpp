@@ -9,6 +9,7 @@
 
 namespace bna {
     struct CollisionPoint;
+    struct ProjectionInfo;
     class Hitbox {
         public:
         Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug, int color);
@@ -41,6 +42,9 @@ namespace bna {
 
         bn::vector<bna::Vector2, 4> getAxesNormalized();
 
+        std::pair<bn::fixed, bn::fixed> getProjection(int self_axis_id);
+        std::pair<bn::fixed, bn::fixed> getProjection(const bna::Vector2& axis);
+
         private:
         Vector2 _center;
         Vector2 _size;
@@ -49,6 +53,12 @@ namespace bna {
         bn::vector<bn::sprite_ptr, 4> _spritesVertices;
         bn::vector<Vector2, 4> _vertices;
         bn::vector<Vector2, 4> _axesNormalized;
+
+        struct ProjectionInfo {
+            bool updated = false;
+            std::pair<bn::fixed, bn::fixed> projection;
+        };
+        bn::vector<ProjectionInfo, 4> _projectionsInfo;
         bool _axesNormalidedUpdated;
 
         bn::vector<Vector2, 4> _generateVertices() const;

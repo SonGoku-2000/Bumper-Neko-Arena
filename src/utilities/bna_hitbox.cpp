@@ -130,6 +130,39 @@ bn::vector<bna::Vector2, 4> bna::Hitbox::getAxesNormalized() {
     return _axesNormalized;
 }
 
+std::pair<bn::fixed, bn::fixed> bna::Hitbox::getProjection(int self_axis_id) {
+    const bna::Vector2& axis = _axesNormalized[self_axis_id];
+
+    bn::fixed min = _vertices[0].dot(axis);
+    bn::fixed max = min;
+    for (const bna::Vector2& vertex : _vertices) {
+        bn::fixed projection = vertex.dot(axis);
+        if (projection < min) {
+            min = projection;
+        }
+        else if (projection > max) {
+            max = projection;
+        }
+    }
+    return std::make_pair(min, max);
+}
+
+std::pair<bn::fixed, bn::fixed> bna::Hitbox::getProjection(const bna::Vector2& axis) {
+    bn::fixed min = _vertices[0].dot(axis);
+    bn::fixed max = min;
+    for (const bna::Vector2& vertex : _vertices) {
+        bn::fixed projection = vertex.dot(axis);
+        if (projection < min) {
+            min = projection;
+        }
+        else if (projection > max) {
+            max = projection;
+        }
+    }
+    return std::make_pair(min, max);
+}
+
+
 bna::Vector2 bna::Hitbox::getCenter() const {
     return _center;
 }
