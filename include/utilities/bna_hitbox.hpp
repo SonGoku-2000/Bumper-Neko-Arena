@@ -39,6 +39,8 @@ namespace bna {
 
         void setCamera(bn::camera_ptr& camera);
 
+        bn::vector<bna::Vector2, 4> getAxesNormalized();
+
         private:
         Vector2 _center;
         Vector2 _size;
@@ -46,6 +48,8 @@ namespace bna {
 
         bn::vector<bn::sprite_ptr, 4> _spritesVertices;
         bn::vector<Vector2, 4> _vertices;
+        bn::vector<Vector2, 4> _axesNormalized;
+        bool _axesNormalidedUpdated;
 
         bn::vector<Vector2, 4> _generateVertices() const;
         bn::vector<Vector2, 4> _generateVertices2() const;

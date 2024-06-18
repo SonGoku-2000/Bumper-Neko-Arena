@@ -3,11 +3,15 @@
 #include "bn_sprite_items_indicator.h"
 #include "bna_colissions.hpp"
 #include "bn_size.h"
+#include "bn_profiler.h"
 
 
 bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug, int color) :
-    _center(center), _size(size), _rotation(rotation) {
+    _center(center), _size(size), _rotation(rotation),
+    _axesNormalized(_vertices.max_size()){
     _vertices = _generateVertices();
+    _axesNormalidedUpdated = false;
+
     if (debug) {
         for (int i = 0; i < _spritesVertices.max_size(); i++) {
             _spritesVertices.push_back(bn::sprite_items::indicator.create_sprite(_vertices[i], color));
@@ -105,6 +109,21 @@ bn::vector<bna::Vector2, 4> bna::Hitbox::getVertices() const {
     return _vertices;
 }
 
+bn::vector<bna::Vector2, 4> bna::Hitbox::getAxesNormalized() {
+    BN_PROFILER_START("HitGetAxisNorm");
+    if (!_axesNormalidedUpdated) {
+        _axesNormalidedUpdated = true;
+    }
+    for (int i = 0; i < _vertices.size(); i++) {
+        bna::Vector2 p1 = _vertices[i];
+        bna::Vector2 p2 = _vertices[(i + 1) % _vertices.size()];
+        bna::Vector2 edge = p2 - p1;
+        bna::Vector2 normal = bna::Vector2(-edge.y(), edge.x()).normalize();
+        _axesNormalized[i] = bna::Vector2(normal); // Normal al borde
+    }
+    BN_PROFILER_STOP();
+    return _axesNormalized;
+}
 
 bna::Vector2 bna::Hitbox::getCenter() const {
     return _center;
