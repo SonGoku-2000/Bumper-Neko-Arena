@@ -42,7 +42,11 @@ bn::fixed  bna::Vector2::squaredLength() const {
 
 bna::Vector2  bna::Vector2::normalize() const {
     bn::fixed len = length();
-    if (len > bn::fixed(0)) {
+
+    if (len > 60){
+        return Vector2(x() / len, y() / len);
+    }
+    else if (len > bn::fixed(0)) {
         bn::fixed invLen = bn::fixed(1) / len; // Invertir la longitud una vez
         return Vector2(x() * invLen, y() * invLen);
     }
