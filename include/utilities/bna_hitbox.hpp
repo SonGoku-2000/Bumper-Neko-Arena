@@ -35,7 +35,7 @@ namespace bna {
         bn::fixed height() const;
 
         bool checkCollision(Hitbox hitbox) const;
-        CollisionPoint checkCollisionPoint(Hitbox hitbox) const;
+        CollisionPoint checkCollisionPoint(Hitbox hitbox);
 
         void setCamera(bn::camera_ptr& camera);
 

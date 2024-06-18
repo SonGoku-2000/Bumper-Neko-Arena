@@ -131,9 +131,12 @@ bna::Vector2 bna::Hitbox::getCenter() const {
 
 void bna::Hitbox::setCenter(bna::Vector2 center) {
     if (_center != center) {
+        bn::fixed_point offset = center - _center;
         _axesNormalidedUpdated = false;
         _center = center;
-        _vertices = _generateVertices();
+        for (int i = 0; i < _vertices.size(); i++) {
+            _vertices[i] = _vertices[i] + offset;
+        }
         _updateSpritesPos();
     }
 }
@@ -169,7 +172,7 @@ bool bna::Hitbox::checkCollision(bna::Hitbox hitbox) const {
     return bna::checkCollision(*this, hitbox);
 }
 
-bna::CollisionPoint bna::Hitbox::checkCollisionPoint(Hitbox hitbox) const {
-    return bna::checkCollisionPoint(*this, hitbox);
+bna::CollisionPoint bna::Hitbox::checkCollisionPoint(Hitbox hitbox) {
+    return bna::checkCollisionPointV2(*this, hitbox);
 }
 
