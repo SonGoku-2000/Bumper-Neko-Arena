@@ -3,13 +3,12 @@
 #include "bn_sprite_items_indicator.h"
 #include "bna_colissions.hpp"
 #include "bn_size.h"
-#include "bn_profiler.h"
 
 
 bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug, int color) :
     _center(center), _size(size), _rotation(rotation),
-    _axesNormalized(_vertices.max_size()) ,
-    _axes(_vertices.max_size()){
+    _axesNormalized(_vertices.max_size()),
+    _axes(_vertices.max_size()) {
     _vertices = _generateVertices();
     _axesNormalidedUpdated = false;
     _axesUpdated = false;
@@ -114,6 +113,8 @@ void bna::Hitbox::setRotation(bn::fixed angle) {
         _updateSpritesPos();
         for (int i = 0; i < 4; i++) {
             _projectionsInfo[i].updated = false;
+            _projectionsNormalizedInfo[i].updated = false;
+
         }
     }
 }
@@ -169,14 +170,14 @@ std::pair<bn::fixed, bn::fixed> bna::Hitbox::getProjection(int self_axis_id) {
 }
 
 std::pair<bn::fixed, bn::fixed> bna::Hitbox::getProjectionNormalized(int self_axis_id) {
-    if (_projectionsInfo[self_axis_id].updated) {
-        return _projectionsInfo[self_axis_id].projection;
+    if (_projectionsNormalizedInfo[self_axis_id].updated) {
+        return _projectionsNormalizedInfo[self_axis_id].projection;
     }
     else {
         const bna::Vector2& axis = _axesNormalized[self_axis_id];
-        _projectionsInfo[self_axis_id].projection = getProjection(axis);
-        _projectionsInfo[self_axis_id].updated = true;
-        return _projectionsInfo[self_axis_id].projection;
+        _projectionsNormalizedInfo[self_axis_id].projection = getProjection(axis);
+        _projectionsNormalizedInfo[self_axis_id].updated = true;
+        return _projectionsNormalizedInfo[self_axis_id].projection;
     }
 }
 
@@ -213,6 +214,7 @@ void bna::Hitbox::setCenter(bna::Vector2 center) {
 
         for (int i = 0; i < 4; i++) {
             _projectionsInfo[i].updated = false;
+            _projectionsNormalizedInfo[i].updated = false;
         }
     }
 }
