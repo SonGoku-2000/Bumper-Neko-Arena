@@ -32,7 +32,6 @@ namespace bna {
         };
 
         std::pair<bn::fixed, bn::fixed> project(const bn::vector<bna::Vector2, 4>& vertices, const bna::Vector2& axis) {
-            BN_PROFILER_START("CollPROYECT");
             bn::fixed min = vertices[0].dot(axis);
             bn::fixed max = min;
             for (const bna::Vector2& vertex : vertices) {
@@ -40,11 +39,10 @@ namespace bna {
                 if (projection < min) {
                     min = projection;
                 }
-                if (projection > max) {
+                else if (projection > max) {
                     max = projection;
                 }
             }
-            BN_PROFILER_STOP();
             return std::make_pair(min, max);
         };
 
@@ -70,13 +68,15 @@ namespace bna {
         const bn::vector<bna::Vector2, 4>& vertices1 = hb1.getVertices();
         const bn::vector<bna::Vector2, 4>& vertices2 = hb2.getVertices();
 
-        bn::vector<bna::Vector2, 8> axes(vertices1.size() + vertices2.size());
+        BN_PROFILER_START("Coll2 Get axes normal");
         bn::vector<bna::Vector2, 4> axes1 = hb1.getAxesNormalized();
         bn::vector<bna::Vector2, 4> axes2 = hb2.getAxesNormalized();
+        BN_PROFILER_STOP();
 
-        BN_PROFILER_START("Axes Copy");
-        std::copy(axes1.begin(), axes1.end(), axes.begin());
-        std::copy(axes2.begin(), axes2.end(), axes.begin() + axes1.size());
+        BN_PROFILER_START("Coll2 Axes Copy");
+        // for (int i = 0; i < axes2.size(); i++) {
+        //     axes.push_back(axes2[i]);
+        // }
         BN_PROFILER_STOP();
 
         CollisionPoint collisionPoint;
@@ -84,12 +84,15 @@ namespace bna {
         bn::fixed minOverlap;
         Vector2 smallestAxis;
         bool inicializadoMinOverlap = false;
-
-        for (const Vector2& axis : axes) {
-            auto [minA, maxA] = helper::project(vertices1, axis);
-            auto [minB, maxB] = helper::project(vertices2, axis);
-
+        BN_PROFILER_START("Collv2 project");
+        for (int i = 0; i < 4; i++) {
+            const Vector2& axis = axes1[i];
+            auto [minA, maxA] = hb1.getProjection(i);
+            auto [minB, maxB] = hb2.getProjection(axis);
+            // auto [minA, maxA] = helper::project(vertices1, axis);
+            // auto [minB, maxB] = helper::project(vertices2, axis);
             if (maxA < minB || maxB < minA) {
+                BN_PROFILER_STOP();
                 return collisionPoint; // No hay colisión
             }
             else {
@@ -102,6 +105,27 @@ namespace bna {
             }
         }
 
+        for (int i = 0; i < 4; i++) {
+            const Vector2& axis = axes2[i];
+            auto [minA, maxA] = hb1.getProjection(axis);
+            auto [minB, maxB] = hb2.getProjection(i);
+            // auto [minA, maxA] = helper::project(vertices1, axis);
+            // auto [minB, maxB] = helper::project(vertices2, axis);
+            if (maxA < minB || maxB < minA) {
+                BN_PROFILER_STOP();
+                return collisionPoint; // No hay colisión
+            }
+            else {
+                bn::fixed overlap = bn::min(maxA, maxB) - bn::max(minA, minB);
+                if (!inicializadoMinOverlap || overlap < minOverlap) {
+                    minOverlap = overlap;
+                    smallestAxis = axis;
+                    inicializadoMinOverlap = true;
+                }
+            }
+        }
+
+        BN_PROFILER_STOP();
         collisionPoint.collided = true;
 
         Vector2 direction = hb2.getPosition() - hb1.getPosition();
@@ -154,7 +178,6 @@ namespace bna {
                 }
             }
         }
-
         collisionPoint.collided = true;
 
         BN_PROFILER_START("ColPoint Check overlap");
@@ -173,6 +196,7 @@ namespace bna {
 
     bool checkCollision(const bna::Hitbox& hb1, const bna::Hitbox& hb2) {
 
+        BN_PROFILER_START("cheCollPointv1");
         bn::vector<bna::Vector2, 4> vertices1 = hb1.getVertices();
         bn::vector<bna::Vector2, 4> vertices2 = hb2.getVertices();
 
@@ -188,9 +212,12 @@ namespace bna {
             auto proj1 = helper::project(vertices1, axis);
             auto proj2 = helper::project(vertices2, axis);
             if (!helper::overlap(proj1, proj2)) {
+                BN_PROFILER_STOP();
                 return false; // Si hay una separación, no hay colisión
             }
         }
+        BN_PROFILER_STOP();
+
         return true; // Si no hay ninguna separación, hay colisión
     }
 

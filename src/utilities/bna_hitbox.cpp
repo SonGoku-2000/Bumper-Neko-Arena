@@ -12,6 +12,10 @@ bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug
     _vertices = _generateVertices();
     _axesNormalidedUpdated = false;
 
+    for (int i = 0; i < 4; i++) {
+        _projectionsInfo[i].updated = false;
+    }
+
     if (debug) {
         for (int i = 0; i < _spritesVertices.max_size(); i++) {
             _spritesVertices.push_back(bn::sprite_items::indicator.create_sprite(_vertices[i], color));
@@ -104,6 +108,9 @@ void bna::Hitbox::setRotation(bn::fixed angle) {
         _axesNormalidedUpdated = false;
         _vertices = _generateVertices();
         _updateSpritesPos();
+        for (int i = 0; i < 4; i++) {
+            _projectionsInfo[i].updated = false;
+        }
     }
 }
 
@@ -131,20 +138,16 @@ bn::vector<bna::Vector2, 4> bna::Hitbox::getAxesNormalized() {
 }
 
 std::pair<bn::fixed, bn::fixed> bna::Hitbox::getProjection(int self_axis_id) {
-    const bna::Vector2& axis = _axesNormalized[self_axis_id];
 
-    bn::fixed min = _vertices[0].dot(axis);
-    bn::fixed max = min;
-    for (const bna::Vector2& vertex : _vertices) {
-        bn::fixed projection = vertex.dot(axis);
-        if (projection < min) {
-            min = projection;
-        }
-        else if (projection > max) {
-            max = projection;
-        }
+    if (_projectionsInfo[self_axis_id].updated) {
+        return _projectionsInfo[self_axis_id].projection;
     }
-    return std::make_pair(min, max);
+    else {
+        const bna::Vector2& axis = _axesNormalized[self_axis_id];
+        _projectionsInfo[self_axis_id].projection = getProjection(axis);
+        _projectionsInfo[self_axis_id].updated = true;
+        return _projectionsInfo[self_axis_id].projection;
+    }
 }
 
 std::pair<bn::fixed, bn::fixed> bna::Hitbox::getProjection(const bna::Vector2& axis) {
@@ -176,6 +179,10 @@ void bna::Hitbox::setCenter(bna::Vector2 center) {
             _vertices[i] = _vertices[i] + offset;
         }
         _updateSpritesPos();
+
+        for (int i = 0; i < 4; i++) {
+            _projectionsInfo[i].updated = false;
+        }
     }
 }
 
@@ -210,7 +217,7 @@ bool bna::Hitbox::checkCollision(bna::Hitbox hitbox) const {
     return bna::checkCollision(*this, hitbox);
 }
 
-bna::CollisionPoint bna::Hitbox::checkCollisionPoint(Hitbox hitbox) {
+bna::CollisionPoint bna::Hitbox::checkCollisionPoint(Hitbox& hitbox) {
     return bna::checkCollisionPointV2(*this, hitbox);
 }
 

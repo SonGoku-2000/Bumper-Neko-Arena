@@ -2,6 +2,7 @@
 
 #include "bna_vector2.hpp"
 #include "bn_vector.h"
+#include "bn_array.h"
 
 #include "bn_sprite_ptr.h"
 #include "bn_camera_ptr.h"
@@ -36,7 +37,7 @@ namespace bna {
         bn::fixed height() const;
 
         bool checkCollision(Hitbox hitbox) const;
-        CollisionPoint checkCollisionPoint(Hitbox hitbox);
+        CollisionPoint checkCollisionPoint(Hitbox& hitbox);
 
         void setCamera(bn::camera_ptr& camera);
 
@@ -58,7 +59,7 @@ namespace bna {
             bool updated = false;
             std::pair<bn::fixed, bn::fixed> projection;
         };
-        bn::vector<ProjectionInfo, 4> _projectionsInfo;
+        bn::array<ProjectionInfo, 4> _projectionsInfo;
         bool _axesNormalidedUpdated;
 
         bn::vector<Vector2, 4> _generateVertices() const;
