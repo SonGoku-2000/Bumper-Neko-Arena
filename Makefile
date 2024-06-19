@@ -56,7 +56,7 @@ AUDIO       	:=  audio
 DMGAUDIO    	:=  dmg_audio
 ROMTITLE    	:=  BUMPER NEKO ARENA
 ROMCODE     	:=  BNA
-USERFLAGS   	:=  
+USERFLAGS   	:=  -DBN_CFG_PROFILER_ENABLED=true
 USERCXXFLAGS	:=  
 USERASFLAGS 	:=  
 USERLDFLAGS 	:=  
