@@ -25,13 +25,13 @@ namespace bna {
         void checkCollision(Car& otherCar);
         void checkCollision(Hitbox& otherCar);
 
-        bool isColliding(const Car& other) const;
-        CollisionPoint isColliding(const Hitbox& other) const;
+        bool isColliding(Car& other);
+        CollisionPoint isColliding(Hitbox& other);
 
         void resolveCollision(Car& other);
         void resolveCollision(CollisionPoint collisionPoint);
 
-        bna::Hitbox getHitbox() const;
+        bna::Hitbox& getHitbox();
 
         bn::fixed_point getPosition();
         void setPosition(bn::fixed_point position);

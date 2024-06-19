@@ -5,6 +5,9 @@
 #include "bn_log.h"
 #include "bna_colissions.hpp"
 
+#ifdef PROFILE
+#include "bn_profiler.h"
+#endif
 
 namespace bna {
     namespace default_values {
@@ -53,6 +56,9 @@ void bna::Car::spawn(bn::camera_ptr& camera, bn::size tamanoMapa) {
 }
 
 void bna::Car::update(bna::Vector2 eje) {
+#ifdef PROFILE
+    BN_PROFILER_START("Car update");
+#endif
     _eje = eje;
 
     _rotation += eje.x() * _turn;
@@ -90,6 +96,10 @@ void bna::Car::update(bna::Vector2 eje) {
 
     _sprite.set_position(_pos);
     _sprite.set_rotation_angle(getRotation());
+
+#ifdef PROFILE
+    BN_PROFILER_STOP();
+#endif
 }
 
 
@@ -100,17 +110,17 @@ void bna::Car::checkCollision(bna::Car& otherCar) {
 }
 
 void bna::Car::checkCollision(bna::Hitbox& otherHitbox) {
-    bna::CollisionPoint collisionPoint = isColliding(otherHitbox);
-    if (collisionPoint.collided) {
+    if (otherHitbox.checkCollision(getHitbox())) {
+        bna::CollisionPoint collisionPoint = isColliding(otherHitbox);
         resolveCollision(collisionPoint);
     }
 }
 
-bool bna::Car::isColliding(const Car& other) const {
+bool bna::Car::isColliding(Car& other) {
     return other.getHitbox().checkCollision(getHitbox());
 }
 
-bna::CollisionPoint bna::Car::isColliding(const bna::Hitbox& other) const {
+bna::CollisionPoint bna::Car::isColliding(bna::Hitbox& other) {
     return other.checkCollisionPoint(getHitbox());
 }
 
@@ -127,6 +137,7 @@ void bna::Car::resolveCollision(Car& other) {
     bn::fixed ny = dy / distance;
 
     // // Relative velocity
+        // bn::vector<bna::Vector2, 4> vertices2 = hb2.getVertices();
     bna::Vector2 relativeVelocity = getSpeed() - other.getSpeed();
     bn::fixed dotProduct = relativeVelocity.dot(bna::Vector2(nx, ny));
 
@@ -216,7 +227,7 @@ void bna::Car::_checkBorders() {
 }
 
 
-bna::Hitbox bna::Car::getHitbox() const {
+bna::Hitbox& bna::Car::getHitbox() {
     return _hitbox;
 }
 
