@@ -8,12 +8,15 @@
 
 bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug, int color) :
     _center(center), _size(size), _rotation(rotation),
-    _axesNormalized(_vertices.max_size()) {
+    _axesNormalized(_vertices.max_size()) ,
+    _axes(_vertices.max_size()){
     _vertices = _generateVertices();
     _axesNormalidedUpdated = false;
+    _axesUpdated = false;
 
     for (int i = 0; i < 4; i++) {
         _projectionsInfo[i].updated = false;
+        _projectionsNormalizedInfo[i].updated = false;
     }
 
     if (debug) {
@@ -106,6 +109,7 @@ void bna::Hitbox::setRotation(bn::fixed angle) {
     if (_rotation != angle) {
         _rotation = angle;
         _axesNormalidedUpdated = false;
+        _axesUpdated = false;
         _vertices = _generateVertices();
         _updateSpritesPos();
         for (int i = 0; i < 4; i++) {
@@ -137,8 +141,34 @@ bn::vector<bna::Vector2, 4> bna::Hitbox::getAxesNormalized() {
     return _axesNormalized;
 }
 
-std::pair<bn::fixed, bn::fixed> bna::Hitbox::getProjection(int self_axis_id) {
+bn::vector<bna::Vector2, 4> bna::Hitbox::getAxes() {
+    if (!_axesUpdated) {
+        _axesUpdated = true;
+        int size = _vertices.size();
+        for (int i = 0; i < size; i++) {
+            const bna::Vector2& p1 = _vertices[i];
+            const bna::Vector2& p2 = _vertices[(i + 1) % size];
+            bna::Vector2 edge = p2 - p1;
+            bna::Vector2 normal = bna::Vector2(-edge.y(), edge.x());
+            _axes[i] = normal; // Normal al borde
+        }
+    }
+    return _axes;
+}
 
+std::pair<bn::fixed, bn::fixed> bna::Hitbox::getProjection(int self_axis_id) {
+    if (_projectionsInfo[self_axis_id].updated) {
+        return _projectionsInfo[self_axis_id].projection;
+    }
+    else {
+        const bna::Vector2& axis = _axes[self_axis_id];
+        _projectionsInfo[self_axis_id].projection = getProjection(axis);
+        _projectionsInfo[self_axis_id].updated = true;
+        return _projectionsInfo[self_axis_id].projection;
+    }
+}
+
+std::pair<bn::fixed, bn::fixed> bna::Hitbox::getProjectionNormalized(int self_axis_id) {
     if (_projectionsInfo[self_axis_id].updated) {
         return _projectionsInfo[self_axis_id].projection;
     }
@@ -174,6 +204,7 @@ void bna::Hitbox::setCenter(bna::Vector2 center) {
     if (_center != center) {
         bn::fixed_point offset = center - _center;
         _axesNormalidedUpdated = false;
+        _axesUpdated = false;
         _center = center;
         for (int i = 0; i < _vertices.size(); i++) {
             _vertices[i] = _vertices[i] + offset;
@@ -213,7 +244,7 @@ bn::fixed bna::Hitbox::width() const {
 
 
 
-bool bna::Hitbox::checkCollision(bna::Hitbox hitbox) const {
+bool bna::Hitbox::checkCollision(bna::Hitbox hitbox) {
     return bna::checkCollision(*this, hitbox);
 }
 

@@ -36,12 +36,15 @@ namespace bna {
         bn::fixed width() const;
         bn::fixed height() const;
 
-        bool checkCollision(Hitbox hitbox) const;
+        bool checkCollision(Hitbox hitbox);
         CollisionPoint checkCollisionPoint(Hitbox& hitbox);
 
         void setCamera(bn::camera_ptr& camera);
 
         bn::vector<bna::Vector2, 4> getAxesNormalized();
+        bn::vector<bna::Vector2, 4> getAxes();
+
+        std::pair<bn::fixed, bn::fixed> getProjectionNormalized(int self_axis_id);
 
         std::pair<bn::fixed, bn::fixed> getProjection(int self_axis_id);
         std::pair<bn::fixed, bn::fixed> getProjection(const bna::Vector2& axis);
@@ -54,13 +57,16 @@ namespace bna {
         bn::vector<bn::sprite_ptr, 4> _spritesVertices;
         bn::vector<Vector2, 4> _vertices;
         bn::vector<Vector2, 4> _axesNormalized;
+        bn::vector<Vector2, 4> _axes;
 
         struct ProjectionInfo {
             bool updated = false;
             std::pair<bn::fixed, bn::fixed> projection;
         };
         bn::array<ProjectionInfo, 4> _projectionsInfo;
+        bn::array<ProjectionInfo, 4> _projectionsNormalizedInfo;
         bool _axesNormalidedUpdated;
+        bool _axesUpdated;
 
         bn::vector<Vector2, 4> _generateVertices() const;
         bn::vector<Vector2, 4> _generateVertices2() const;

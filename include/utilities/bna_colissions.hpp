@@ -15,7 +15,7 @@ namespace bna {
         auto getCollisionVertex(const bn::vector<bna::Vector2, 4>& vertices, const bna::Vector2& axis);
     }
 
-    bool checkCollision(const bna::Hitbox& hb1, const bna::Hitbox& hb2);
+    bool checkCollision(bna::Hitbox& hb1, bna::Hitbox& hb2);
 
     struct CollisionPoint {
         bool collided;
