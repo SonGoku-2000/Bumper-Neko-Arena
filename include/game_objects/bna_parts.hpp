@@ -9,6 +9,23 @@ namespace bna {
         bn::fixed aceleration = 0;
         bn::fixed turn = 0;
         bn::fixed weight = 0;
+
+        Stats() {}
+        Stats(bn::fixed newMaxSpeed, bn::fixed newAceleration, bn::fixed newTurn, bn::fixed newWeight) {
+            maxSpeed = newMaxSpeed;
+            aceleration = newAceleration;
+            turn = newTurn;
+            weight = newWeight;
+        }
+
+        Stats operator+(const Stats& other) const {
+            return Stats(
+                maxSpeed + other.maxSpeed,
+                aceleration + other.aceleration,
+                turn + other.turn,
+                weight + other.weight
+            );
+        }
     };
 
     namespace parts {

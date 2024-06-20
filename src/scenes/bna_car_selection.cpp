@@ -18,21 +18,24 @@ bna::CarSelection::CarSelection() {
     _idOpcion = opcionesPartes(0);
 
     constexpr int ALINEACION_HORIZONTAL = -40;
-    constexpr bool MOSTRAR_INDICADORES = true;
+    constexpr bool MOSTRAR_INDICADORES = false;
 
     _indicadores.push_back(bna::Indicator(bn::fixed_point(0, -50), MOSTRAR_INDICADORES));
     _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, -20), MOSTRAR_INDICADORES));
     _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 0), MOSTRAR_INDICADORES));
     _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 20), MOSTRAR_INDICADORES));
     _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 40), MOSTRAR_INDICADORES));
+    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 60), MOSTRAR_INDICADORES));
 
     constexpr int OFFSET_HORIZONTAL_TEXTO = 10;
 
     _textoStats = bna::TextManager(
-        _indicadores[0].x() + OFFSET_HORIZONTAL_TEXTO,
+        _indicadores[0].x(),
         _indicadores[0].y(),
         ""
     );
+    _textoStats.set_aligment(bn::sprite_text_generator::alignment_type::CENTER);
+
     _textoCuerpo = bna::TextManager(
         _indicadores[1].x() + OFFSET_HORIZONTAL_TEXTO,
         _indicadores[1].y(),
@@ -48,9 +51,14 @@ bna::CarSelection::CarSelection() {
         _indicadores[3].y(),
         ""
     );
-    _textoVolver = bna::TextManager(
+    _textoPlay = bna::TextManager(
         _indicadores[4].x() + OFFSET_HORIZONTAL_TEXTO,
         _indicadores[4].y(),
+        "Play"
+    );
+    _textoVolver = bna::TextManager(
+        _indicadores[5].x() + OFFSET_HORIZONTAL_TEXTO,
+        _indicadores[5].y(),
         "Back"
     );
 
@@ -86,18 +94,21 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
             if (cambio_opcion) {
                 _idBody = bna::parts::BODYS(bna::loop(int(_idBody) + cambio_opcion, 0, int(bna::parts::BODYS::MAX) - 1));
                 _updateBodyText();
+                _updateStatsText();
             }
         }
         else if (_idOpcion == opcionesPartes::MOTOR) {
             if (cambio_opcion) {
                 _idMotor = bna::parts::MOTORS(bna::loop(int(_idMotor) + cambio_opcion, 0, int(bna::parts::MOTORS::MAX) - 1));
                 _updateMotorText();
+                _updateStatsText();
             }
         }
         else if (_idOpcion == opcionesPartes::WHEEL) {
             if (cambio_opcion) {
                 _idWheel = bna::parts::WHEELS(bna::loop(int(_idWheel) + cambio_opcion, 0, int(bna::parts::WHEELS::MAX) - 1));
                 _updateWheelText();
+                _updateStatsText();
             }
         }
 
@@ -113,15 +124,24 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
 }
 
 void bna::CarSelection::_updateStatsText() {
-    _textoStats.set_aligment(bn::sprite_text_generator::alignment_type::CENTER);
+    bna::Stats stats;
+    stats = stats + bna::parts::getBody(_idBody);
+    stats = stats + bna::parts::getMotor(_idMotor);
+    stats = stats + bna::parts::getWheels(_idWheel);
+
     bn::string<111> texto;
     texto.append("Speed: ");
-    texto.append("Aceleration: ");
-    texto.append("Turn: ");
-    texto.append("Weight: ");
+    texto.append(bn::to_string<10>(stats.maxSpeed));
+    texto.append(" Aceleration: ");
+    texto.append(bn::to_string<10>(stats.aceleration));
+    texto.append(" Turn: ");
+    texto.append(bn::to_string<10>(stats.turn));
+    texto.append(" Weight: ");
+    texto.append(bn::to_string<10>(stats.weight));
+
     _textoStats.updateText(
         texto,
-        25
+        35
     );
 }
 void bna::CarSelection::_updateBodyText() {

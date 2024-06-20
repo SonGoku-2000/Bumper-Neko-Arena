@@ -21,17 +21,19 @@ namespace bna {
         TextManager _textoCuerpo;
         TextManager _textoMotor;
         TextManager _textoRueda;
+        TextManager _textoPlay;
         TextManager _textoVolver;
 
         enum class opcionesPartes :int {
             CUERPO,
             MOTOR,
             WHEEL,
+            PLAY,
             VOLVER
         };
         opcionesPartes _idOpcion;
 
-        bn::vector<bna::Indicator, 5> _indicadores;
+        bn::vector<bna::Indicator, 6> _indicadores;
         bn::optional<bn::sprite_ptr> _puntero;
 
         bna::parts::MOTORS _idMotor;
