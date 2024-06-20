@@ -117,6 +117,9 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
             if (_idOpcion == opcionesPartes::VOLVER) {
                 return bna::scene_type::MAIN_MENU;
             }
+            if (_idOpcion == opcionesPartes::PLAY) {
+                return bna::scene_type::TEST_MAP;
+            }
         }
         bn::core::update();
     }
