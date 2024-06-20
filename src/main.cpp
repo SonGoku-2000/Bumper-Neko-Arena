@@ -9,6 +9,7 @@
 #include "bna_scene_type.hpp"
 #include "bna_main_menu.hpp"
 #include "bna_options_menu.hpp"
+#include "bna_car_selection.hpp"
 #include "bna_test_map.hpp"
 #include "bna_brightness_manager.hpp"
 #include "bn_log.h"
@@ -23,11 +24,15 @@ int main() {
     bn::unique_ptr<bna::scene> scene;
 
     bn::optional<bna::scene_type> next_scene = bna::scene_type::MAIN_MENU;
-    
+
     while (true) {
         switch (next_scene.value()) {
             case bna::scene_type::MAIN_MENU:
                 scene.reset(new bna::MainMenu());
+                break;
+
+            case bna::scene_type::CAR_SELECTION:
+                scene.reset(new bna::CarSelection());
                 break;
 
             case bna::scene_type::OPTION_MENU:

@@ -57,7 +57,7 @@ bn::optional<bna::scene_type> bna::MainMenu::update() {
 
         if (bn::keypad::a_pressed()) {
             if (_idOpcion == 0) {
-                return bna::scene_type::TEST_MAP;
+                return bna::scene_type::CAR_SELECTION;
             }
             else if (_idOpcion == 1) {
                 return bna::scene_type::OPTION_MENU;
