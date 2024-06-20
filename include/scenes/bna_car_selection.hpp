@@ -23,7 +23,13 @@ namespace bna {
         TextManager _textoRueda;
         TextManager _textoVolver;
 
-        int _idOpcion;
+        enum class opcionesPartes :int {
+            CUERPO,
+            MOTOR,
+            WHEEL,
+            VOLVER
+        };
+        opcionesPartes _idOpcion;
 
         bn::vector<bna::Indicator, 5> _indicadores;
         bn::optional<bn::sprite_ptr> _puntero;
