@@ -2,9 +2,10 @@
 
 #include "bna_player.hpp"
 
-bna::Enemie::Enemie(bn::fixed_point pos) :
-    _cuerpo(bna::Hitbox(bna::Vector2(pos), bna::Vector2(10, 20), true), pos, 5) {
+#include "bna_car_builder.hpp"
 
+bna::Enemie::Enemie(CarBuilder& body) :
+    _cuerpo(body.build()) {
 }
 
 void bna::Enemie::update() {

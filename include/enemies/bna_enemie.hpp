@@ -5,9 +5,10 @@
 
 namespace bna {
     class Player;
+    class CarBuilder;
     class Enemie {
         public:
-        Enemie(bn::fixed_point pos);
+        Enemie(CarBuilder& body);
         ~Enemie() = default;
 
         void update();

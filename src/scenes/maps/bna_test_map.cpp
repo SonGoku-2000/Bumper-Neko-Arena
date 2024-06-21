@@ -6,8 +6,9 @@
 
 #include "bn_core.h"
 #include "bna_car_builder.hpp"
+#include "bna_parts.hpp"
 
-// #define DEBUG_CPU
+#define DEBUG_CPU
 #ifdef DEBUG_CPU
 constexpr int CPU_CICLES = 64;
 #include "bn_log.h"
@@ -35,10 +36,19 @@ bna::TestMap::TestMap(CarBuilder& player) :
     _walls.push_back(bna::Hitbox(bna::Vector2((_size.width() / -2) + separacion, 0), bna::Vector2(_size.height() - 10, 10), debug, 3));
     // _walls.push_back(bna::Hitbox(bna::Vector2(60, 0), bna::Vector2(70, 10), debug, 3));
 
+    CarBuilder car_builder;
+    car_builder.body = bna::parts::BODYS::MEDIUM;
+    car_builder.motor = bna::parts::MOTORS::MEDIUM;
+    car_builder.wheel = bna::parts::WHEELS::NORMAL;
 
-    _carros.push_back(bna::Enemie(bn::fixed_point(60, 0)));
-    _carros.push_back(bna::Enemie(bn::fixed_point(90, 0)));
-    _carros.push_back(bna::Enemie(bn::fixed_point(120, 0)));
+    car_builder.position = bn::fixed_point(60, 0);
+    _carros.push_back(car_builder);
+
+    car_builder.position = bn::fixed_point(90, 0);
+    _carros.push_back(car_builder);
+
+    car_builder.position = bn::fixed_point(120, 0);
+    _carros.push_back(car_builder);
 
     _setCamera(_camera);
 
@@ -72,12 +82,12 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
             bn::keypad::r_held() and
             bn::keypad::start_held()) {
             bn::profiler::show();
-    }
+        }
 #endif
         _player.update();
         _enemiesManager.update();
         bn::core::update();
-}
+    }
     return bna::scene_type::TEST_MAP;
 }
 
