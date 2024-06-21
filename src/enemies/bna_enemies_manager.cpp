@@ -1,5 +1,8 @@
 #include "bna_enemies_manager.hpp"
+
+#ifdef DEBUG
 #include "bn_log.h"
+#endif
 
 
 bna::EnemiesManager::EnemiesManager(bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>& enemies) :

@@ -12,8 +12,11 @@
 #include "bna_car_selection.hpp"
 #include "bna_test_map.hpp"
 #include "bna_brightness_manager.hpp"
-#include "bn_log.h"
 #include "bna_car_builder.hpp"
+
+#ifdef DEBUG
+#include "bn_log.h"
+#endif
 
 // limite sprites 128
 

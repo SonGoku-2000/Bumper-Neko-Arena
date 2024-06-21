@@ -1,8 +1,10 @@
 #include "bna_camera_manager.hpp"
 
-#include "bn_log.h"
-
 #include "bn_display.h"
+
+#ifdef DEBUG
+#include "bn_log.h"
+#endif
 
 bna::CameraManager::CameraManager(bn::camera_ptr& camera, bn::size size) :
     _camera(camera) {

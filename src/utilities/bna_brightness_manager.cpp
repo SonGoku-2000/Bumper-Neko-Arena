@@ -3,7 +3,9 @@
 #include "bn_bg_palettes.h"
 #include "bn_sprite_palettes.h"
 
+#ifdef DEBUG
 #include "bn_log.h"
+#endif
 
 bn::fixed bna::brightness_manager::get_brightness() {
     return bn::bg_palettes::brightness();

@@ -1,8 +1,10 @@
 #include "bna_colissions.hpp"
-#include "bn_log.h"
 #include "bn_math.h"
 #include "bn_memory.h"
 
+#ifdef DEBUG
+#include "bn_log.h"
+#endif
 // #define PROFILE
 #ifdef PROFILE
 #include "bn_profiler.h"

@@ -9,9 +9,13 @@
 #include "bna_loop_value.hpp"
 
 #include "bn_string.h"
-#include "bn_log.h"
 #include "bna_parts.hpp"
 #include "bna_car_builder.hpp"
+
+#ifdef DEBUG
+#include "bn_log.h"
+#endif
+
 
 bna::CarSelection::CarSelection(CarBuilder& carBuilder) {
     _carBuilder = &carBuilder;

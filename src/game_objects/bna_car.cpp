@@ -2,11 +2,13 @@
 #include "bn_math.h"
 
 #include "bn_sprite_items_carro_base.h"
-#include "bn_log.h"
 #include "bna_colissions.hpp"
 
 #include "bna_parts.hpp"
 
+#ifdef  DEBUG
+#include "bn_log.h"
+#endif
 #ifdef PROFILE
 #include "bn_profiler.h"
 #endif

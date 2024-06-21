@@ -3,7 +3,11 @@
 #include "bn_math.h"
 
 #include "bna_math_constants.hpp"
+
+#ifdef DEBUG
 #include "bn_log.h"
+#endif
+
 
 bna::Vector2::Vector2(bn::fixed x, bn::fixed y) : bn::fixed_point(x, y) {}
 
