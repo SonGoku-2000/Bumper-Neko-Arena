@@ -13,6 +13,7 @@
 #include "bna_car.hpp"
 #include "bna_enemie.hpp"
 
+#include "bna_test_values.hpp"
 
 namespace bna {
     class CarBuilder;
@@ -22,7 +23,7 @@ namespace bna {
         ~Player() = default;
 
         void update();
-        void spawn(bn::vector<bna::Enemie, 4>& enemie, bn::vector<bna::Hitbox, 4>& _walls, bn::camera_ptr& camera, bn::size size);
+        void spawn(bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>& enemie, bn::vector<bna::Hitbox, 4>& _walls, bn::camera_ptr& camera, bn::size size);
 
         bn::fixed_point getPosition();
         
@@ -31,7 +32,7 @@ namespace bna {
         private:
         bna::Vector2 _eje;
 
-        bn::vector<bna::Enemie, 4>* _enemies;
+        bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>* _enemies;
 
         bna::Car _cuerpo;
 

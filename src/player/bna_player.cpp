@@ -47,7 +47,7 @@ void bna::Player::update() {
     _cameraManager->update(_cuerpo.getPosition());
 }
 
-void bna::Player::spawn(bn::vector<bna::Enemie, 4>& enemie, bn::vector<bna::Hitbox, 4>& walls, bn::camera_ptr& camera, bn::size size) {
+void bna::Player::spawn(bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>& enemie, bn::vector<bna::Hitbox, 4>& walls, bn::camera_ptr& camera, bn::size size) {
     _enemies = &enemie;
     _walls = &walls;
     _cameraManager = bna::CameraManager(camera, size);

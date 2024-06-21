@@ -14,7 +14,7 @@
 #include "bna_player.hpp"
 #include "bna_scene.hpp"
 
-
+#include "bna_test_values.hpp"
 namespace bna {
     class CarBuilder;
     class TestMap : public scene {
@@ -36,7 +36,7 @@ namespace bna {
 
         bn::vector<bna::Hitbox, 4> _walls;
 
-        bn::vector<bna::Enemie, 4> _carros;
+        bn::vector<bna::Enemie, limit_values::MAX_ENEMIES> _carros;
 
         bna::EnemiesManager _enemiesManager;
 

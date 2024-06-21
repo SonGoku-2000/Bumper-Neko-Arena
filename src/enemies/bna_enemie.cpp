@@ -54,7 +54,7 @@ void bna::Enemie::update() {
     _cuerpo.update(eje);
 }
 
-void bna::Enemie::spawn(bn::vector<bna::Enemie, 4>& carros, bna::Player& player, bn::vector<bna::Hitbox, 4>& walls, bn::camera_ptr& camera, bn::size size) {
+void bna::Enemie::spawn(bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>& carros, bna::Player& player, bn::vector<bna::Hitbox, 4>& walls, bn::camera_ptr& camera, bn::size size) {
     _carros = &carros;
     _player = &player;
     _walls = &walls;
