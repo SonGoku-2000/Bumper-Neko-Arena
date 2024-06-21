@@ -129,6 +129,16 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
                 return bna::scene_type::TEST_MAP;
             }
         }
+        if (bn::keypad::b_pressed()) {
+            return bna::scene_type::MAIN_MENU;
+        }
+        if (bn::keypad::start_pressed()) {
+            _carBuilder->body = _idBody;
+            _carBuilder->motor = _idMotor;
+            _carBuilder->wheel = _idWheel;
+            return bna::scene_type::TEST_MAP;
+        }
+
         bn::core::update();
     }
     return bna::scene_type::TEST_MAP;
