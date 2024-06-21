@@ -11,9 +11,10 @@ namespace bna {
         enum class BODYS : int;
         enum class WHEELS :int;
     } // namespace name
+    class CarBuilder;
     class CarSelection : public scene {
         public:
-        CarSelection();
+        CarSelection(CarBuilder& carBuilder);
         [[nodiscard]] bn::optional<scene_type> update() final;
 
         private:
@@ -41,6 +42,8 @@ namespace bna {
         bna::parts::WHEELS _idWheel;
 
         bool _continuar;
+
+        CarBuilder* _carBuilder;
 
         void _updateStatsText();
         void _updateBodyText();

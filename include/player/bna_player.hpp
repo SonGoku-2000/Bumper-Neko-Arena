@@ -15,15 +15,18 @@
 
 
 namespace bna {
+    class CarBuilder;
     class Player {
         public:
-        Player();
+        Player(CarBuilder& body);
         ~Player() = default;
 
         void update();
         void spawn(bn::vector<bna::Enemie, 4>& enemie, bn::vector<bna::Hitbox, 4>& _walls, bn::camera_ptr& camera, bn::size size);
 
         bn::fixed_point getPosition();
+        
+        void setBody(Car body);
 
         private:
         bna::Vector2 _eje;

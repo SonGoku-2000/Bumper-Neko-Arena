@@ -13,6 +13,7 @@
 #include "bna_test_map.hpp"
 #include "bna_brightness_manager.hpp"
 #include "bn_log.h"
+#include "bna_car_builder.hpp"
 
 // limite sprites 128
 
@@ -25,6 +26,8 @@ int main() {
 
     bn::optional<bna::scene_type> next_scene = bna::scene_type::MAIN_MENU;
 
+    bna::CarBuilder playerCar;
+
     while (true) {
         switch (next_scene.value()) {
             case bna::scene_type::MAIN_MENU:
@@ -32,7 +35,7 @@ int main() {
                 break;
 
             case bna::scene_type::CAR_SELECTION:
-                scene.reset(new bna::CarSelection());
+                scene.reset(new bna::CarSelection(playerCar));
                 break;
 
             case bna::scene_type::OPTION_MENU:
@@ -40,7 +43,7 @@ int main() {
                 break;
 
             case bna::scene_type::TEST_MAP:
-                scene.reset(new bna::TestMap());
+                scene.reset(new bna::TestMap(playerCar));
                 break;
 
             default:

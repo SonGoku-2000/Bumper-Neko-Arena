@@ -16,10 +16,11 @@
 
 
 namespace bna {
+    class CarBuilder;
     class TestMap : public scene {
 
         public:
-        TestMap();
+        TestMap(CarBuilder& player);
         ~TestMap() = default;
 
         [[nodiscard]] bn::optional<scene_type> update() final;

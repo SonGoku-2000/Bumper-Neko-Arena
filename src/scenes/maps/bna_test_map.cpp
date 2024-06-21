@@ -5,6 +5,7 @@
 #include "bna_scene_type.hpp"
 
 #include "bn_core.h"
+#include "bna_car_builder.hpp"
 
 // #define DEBUG_CPU
 #ifdef DEBUG_CPU
@@ -18,10 +19,11 @@ constexpr int CPU_CICLES = 64;
 #endif
 
 
-bna::TestMap::TestMap() :
+bna::TestMap::TestMap(CarBuilder& player) :
     _fondo(bn::regular_bg_items::mapa_prueba.create_bg(0, 0)),
     _enemiesManager(_carros),
-    _camera(bn::camera_ptr::create(0, 0)) {
+    _camera(bn::camera_ptr::create(0, 0)),
+    _player(player) {
     _size = _fondo.dimensions();
 
 

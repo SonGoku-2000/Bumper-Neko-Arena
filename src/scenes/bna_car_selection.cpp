@@ -1,7 +1,6 @@
 #include "bna_car_selection.hpp"
 #include "bn_core.h"
 
-#include "bna_brightness_manager.hpp"
 #include "bn_sprite_items_pointer.h"
 
 #include "bna_scene_type.hpp"
@@ -12,8 +11,10 @@
 #include "bn_string.h"
 #include "bn_log.h"
 #include "bna_parts.hpp"
+#include "bna_car_builder.hpp"
 
-bna::CarSelection::CarSelection() {
+bna::CarSelection::CarSelection(CarBuilder& carBuilder) {
+    _carBuilder = &carBuilder;
     _continuar = false;
     _idOpcion = opcionesPartes(0);
 
@@ -118,6 +119,9 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
                 return bna::scene_type::MAIN_MENU;
             }
             if (_idOpcion == opcionesPartes::PLAY) {
+                _carBuilder->body = _idBody;
+                _carBuilder->motor = _idMotor;
+                _carBuilder->wheel = _idWheel;
                 return bna::scene_type::TEST_MAP;
             }
         }
