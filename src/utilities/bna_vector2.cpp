@@ -4,6 +4,11 @@
 
 #include "bna_math_constants.hpp"
 
+#ifdef DEBUG
+#include "bn_log.h"
+#endif
+
+
 bna::Vector2::Vector2(bn::fixed x, bn::fixed y) : bn::fixed_point(x, y) {}
 
 bna::Vector2::Vector2(bn::fixed_point vector) : bn::fixed_point(vector) {}
@@ -14,9 +19,14 @@ bna::Vector2::Vector2(bn::fixed_point p1, bn::fixed_point p2) :
 bna::Vector2::Vector2() : bn::fixed_point(0, 0) {}
 
 bna::Vector2 bna::Vector2::rotate(bn::fixed angle) const {
-    // bn::fixed rad = angle *  bn::fixed(3.14159265) / bn::fixed(180.0);
-    bn::fixed cosA = degrees_sin(angle);
-    bn::fixed sinA = degrees_cos(angle);
+    bn::fixed cosA = bn::degrees_sin(angle);
+    bn::fixed sinA = bn::degrees_cos(angle);
+    return Vector2(x() * cosA - y() * sinA, x() * sinA + y() * cosA);
+}
+
+bna::Vector2 bna::Vector2::rotate(bn::fixed cosTheta, bn::fixed sinTheta) const {
+    bn::fixed cosA = sinTheta;
+    bn::fixed sinA = cosTheta;
     return Vector2(x() * cosA - y() * sinA, x() * sinA + y() * cosA);
 }
 
@@ -36,14 +46,19 @@ bn::fixed  bna::Vector2::squaredLength() const {
 
 bna::Vector2  bna::Vector2::normalize() const {
     bn::fixed len = length();
-    if (len != 0) {
+
+    if (len > 60){
         return Vector2(x() / len, y() / len);
+    }
+    else if (len > bn::fixed(0)) {
+        bn::fixed invLen = bn::fixed(1) / len; // Invertir la longitud una vez
+        return Vector2(x() * invLen, y() * invLen);
     }
     return Vector2(); // Si la longitud es cero, devuelve un vector cero
 }
 
 bn::fixed bna::Vector2::angle() const {
-    return  bn::degrees_atan2(int(y() * 100), int(x() * 100));
+    return  bn::degrees_atan2(int(y()), int(x()));
 }
 
 bn::fixed bna::Vector2::anglePositive() const {

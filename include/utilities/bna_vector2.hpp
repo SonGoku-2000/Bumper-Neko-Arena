@@ -23,7 +23,14 @@ namespace bna {
             return Vector2(x() + other.x(), y() + other.y());
         }
 
+        Vector2 operator+(const bn::fixed_point& other) const {
+            return Vector2(x() + other.x(), y() + other.y());
+        }
+
         Vector2 operator-(const Vector2& other) const {
+            return Vector2(x() - other.x(), y() - other.y());
+        }
+        Vector2 operator-(const bn::fixed_point& other) const {
             return Vector2(x() - other.x(), y() - other.y());
         }
         // constexpr operator bn::fixed_point() {
@@ -36,6 +43,7 @@ namespace bna {
 
         Vector2 rotate(bn::fixed angle) const;
         Vector2 rotate_rad(bn::fixed rad) const;
+        Vector2 rotate(bn::fixed cosTheta, bn::fixed sinTheta) const;
 
         bn::fixed length() const;
         bn::fixed squaredLength() const;

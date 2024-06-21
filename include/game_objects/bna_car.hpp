@@ -12,9 +12,12 @@
 
 namespace bna {
     struct CollisionPoint;
+    struct Stats;
     class Car {
         public:
-        Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed peso);
+        Car(Hitbox hitbox, bn::fixed_point position, bn::fixed weight);
+        Car(Hitbox hitbox, bn::fixed_point position, bn::fixed maxSpeed, bn::fixed aceleration, bn::fixed turn, bn::fixed weight);
+        Car(Hitbox hitbox, bn::fixed_point position, Stats stats);
         ~Car() = default;
 
         void update(bna::Vector2 eje);
@@ -24,13 +27,13 @@ namespace bna {
         void checkCollision(Car& otherCar);
         void checkCollision(Hitbox& otherCar);
 
-        bool isColliding(const Car& other) const;
-        CollisionPoint isColliding(const Hitbox& other) const;
+        bool isColliding(Car& other);
+        CollisionPoint isColliding(Hitbox& other);
 
         void resolveCollision(Car& other);
         void resolveCollision(CollisionPoint collisionPoint);
 
-        bna::Hitbox getHitbox() const;
+        bna::Hitbox& getHitbox();
 
         bn::fixed_point getPosition();
         void setPosition(bn::fixed_point position);
@@ -53,7 +56,10 @@ namespace bna {
         bn::fixed _dy;
         bn::fixed_point _externalForce;
 
-        bn::fixed _peso;
+        bn::fixed _maxSpeed;
+        bn::fixed _aceleration;
+        bn::fixed _turn;
+        bn::fixed _weight;
 
         Hitbox _hitbox;
 

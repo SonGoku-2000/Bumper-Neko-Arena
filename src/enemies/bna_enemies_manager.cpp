@@ -1,8 +1,11 @@
 #include "bna_enemies_manager.hpp"
+
+#ifdef DEBUG
 #include "bn_log.h"
+#endif
 
 
-bna::EnemiesManager::EnemiesManager(bn::vector<bna::Enemie, 4>& enemies) :
+bna::EnemiesManager::EnemiesManager(bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>& enemies) :
     _enemies(&enemies) {
 
 }
@@ -21,7 +24,7 @@ void bna::EnemiesManager::update() {
     }
 }
 
-void bna::EnemiesManager::spawn(bn::vector<bna::Enemie, 4>& carros, bna::Player& player, bn::vector<bna::Hitbox, 4>& walls, bn::camera_ptr& camera, bn::size size) {
+void bna::EnemiesManager::spawn(bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>& carros, bna::Player& player, bn::vector<bna::Hitbox, 4>& walls, bn::camera_ptr& camera, bn::size size) {
     for (int i = 0; i < _enemies->size(); i++) {
         _enemies->at(i).spawn(carros, player, walls, camera, size);
     }

@@ -32,29 +32,31 @@ TARGET      	:=  $(notdir $(CURDIR))
 BUILD       	:=  build
 LIBBUTANO   	:=  ../../butano
 PYTHON      	:=  python3
-SOURCES     	:=  src \
+SOURCES     	:=  src ../../common/src \
 	 				src/enemies \
 	 				src/game_objects \
-	 				src/maps \
 					src/player \
+					src/scenes \
+					src/scenes/maps \
 					src/utilities
 
-INCLUDES    	:=  include \
+INCLUDES    	:=  include ../../common/include \
 					include/enemies \
 					include/game_objects \
-					include/maps \
 					include/player \
+					include/scenes \
+					include/scenes/maps \
 					include/utilities
 					
 DATA        	:=
-GRAPHICS    	:=	graphics \
+GRAPHICS    	:=	graphics ../../common/graphics\
 					graphics/utilities
 
 AUDIO       	:=  audio
 DMGAUDIO    	:=  dmg_audio
 ROMTITLE    	:=  BUMPER NEKO ARENA
 ROMCODE     	:=  BNA
-USERFLAGS   	:=  
+USERFLAGS   	:=  -DBN_CFG_PROFILER_ENABLED=true
 USERCXXFLAGS	:=  
 USERASFLAGS 	:=  
 USERLDFLAGS 	:=  

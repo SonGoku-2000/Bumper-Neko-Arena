@@ -2,9 +2,10 @@
 
 #include "bna_player.hpp"
 
-bna::Enemie::Enemie(bn::fixed_point pos) :
-    _cuerpo(bna::Hitbox(bna::Vector2(pos), bna::Vector2(10, 20), true), pos, 5) {
+#include "bna_car_builder.hpp"
 
+bna::Enemie::Enemie(CarBuilder& body) :
+    _cuerpo(body.build()) {
 }
 
 void bna::Enemie::update() {
@@ -53,7 +54,7 @@ void bna::Enemie::update() {
     _cuerpo.update(eje);
 }
 
-void bna::Enemie::spawn(bn::vector<bna::Enemie, 4>& carros, bna::Player& player, bn::vector<bna::Hitbox, 4>& walls, bn::camera_ptr& camera, bn::size size) {
+void bna::Enemie::spawn(bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>& carros, bna::Player& player, bn::vector<bna::Hitbox, 4>& walls, bn::camera_ptr& camera, bn::size size) {
     _carros = &carros;
     _player = &player;
     _walls = &walls;
