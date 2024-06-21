@@ -4,18 +4,18 @@
 
 namespace bna {
     namespace parts {
-        enum class MOTORS : int;
-        enum class BODYS : int;
-        enum class WHEELS :int;
+        enum class motors : int;
+        enum class bodys : int;
+        enum class wheels :int;
     } // namespace name
     class Car;
     class CarBuilder {
         public:
         CarBuilder();
         Car build();
-        parts::MOTORS motor;
-        parts::BODYS body;
-        parts::WHEELS wheel;
+        parts::motors motor;
+        parts::bodys body;
+        parts::wheels wheel;
         bn::fixed_point position;
     };
 } // namespace bna

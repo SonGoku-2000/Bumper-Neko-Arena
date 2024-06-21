@@ -29,28 +29,28 @@ namespace bna {
     };
 
     namespace parts {
-        enum class MOTORS : int {
+        enum class motors : int {
             SLOW,
             MEDIUM,
             FAST,
             MAX
         };
 
-        enum class BODYS : int {
+        enum class bodys : int {
             LIGHT,
             MEDIUM,
             HEAVY,
             MAX
         };
 
-        enum class WHEELS :int {
+        enum class wheels :int {
             NORMAL,
             SPIKES,
             MAX
         };
 
-        Stats getMotor(MOTORS id);
-        Stats getBody(BODYS id);
-        Stats getWheels(WHEELS id);
+        Stats getMotor(motors id);
+        Stats getBody(bodys id);
+        Stats getWheels(wheels id);
     } // namespace name
 } // namespace bna

@@ -7,9 +7,9 @@
 
 namespace bna {
     namespace parts {
-        enum class MOTORS : int;
-        enum class BODYS : int;
-        enum class WHEELS :int;
+        enum class motors : int;
+        enum class bodys : int;
+        enum class wheels :int;
     } // namespace name
     class CarBuilder;
     class CarSelection : public scene {
@@ -37,9 +37,9 @@ namespace bna {
         bn::vector<bna::Indicator, 6> _indicadores;
         bn::optional<bn::sprite_ptr> _puntero;
 
-        bna::parts::MOTORS _idMotor;
-        bna::parts::BODYS _idBody;
-        bna::parts::WHEELS _idWheel;
+        bna::parts::motors _idMotor;
+        bna::parts::bodys _idBody;
+        bna::parts::wheels _idWheel;
 
         bool _continuar;
 

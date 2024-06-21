@@ -37,9 +37,9 @@ bna::TestMap::TestMap(CarBuilder& player) :
     // _walls.push_back(bna::Hitbox(bna::Vector2(60, 0), bna::Vector2(70, 10), debug, 3));
 
     CarBuilder car_builder;
-    car_builder.body = bna::parts::BODYS::MEDIUM;
-    car_builder.motor = bna::parts::MOTORS::MEDIUM;
-    car_builder.wheel = bna::parts::WHEELS::NORMAL;
+    car_builder.body = bna::parts::bodys::MEDIUM;
+    car_builder.motor = bna::parts::motors::MEDIUM;
+    car_builder.wheel = bna::parts::wheels::NORMAL;
 
     car_builder.position = bn::fixed_point(60, 0);
     _carros.push_back(car_builder);

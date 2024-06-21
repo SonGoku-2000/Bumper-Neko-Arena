@@ -63,9 +63,9 @@ bna::CarSelection::CarSelection(CarBuilder& carBuilder) {
         "Back"
     );
 
-    _idBody = bna::parts::BODYS(0);
-    _idMotor = bna::parts::MOTORS(0);
-    _idWheel = bna::parts::WHEELS(0);
+    _idBody = bna::parts::bodys(0);
+    _idMotor = bna::parts::motors(0);
+    _idWheel = bna::parts::wheels(0);
 
 
     _updateStatsText();
@@ -93,21 +93,21 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
         int cambio_opcion = int(bn::keypad::right_pressed()) - int(bn::keypad::left_pressed());
         if (_idOpcion == opcionesPartes::CUERPO) {
             if (cambio_opcion) {
-                _idBody = bna::parts::BODYS(bna::loop(int(_idBody) + cambio_opcion, 0, int(bna::parts::BODYS::MAX) - 1));
+                _idBody = bna::parts::bodys(bna::loop(int(_idBody) + cambio_opcion, 0, int(bna::parts::bodys::MAX) - 1));
                 _updateBodyText();
                 _updateStatsText();
             }
         }
         else if (_idOpcion == opcionesPartes::MOTOR) {
             if (cambio_opcion) {
-                _idMotor = bna::parts::MOTORS(bna::loop(int(_idMotor) + cambio_opcion, 0, int(bna::parts::MOTORS::MAX) - 1));
+                _idMotor = bna::parts::motors(bna::loop(int(_idMotor) + cambio_opcion, 0, int(bna::parts::motors::MAX) - 1));
                 _updateMotorText();
                 _updateStatsText();
             }
         }
         else if (_idOpcion == opcionesPartes::WHEEL) {
             if (cambio_opcion) {
-                _idWheel = bna::parts::WHEELS(bna::loop(int(_idWheel) + cambio_opcion, 0, int(bna::parts::WHEELS::MAX) - 1));
+                _idWheel = bna::parts::wheels(bna::loop(int(_idWheel) + cambio_opcion, 0, int(bna::parts::wheels::MAX) - 1));
                 _updateWheelText();
                 _updateStatsText();
             }
@@ -154,13 +154,13 @@ void bna::CarSelection::_updateStatsText() {
 void bna::CarSelection::_updateBodyText() {
     bn::string<111> texto = "Body: ";
 
-    if (bna::parts::BODYS::LIGHT == _idBody) {
+    if (bna::parts::bodys::LIGHT == _idBody) {
         texto.append("Light");
     }
-    if (bna::parts::BODYS::MEDIUM == _idBody) {
+    if (bna::parts::bodys::MEDIUM == _idBody) {
         texto.append("Medium");
     }
-    if (bna::parts::BODYS::HEAVY == _idBody) {
+    if (bna::parts::bodys::HEAVY == _idBody) {
         texto.append("Heavy");
     }
 
@@ -169,13 +169,13 @@ void bna::CarSelection::_updateBodyText() {
 void bna::CarSelection::_updateMotorText() {
     bn::string<111> texto = "Motor: ";
 
-    if (bna::parts::MOTORS::SLOW == _idMotor) {
+    if (bna::parts::motors::SLOW == _idMotor) {
         texto.append("Slow");
     }
-    if (bna::parts::MOTORS::MEDIUM == _idMotor) {
+    if (bna::parts::motors::MEDIUM == _idMotor) {
         texto.append("Medium");
     }
-    if (bna::parts::MOTORS::FAST == _idMotor) {
+    if (bna::parts::motors::FAST == _idMotor) {
         texto.append("Fast");
     }
 
@@ -184,10 +184,10 @@ void bna::CarSelection::_updateMotorText() {
 void bna::CarSelection::_updateWheelText() {
     bn::string<111> texto = "Wheel: ";
 
-    if (bna::parts::WHEELS::NORMAL == _idWheel) {
+    if (bna::parts::wheels::NORMAL == _idWheel) {
         texto.append("Normal");
     }
-    if (bna::parts::WHEELS::SPIKES == _idWheel) {
+    if (bna::parts::wheels::SPIKES == _idWheel) {
         texto.append("Spikes");
     }
 
