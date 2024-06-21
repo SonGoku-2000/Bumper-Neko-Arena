@@ -5,6 +5,8 @@
 #include "bn_log.h"
 #include "bna_colissions.hpp"
 
+#include "bna_parts.hpp"
+
 #ifdef PROFILE
 #include "bn_profiler.h"
 #endif
@@ -21,27 +23,23 @@ namespace bna {
 } // namespace bna
 
 bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed weight) :
-    _pos(pos),
-    _maxSpeed(bna::default_values::MAX_SPEED),
-    _aceleration(bna::default_values::ACELERATION),
-    _turn(bna::default_values::TURN),
-    _weight(weight),
-    _hitbox(hitbox),
-    _sprite(bn::sprite_items::carro_base.create_sprite(pos)) {
-    _externalForce = bn::fixed_point(0, 0);
-    _dx = 0;
-    _dy = 0;
-    _rotation = 0;
+    Car(hitbox, pos, bna::Stats(bna::default_values::MAX_SPEED, bna::default_values::ACELERATION, bna::default_values::TURN, weight)) {
 }
 
 bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed maxSpeed, bn::fixed aceleration, bn::fixed turn, bn::fixed weight) :
-    _pos(pos),
-    _maxSpeed(maxSpeed),
-    _aceleration(aceleration),
-    _turn(turn),
-    _weight(weight),
+    Car(hitbox, pos, bna::Stats(maxSpeed, aceleration, turn, weight)) {
+}
+
+bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats) :
     _hitbox(hitbox),
     _sprite(bn::sprite_items::carro_base.create_sprite(pos)) {
+
+    _maxSpeed = stats.maxSpeed;
+    _aceleration = stats.aceleration;
+    _turn = stats.turn;
+    _weight = stats.weight;
+
+    _pos = pos;
     _externalForce = bn::fixed_point(0, 0);
     _dx = 0;
     _dy = 0;

@@ -12,10 +12,12 @@
 
 namespace bna {
     struct CollisionPoint;
+    struct Stats;
     class Car {
         public:
         Car(Hitbox hitbox, bn::fixed_point position, bn::fixed weight);
         Car(Hitbox hitbox, bn::fixed_point position, bn::fixed maxSpeed, bn::fixed aceleration, bn::fixed turn, bn::fixed weight);
+        Car(Hitbox hitbox, bn::fixed_point position, Stats stats);
         ~Car() = default;
 
         void update(bna::Vector2 eje);
