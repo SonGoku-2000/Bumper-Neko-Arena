@@ -46,6 +46,7 @@ namespace bna {
 
         void _comprobarIdDistanciaMenor(int& id_distancia_menor);
         void _comprobarAnguloObjetivo(bn::fixed_point& eje, int& id_distancia_menor);
+        bn::fixed _direccionGiro(bn::fixed angulo_objetivo);
         void _comprobarTiempoQuieto();
         void _comprobarObjetivoIdle();
         void _nuevoObjetivoIdle();

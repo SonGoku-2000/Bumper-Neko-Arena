@@ -4,6 +4,7 @@
 #include "bna_car_builder.hpp"
 
 #include "bn_math.h"
+#include "bna_math.hpp"
 #include "bn_display.h"
 
 #include "bn_log.h"
@@ -108,14 +109,26 @@ void bna::Enemie::_comprobarAnguloObjetivo(bn::fixed_point& eje, int& id_distanc
         _objetivoIdleActualizado = false;
     }
 
-    if (_cuerpo.getRotation() < anguloObjetivo) {
-        eje.set_x(1);
-    }
-    else if (_cuerpo.getRotation() > anguloObjetivo) {
-        eje.set_x(-1);
-    }
+    eje.set_x(_direccionGiro(anguloObjetivo));
 
     eje.set_y(-1);
+}
+
+bn::fixed bna::Enemie::_direccionGiro(bn::fixed angulo_objetivo) {
+    bn::fixed delta_theta = angulo_objetivo - _cuerpo.getRotation();
+    delta_theta = (delta_theta + 180);
+    delta_theta = bna::math::modulo_positivo(delta_theta,360);
+    delta_theta = delta_theta - 180;
+
+    if (delta_theta > 0) {
+        return 1;
+    }
+    else if (delta_theta < 0) {
+        return -1;
+    }
+    else {
+        return 0;
+    }
 }
 
 void bna::Enemie::_comprobarTiempoQuieto() {
