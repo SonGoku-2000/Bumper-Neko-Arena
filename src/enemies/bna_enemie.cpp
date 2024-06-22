@@ -32,7 +32,7 @@ void bna::Enemie::update() {
 
         _comprobarAnguloObjetivo(eje, id_distancia_menor);
 
-        _comprobarTiempoQuieto();
+        // _comprobarTiempoQuieto();
     }
     else {
         if (_elapsedFrames == 96) {
@@ -55,14 +55,14 @@ void bna::Enemie::_comprobarIdDistanciaMenor(int& id_distancia_menor) {
     id_distancia_menor = -2;
 
     _vision.set_position(_cuerpo.getPosition());
-    if (_vision.contains(_player->getPosition())) {
-        vectorDistancia = bna::Vector2(_cuerpo.getPosition(), _player->getPosition());
-        vectorDistancia.set_y(-vectorDistancia.y());
-        distancia_menor = vectorDistancia.squaredLength();
+    // if (_vision.contains(_player->getPosition())) {
+    //     vectorDistancia = bna::Vector2(_cuerpo.getPosition(), _player->getPosition());
+    //     vectorDistancia.set_y(-vectorDistancia.y());
+    //     distancia_menor = vectorDistancia.squaredLength();
 
-        id_distancia_menor = -1;
-        distancia_menor_inicializado = true;
-    }
+    //     id_distancia_menor = -1;
+    //     distancia_menor_inicializado = true;
+    // }
 
 
     for (int i = 0; i < _carros->size(); i++) {
@@ -109,26 +109,32 @@ void bna::Enemie::_comprobarAnguloObjetivo(bn::fixed_point& eje, int& id_distanc
         _objetivoIdleActualizado = false;
     }
 
-    eje.set_x(_direccionGiro(anguloObjetivo));
-
-    eje.set_y(-1);
+    eje = _direccionGiro(anguloObjetivo);
 }
 
-bn::fixed bna::Enemie::_direccionGiro(bn::fixed angulo_objetivo) {
+bn::fixed_point bna::Enemie::_direccionGiro(bn::fixed angulo_objetivo) {
+    bn::fixed_point eje(0, 0);
+
     bn::fixed delta_theta = angulo_objetivo - _cuerpo.getRotation();
     delta_theta = (delta_theta + 180);
-    delta_theta = bna::math::modulo_positivo(delta_theta,360);
+    delta_theta = bna::math::modulo_positivo(delta_theta, 360);
     delta_theta = delta_theta - 180;
 
     if (delta_theta > 0) {
-        return 1;
+        eje.set_x(1);
     }
     else if (delta_theta < 0) {
-        return -1;
+        eje.set_x(-1);
+    }
+
+    if (bn::abs(delta_theta) < 130) {
+        eje.set_y(-1);
     }
     else {
-        return 0;
+        eje.set_y(1);
     }
+
+    return eje;
 }
 
 void bna::Enemie::_comprobarTiempoQuieto() {
