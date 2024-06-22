@@ -4,44 +4,72 @@
 
 #include "bna_car_builder.hpp"
 
+#include "bn_display.h"
+
+
 bna::Enemie::Enemie(CarBuilder& body) :
     _cuerpo(body.build()) {
+    _vision = bn::fixed_rect(0, 0, bn::display::height() - 40, bn::display::height() - 40);
 }
 
 void bna::Enemie::update() {
     bn::fixed_point eje(0, 0);
 
     bn::fixed distancia_menor;
+    bool distancia_menor_inicializado = false;
     bna::Vector2 vectorDistancia;
     int id_distancia_menor;
+    id_distancia_menor = -2;
 
-    vectorDistancia = bna::Vector2(_cuerpo.getPosition(), _player->getPosition());
-    vectorDistancia.set_y(-vectorDistancia.y());
+    _vision.set_position(_cuerpo.getPosition());
+
+    if (_vision.contains(_player->getPosition())) {
+        vectorDistancia = bna::Vector2(_cuerpo.getPosition(), _player->getPosition());
+        vectorDistancia.set_y(-vectorDistancia.y());
+        distancia_menor = vectorDistancia.squaredLength();
+
+        id_distancia_menor = -1;
+        distancia_menor_inicializado = true;
+    }
 
 
-    distancia_menor = vectorDistancia.squaredLength();
-    id_distancia_menor = -1;
     for (int i = 0; i < _carros->size(); i++) {
         if (_cuerpo.getPosition() == _carros->at(i).getCar().getPosition()) {
             continue;
         }
+        if (!_vision.contains(_carros->at(i).getCar().getPosition())) {
+            continue;
+        }
+
         vectorDistancia = bna::Vector2(_cuerpo.getPosition(), _carros->at(i).getCar().getPosition());
         vectorDistancia.set_y(-vectorDistancia.y());
 
-        if (distancia_menor > vectorDistancia.squaredLength()) {
+        if (!distancia_menor_inicializado) {
+            distancia_menor = vectorDistancia.squaredLength();
+            id_distancia_menor = i;
+            distancia_menor_inicializado = true;
+        }
+        else if (distancia_menor > vectorDistancia.squaredLength()) {
             distancia_menor = vectorDistancia.squaredLength();
             id_distancia_menor = i;
         }
     }
-    if (id_distancia_menor == -1) {
+
+    bn::fixed anguloObjetivo;
+    if (id_distancia_menor == -2) {
+        anguloObjetivo = _random.get_int(360);
+    }
+    else if (id_distancia_menor == -1) {
         vectorDistancia = bna::Vector2(_cuerpo.getPosition(), _player->getPosition());
+        vectorDistancia.set_y(-vectorDistancia.y());
+        anguloObjetivo = vectorDistancia.anglePositive();
     }
     else {
         vectorDistancia = bna::Vector2(_cuerpo.getPosition(), _carros->at(id_distancia_menor).getCar().getPosition());
+        vectorDistancia.set_y(-vectorDistancia.y());
+        anguloObjetivo = vectorDistancia.anglePositive();
     }
-    vectorDistancia.set_y(-vectorDistancia.y());
 
-    bn::fixed anguloObjetivo = vectorDistancia.anglePositive();
     if (_cuerpo.getRotation() < anguloObjetivo) {
         eje.set_x(1);
     }

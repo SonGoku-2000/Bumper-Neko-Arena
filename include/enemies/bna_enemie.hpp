@@ -5,6 +5,9 @@
 
 #include "bna_test_values.hpp"
 
+#include "bn_fixed_rect.h"
+#include "bn_random.h"
+
 namespace bna {
     class Player;
     class CarBuilder;
@@ -23,6 +26,7 @@ namespace bna {
 
         private:
         bna::Car _cuerpo;
+        bn::fixed_rect _vision;
 
         bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>* _carros;
         bna::Player* _player;
