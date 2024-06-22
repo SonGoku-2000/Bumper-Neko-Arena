@@ -44,6 +44,9 @@ namespace bna {
         bn::sprite_ptr _objetivoSprite;
         bool _objetivoIdleActualizado;
 
+        void _comprobarIdDistanciaMenor(int& id_distancia_menor);
+        void _comprobarAnguloObjetivo(bn::fixed_point& eje, int& id_distancia_menor);
+        void _comprobarTiempoQuieto();
         void _comprobarObjetivoIdle();
         void _nuevoObjetivoIdle();
     };
