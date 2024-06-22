@@ -33,5 +33,9 @@ namespace bna {
         bn::vector<bna::Hitbox, 4>* _walls;
 
         bn::random _random;
+
+        bool _goingBack;
+        bn::fixed_point _averageSpeed;
+        int _elapsedFrames;
     };
 } // namespace bna
