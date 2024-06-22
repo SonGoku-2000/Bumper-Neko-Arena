@@ -8,12 +8,17 @@
 
 #include "bn_log.h"
 
+#include "bn_sprite_items_indicator.h"
+
 
 bna::Enemie::Enemie(CarBuilder& body) :
-    _cuerpo(body.build()) {
+    _cuerpo(body.build()),
+
+    _objetivoSprite(bn::sprite_items::indicator.create_sprite(0,0)) {
     _vision = bn::fixed_rect(0, 0, bn::display::height() - 40, bn::display::height() - 40);
     _goingBack = false;
     _elapsedFrames = 0;
+    _objetivoIdleActualizado = false;
 }
 
 void bna::Enemie::update() {
@@ -28,14 +33,14 @@ void bna::Enemie::update() {
 
         _vision.set_position(_cuerpo.getPosition());
 
-        if (_vision.contains(_player->getPosition())) {
-            vectorDistancia = bna::Vector2(_cuerpo.getPosition(), _player->getPosition());
-            vectorDistancia.set_y(-vectorDistancia.y());
-            distancia_menor = vectorDistancia.squaredLength();
+        // if (_vision.contains(_player->getPosition())) {
+        //     vectorDistancia = bna::Vector2(_cuerpo.getPosition(), _player->getPosition());
+        //     vectorDistancia.set_y(-vectorDistancia.y());
+        //     distancia_menor = vectorDistancia.squaredLength();
 
-            id_distancia_menor = -1;
-            distancia_menor_inicializado = true;
-        }
+        //     id_distancia_menor = -1;
+        //     distancia_menor_inicializado = true;
+        // }
 
 
         for (int i = 0; i < _carros->size(); i++) {
@@ -62,19 +67,22 @@ void bna::Enemie::update() {
 
         bn::fixed anguloObjetivo;
         if (id_distancia_menor == -2) {
-            anguloObjetivo = _random.get_int(360);
-
-            _goingBack = _random.get_int(10) > 80;
+            _comprobarObjetivoIdle();
+            vectorDistancia = bna::Vector2(_cuerpo.getPosition(), _objetivoIdle);
+            vectorDistancia.set_y(-vectorDistancia.y());
+            anguloObjetivo = vectorDistancia.anglePositive();
         }
         else if (id_distancia_menor == -1) {
             vectorDistancia = bna::Vector2(_cuerpo.getPosition(), _player->getPosition());
             vectorDistancia.set_y(-vectorDistancia.y());
             anguloObjetivo = vectorDistancia.anglePositive();
+            _objetivoIdleActualizado = false;
         }
         else {
             vectorDistancia = bna::Vector2(_cuerpo.getPosition(), _carros->at(id_distancia_menor).getCar().getPosition());
             vectorDistancia.set_y(-vectorDistancia.y());
             anguloObjetivo = vectorDistancia.anglePositive();
+            _objetivoIdleActualizado = false;
         }
 
         if (_cuerpo.getRotation() < anguloObjetivo) {
@@ -116,11 +124,37 @@ void bna::Enemie::update() {
     _cuerpo.update(eje);
 }
 
+void bna::Enemie::_comprobarObjetivoIdle() {
+    if (not _objetivoIdleActualizado) {
+        _nuevoObjetivoIdle();
+        return;
+    }
+    bn::fixed disX = bn::abs(_cuerpo.getPosition().x() - _objetivoIdle.x());
+    bn::fixed disY = bn::abs(_cuerpo.getPosition().y() - _objetivoIdle.y());
+
+    constexpr int proximidadCambio = 20;
+    if (disX <= proximidadCambio and disY <= proximidadCambio) {
+        _nuevoObjetivoIdle();
+    }
+}
+
+void bna::Enemie::_nuevoObjetivoIdle() {
+    constexpr int SEPARACION_BORDES = 60;
+    int widht = (_limitesEscenario.width() - SEPARACION_BORDES) / 2;
+    int height = (_limitesEscenario.height() - SEPARACION_BORDES) / 2;
+    _objetivoIdle.set_x(_random.get_int(-widht, widht));
+    _objetivoIdle.set_y(_random.get_int(-height, height));
+    _objetivoIdleActualizado = true;
+    _objetivoSprite.set_position(_objetivoIdle);
+}
+
 void bna::Enemie::spawn(bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>& carros, bna::Player& player, bn::vector<bna::Hitbox, 4>& walls, bn::camera_ptr& camera, bn::size size) {
     _carros = &carros;
     _player = &player;
     _walls = &walls;
     _cuerpo.spawn(camera, size);
+    _limitesEscenario = size;
+    _objetivoSprite.set_camera(camera);
 }
 
 void bna::Enemie::checkCollision(bna::Car& car) {

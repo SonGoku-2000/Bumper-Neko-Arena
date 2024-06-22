@@ -8,6 +8,8 @@
 #include "bn_fixed_rect.h"
 #include "bn_random.h"
 
+#include "bn_sprite_ptr.h"
+
 namespace bna {
     class Player;
     class CarBuilder;
@@ -34,8 +36,15 @@ namespace bna {
 
         bn::random _random;
 
+        bn::size _limitesEscenario;
         bool _goingBack;
         bn::fixed_point _averageSpeed;
         int _elapsedFrames;
+        bn::point _objetivoIdle;
+        bn::sprite_ptr _objetivoSprite;
+        bool _objetivoIdleActualizado;
+
+        void _comprobarObjetivoIdle();
+        void _nuevoObjetivoIdle();
     };
 } // namespace bna
