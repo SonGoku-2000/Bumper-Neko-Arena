@@ -113,12 +113,8 @@ void bna::link() {
     common::info info("Link communication", info_text_lines, text_generator);
 
     bn::vector<bn::sprite_ptr, 64> messages_per_second_sprites;
-    // bn::sprite_ptr ninja_sprite = bn::sprite_items::ninja.create_sprite(0, 0);
-    // bn::sprite_animate_action<4> ninja_animate_action = bn::create_sprite_animate_action_forever(
-    //     ninja_sprite, 16, bn::sprite_items::ninja.tiles_item(), 0, 1, 2, 3);
 
-    bna::direction old_direction;
-    old_direction.keys.down = true;
+
 
     int frames_counter = 0;
     int messages_counter = 0;
