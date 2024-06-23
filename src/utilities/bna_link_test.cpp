@@ -11,7 +11,7 @@
 #include "common_variable_8x16_sprite_font.h"
 
 #include "bna_link_test.hpp"
-
+#include "bn_log.h"
 namespace bna {
 
 
@@ -55,6 +55,7 @@ namespace bna {
 
     void move_ninja(direction new_direction, direction& old_direction, bn::sprite_ptr& ninja_sprite,
         bn::sprite_animate_action<4>& ninja_animate_action) {
+            (void)ninja_animate_action;
         bool direction_changed = false;
 
         if (new_direction.keys.left) {
@@ -101,6 +102,35 @@ namespace bna {
     }
 }
 
+
+bool comprobarListo(int& idConeccion, bool listo) {
+    (void)listo;
+    bna::start mensaje;
+    bn::link::send(mensaje.data);
+    if (bn::optional<bn::link_state> link_state = bn::link::receive()) {
+        BN_LOG(link_state->current_player_id());
+        idConeccion = link_state->current_player_id();
+        return true;
+    }
+    else {
+        return false;
+    }
+    int max_failed_retries = 5;
+    int failed_retries = 0;
+
+    while (failed_retries <= max_failed_retries) {
+        if (bn::optional<bn::link_state> link_state = bn::link::receive()) {
+            BN_LOG("Id propia ", link_state->current_player_id());
+            idConeccion = link_state->current_player_id();
+            return true;
+        }
+        else {
+            ++failed_retries;
+        }
+    }
+    return false;
+}
+
 void bna::link() {
 
     bn::sprite_text_generator text_generator(common::variable_8x16_sprite_font);
@@ -110,14 +140,38 @@ void bna::link() {
         "PAD: move other player's ninja",
     };
 
-    common::info info("Link communication", info_text_lines, text_generator);
 
+    common::info info("Link communication", info_text_lines, text_generator);
     bn::vector<bn::sprite_ptr, 64> messages_per_second_sprites;
 
-
+    // bna::datos datos_enviar;
+    // bna::datos datos_recibir;
 
     int frames_counter = 0;
     int messages_counter = 0;
+
+    int id_propia;
+    int conectados;
+    (void)conectados;
+    bool listo = false;
+
+    while (true) {
+        if (comprobarListo(id_propia,listo)) {
+            messages_per_second_sprites.clear();
+
+            text_generator.generate(0, 44, "start para empezar", messages_per_second_sprites);
+            if (bn::keypad::start_held()) {
+                break;
+            }
+        }
+        else {
+            messages_per_second_sprites.clear();
+
+            text_generator.generate(0, 44, "esperando jugadores", messages_per_second_sprites);
+
+        }
+        bn::core::update();
+    }
 
     while (true) {
         if (bn::optional<bna::direction> direction_to_send = bna::read_keypad()) {
@@ -129,6 +183,7 @@ void bna::link() {
 
         while (failed_retries <= max_failed_retries) {
             if (bn::optional<bn::link_state> link_state = bn::link::receive()) {
+                BN_LOG(link_state->current_player_id());
                 const bn::link_player& first_other_player = link_state->other_players().front();
                 bna::direction new_direction;
                 new_direction.data = first_other_player.data();
