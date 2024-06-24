@@ -55,7 +55,7 @@ namespace bna {
 
     void move_ninja(direction new_direction, direction& old_direction, bn::sprite_ptr& ninja_sprite,
         bn::sprite_animate_action<4>& ninja_animate_action) {
-            (void)ninja_animate_action;
+        (void)ninja_animate_action;
         bool direction_changed = false;
 
         if (new_direction.keys.left) {
@@ -103,25 +103,17 @@ namespace bna {
 }
 
 
-bool comprobarListo(int& idConeccion, bool listo) {
-    (void)listo;
-    bna::start mensaje;
-    bn::link::send(mensaje.data);
-    if (bn::optional<bn::link_state> link_state = bn::link::receive()) {
-        BN_LOG(link_state->current_player_id());
-        idConeccion = link_state->current_player_id();
-        return true;
-    }
-    else {
-        return false;
-    }
-    int max_failed_retries = 5;
+bool comprobarConeccion(int& idConeccion, const bna::start& mensajeEnviado, bna::start& mensajeRecibido) {
+    constexpr int max_failed_retries = 5;
     int failed_retries = 0;
 
+    bn::link::send(mensajeEnviado.data);
     while (failed_retries <= max_failed_retries) {
         if (bn::optional<bn::link_state> link_state = bn::link::receive()) {
             BN_LOG("Id propia ", link_state->current_player_id());
             idConeccion = link_state->current_player_id();
+            const bn::link_player& first_other_player = link_state->other_players().front();
+            mensajeRecibido.data = first_other_player.data();
             return true;
         }
         else {
@@ -154,20 +146,35 @@ void bna::link() {
     int conectados;
     (void)conectados;
     bool listo = false;
+    bna::start mensajeEnviado;
+    bna::start mensajeResivido;
+    mensajeEnviado.keys.ready0 = listo;
 
     while (true) {
-        if (comprobarListo(id_propia,listo)) {
+        mensajeEnviado.keys.ready0 = listo;
+        if (comprobarConeccion(id_propia, mensajeEnviado, mensajeResivido)) {
             messages_per_second_sprites.clear();
 
-            text_generator.generate(0, 44, "start para empezar", messages_per_second_sprites);
-            if (bn::keypad::start_held()) {
+            if (listo) {
+                text_generator.generate(0, 44, "esperando respuesta ...", messages_per_second_sprites);
+            }
+            else {
+                text_generator.generate(0, 44, "start para empezar", messages_per_second_sprites);
+            }
+            if (listo and mensajeResivido.keys.ready0) {
                 break;
+            }
+            if (bn::keypad::start_held()) {
+                listo = true;
+            }
+            if(bn::keypad::b_pressed()){
+                listo = false;
             }
         }
         else {
             messages_per_second_sprites.clear();
 
-            text_generator.generate(0, 44, "esperando jugadores", messages_per_second_sprites);
+            text_generator.generate(0, 44, "Esperando nuevos jugadores", messages_per_second_sprites);
 
         }
         bn::core::update();
