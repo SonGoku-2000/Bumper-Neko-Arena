@@ -38,7 +38,7 @@ bna::TestMap::TestMap(CarBuilder& player) :
 
     CarBuilder car_builder;
     car_builder.body = bna::parts::bodys::MEDIUM;
-    car_builder.motor = bna::parts::motors::MEDIUM;
+    car_builder.motor = bna::parts::motors::SLOW;
     car_builder.wheel = bna::parts::wheels::NORMAL;
 
     car_builder.position = bn::fixed_point(60, 0);

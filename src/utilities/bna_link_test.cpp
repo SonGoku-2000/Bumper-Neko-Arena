@@ -110,7 +110,6 @@ bool comprobarConeccion(int& idConeccion, const bna::start& mensajeEnviado, bna:
     bn::link::send(mensajeEnviado.data);
     while (failed_retries <= max_failed_retries) {
         if (bn::optional<bn::link_state> link_state = bn::link::receive()) {
-            BN_LOG("Id propia ", link_state->current_player_id());
             idConeccion = link_state->current_player_id();
             const bn::link_player& first_other_player = link_state->other_players().front();
             mensajeRecibido.data = first_other_player.data();
@@ -123,6 +122,46 @@ bool comprobarConeccion(int& idConeccion, const bna::start& mensajeEnviado, bna:
     return false;
 }
 
+void esperarJugadores(int& id_propia) {
+    bn::sprite_text_generator text_generator(common::variable_8x16_sprite_font);
+    bn::vector<bn::sprite_ptr, 64> sprites_mensaje_espera;
+    text_generator.set_alignment(bn::sprite_text_generator::alignment_type::CENTER);
+    bool listo = false;
+
+    bna::start mensajeEnviado;
+    bna::start mensajeResivido;
+    mensajeEnviado.keys.ready0 = listo;
+
+    while (true) {
+        mensajeEnviado.keys.ready0 = listo;
+        if (comprobarConeccion(id_propia, mensajeEnviado, mensajeResivido)) {
+            sprites_mensaje_espera.clear();
+
+            if (listo) {
+                text_generator.generate(0, 44, "esperando respuesta ...", sprites_mensaje_espera);
+            }
+            else {
+                text_generator.generate(0, 44, "start para empezar", sprites_mensaje_espera);
+            }
+            if (listo and mensajeResivido.keys.ready0) {
+                break;
+            }
+            if (bn::keypad::start_held()) {
+                listo = true;
+            }
+            if (bn::keypad::b_pressed()) {
+                listo = false;
+            }
+        }
+        else {
+            sprites_mensaje_espera.clear();
+            text_generator.generate(0, 44, "Esperando nuevos jugadores", sprites_mensaje_espera);
+        }
+
+        bn::core::update();
+    }
+}
+
 void bna::link() {
 
     bn::sprite_text_generator text_generator(common::variable_8x16_sprite_font);
@@ -132,69 +171,65 @@ void bna::link() {
         "PAD: move other player's ninja",
     };
 
-
     common::info info("Link communication", info_text_lines, text_generator);
     bn::vector<bn::sprite_ptr, 64> messages_per_second_sprites;
 
-    // bna::datos datos_enviar;
-    // bna::datos datos_recibir;
+
+    int id_propia;
+
+    esperarJugadores(id_propia);
 
     int frames_counter = 0;
     int messages_counter = 0;
 
-    int id_propia;
-    int conectados;
-    (void)conectados;
-    bool listo = false;
-    bna::start mensajeEnviado;
-    bna::start mensajeResivido;
-    mensajeEnviado.keys.ready0 = listo;
-
+    bna::mensaje mensaje;
+    bna::mensaje nuevoMensaje;
     while (true) {
-        mensajeEnviado.keys.ready0 = listo;
-        if (comprobarConeccion(id_propia, mensajeEnviado, mensajeResivido)) {
-            messages_per_second_sprites.clear();
-
-            if (listo) {
-                text_generator.generate(0, 44, "esperando respuesta ...", messages_per_second_sprites);
-            }
-            else {
-                text_generator.generate(0, 44, "start para empezar", messages_per_second_sprites);
-            }
-            if (listo and mensajeResivido.keys.ready0) {
-                break;
-            }
-            if (bn::keypad::start_held()) {
-                listo = true;
-            }
-            if(bn::keypad::b_pressed()){
-                listo = false;
-            }
+        if (bn::keypad::a_held()) {
+            nuevoMensaje.informacion.angulo1 = nuevoMensaje.informacion.angulo1 - 10;
+            mensaje = nuevoMensaje;
+            bn::link::send(mensaje.data);
         }
-        else {
-            messages_per_second_sprites.clear();
 
-            text_generator.generate(0, 44, "Esperando nuevos jugadores", messages_per_second_sprites);
+        if (bn::keypad::b_held()) {
+            nuevoMensaje.informacion.pos1 = nuevoMensaje.informacion.pos1 - 10;
+            mensaje = nuevoMensaje;
+            bn::link::send(mensaje.data);
 
         }
-        bn::core::update();
-    }
 
-    while (true) {
-        if (bn::optional<bna::direction> direction_to_send = bna::read_keypad()) {
-            bn::link::send(direction_to_send->data);
-        }
+        // if (mensaje.informacion.pos1 != nuevoMensaje.informacion.pos1 or
+        //     mensaje.informacion.angulo1 != nuevoMensaje.informacion.angulo1
+        //     ) {
+        //     mensaje = nuevoMensaje;
+        //     bn::link::send(mensaje.data);
+        // }
 
         int max_failed_retries = 5;
         int failed_retries = 0;
 
         while (failed_retries <= max_failed_retries) {
             if (bn::optional<bn::link_state> link_state = bn::link::receive()) {
-                BN_LOG(link_state->current_player_id());
+                BN_LOG("------");
                 const bn::link_player& first_other_player = link_state->other_players().front();
-                bna::direction new_direction;
-                new_direction.data = first_other_player.data();
-                // move_ninja(new_direction, old_direction, ninja_sprite, ninja_animate_action);
+                bna::mensaje new_mensaje;
+                new_mensaje.data = first_other_player.data();
+                BN_LOG("Position", new_mensaje.informacion.pos1);
+                BN_LOG("Angulo", new_mensaje.informacion.angulo1);
+                failed_retries = 0;
+                ++messages_counter;
+            }
+            else {
+                ++failed_retries;
+            }
+
+            if (bn::optional<bn::link_state> link_state = bn::link::receive()) {
+                BN_LOG("------");
+                const bn::link_player& first_other_player = link_state->other_players().front();
+                bna::mensaje new_mensaje;
+                new_mensaje.data = first_other_player.data();
+                BN_LOG("Position", new_mensaje.informacion.pos1);
+                BN_LOG("Angulo", new_mensaje.informacion.angulo1);
                 failed_retries = 0;
                 ++messages_counter;
             }
