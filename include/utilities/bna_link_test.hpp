@@ -32,8 +32,8 @@ namespace bna {
         bn::sprite_animate_action<4>& ninja_animate_action);
 
     struct datos {
-        bn::fixed_t<4> pos1;
-        bn::fixed_t<4> angulo1;
+        unsigned id : 2;
+        unsigned pos:14;
     };
     union mensaje {
         datos informacion;

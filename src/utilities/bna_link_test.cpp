@@ -162,6 +162,37 @@ void esperarJugadores(int& id_propia) {
     }
 }
 
+void testLIniteValores() {
+    constexpr int  PRECICION = 2;
+    // Precision  1 va de pasos de 0.5     max 8190
+    // Precision  2 va de pasos de 0.25    max 4095
+    // Precision  3 va de pasos de 0.125   max 2047.5
+    // Precision  4 va de pasos de 0.0625  max 1023.75
+    // Precision  5 va de pasos de 0,03125 max 511.875
+    // Precision  6 va de pasos de 0,01562 max 255,937
+    // Precision  7 va de pasos de 0,00781 max 127,968
+    // Precision  8 va de pasos de 0,00390 max 63,9843
+    // Precision  9 va de pasos de 0,00195 max 31,9921
+    // Precision 10 va de pasos de 0,00097 max 15,9960
+    // Precision 11 va de pasos de 0,00048 max 7,99804
+    // Precision 12 va de pasos de 0,00024 max 1,99951
+    // Precision 13 va de pasos de 0,00012 max 3,99902
+    BN_LOG("Position limite 14: ", bn::fixed_t<PRECICION>().from_data(0b11111111111101));
+    BN_LOG("Position limite 13: ", bn::fixed_t<PRECICION>().from_data(0b1111111111101));
+    BN_LOG("Position limite 12: ", bn::fixed_t<PRECICION>().from_data(0b111111111101));
+    BN_LOG("Position limite 11: ", bn::fixed_t<PRECICION>().from_data(0b11111111101));
+    BN_LOG("Position limite 10: ", bn::fixed_t<PRECICION>().from_data(0b1111111101));
+    BN_LOG("Position limite 9: ", bn::fixed_t<PRECICION>().from_data(0b111111101));
+    BN_LOG("Position limite 8: ", bn::fixed_t<PRECICION>().from_data(0b11111101));
+    BN_LOG("Position limite 7: ", bn::fixed_t<PRECICION>().from_data(0b1111101));
+    BN_LOG("Position limite 6: ", bn::fixed_t<PRECICION>().from_data(0b111101));
+    BN_LOG("Position limite 5: ", bn::fixed_t<PRECICION>().from_data(0b11101));
+    BN_LOG("Position limite 4: ", bn::fixed_t<PRECICION>().from_data(0b1101));
+    BN_LOG("Position limite 3: ", bn::fixed_t<PRECICION>().from_data(0b101));
+    BN_LOG("Position limite 2: ", bn::fixed_t<PRECICION>().from_data(0b01));
+    BN_LOG("Pases: ", bn::fixed_t<PRECICION>().from_data(1));
+}
+
 void bna::link() {
 
     bn::sprite_text_generator text_generator(common::variable_8x16_sprite_font);
@@ -175,27 +206,37 @@ void bna::link() {
     bn::vector<bn::sprite_ptr, 64> messages_per_second_sprites;
 
 
-    int id_propia;
+    // int id_propia;
 
-    esperarJugadores(id_propia);
+    // esperarJugadores(id_propia);
+    constexpr int  PRECICION = 2;
+    bn::fixed  pos;
 
     int frames_counter = 0;
     int messages_counter = 0;
 
     bna::mensaje mensaje;
     bna::mensaje nuevoMensaje;
+
     while (true) {
         if (bn::keypad::a_held()) {
-            nuevoMensaje.informacion.angulo1 = nuevoMensaje.informacion.angulo1 - 10;
+            nuevoMensaje.informacion.id = 2;
+            pos += bn::fixed(0.00001);
+            bn::fixed_t<PRECICION> pos_enviar = pos;
+            nuevoMensaje.informacion.pos = pos_enviar.data();
             mensaje = nuevoMensaje;
             bn::link::send(mensaje.data);
+            BN_LOG(pos);
         }
 
         if (bn::keypad::b_held()) {
-            nuevoMensaje.informacion.pos1 = nuevoMensaje.informacion.pos1 - 10;
+            nuevoMensaje.informacion.id = 1;
+            pos -= bn::fixed(0.001);
+            bn::fixed_t<PRECICION> pos_enviar = pos;
+            nuevoMensaje.informacion.pos = pos_enviar.data();
             mensaje = nuevoMensaje;
             bn::link::send(mensaje.data);
-
+            BN_LOG(pos);
         }
 
         // if (mensaje.informacion.pos1 != nuevoMensaje.informacion.pos1 or
@@ -214,22 +255,9 @@ void bna::link() {
                 const bn::link_player& first_other_player = link_state->other_players().front();
                 bna::mensaje new_mensaje;
                 new_mensaje.data = first_other_player.data();
-                BN_LOG("Position", new_mensaje.informacion.pos1);
-                BN_LOG("Angulo", new_mensaje.informacion.angulo1);
-                failed_retries = 0;
-                ++messages_counter;
-            }
-            else {
-                ++failed_retries;
-            }
-
-            if (bn::optional<bn::link_state> link_state = bn::link::receive()) {
-                BN_LOG("------");
-                const bn::link_player& first_other_player = link_state->other_players().front();
-                bna::mensaje new_mensaje;
-                new_mensaje.data = first_other_player.data();
-                BN_LOG("Position", new_mensaje.informacion.pos1);
-                BN_LOG("Angulo", new_mensaje.informacion.angulo1);
+                BN_LOG("ID ", new_mensaje.informacion.id);
+                BN_LOG("Position ", new_mensaje.informacion.pos);
+                BN_LOG("Position ", bn::fixed_t<PRECICION>().from_data(new_mensaje.informacion.pos));
                 failed_retries = 0;
                 ++messages_counter;
             }
