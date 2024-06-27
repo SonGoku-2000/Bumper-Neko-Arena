@@ -19,6 +19,7 @@ constexpr int CPU_CICLES = 64;
 #endif
 #endif
 
+#include "bn_music_items.h"
 
 bna::TestMap::TestMap(CarBuilder& player) :
     _fondo(bn::regular_bg_items::mapa_prueba.create_bg(0, 0)),
@@ -63,8 +64,7 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
     int cpuCont = 0;
     bn::fixed cpu = 0;
 #endif
-
-
+    bn::music_items::forward.play();
     while (true) {
 #ifdef DEBUG_CPU
         if (cpuCont == CPU_CICLES) {
@@ -85,8 +85,8 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
         }
 #endif
         _player.update();
-        _enemiesManager.update();
-        bn::core::update();
+            _enemiesManager.update();
+            bn::core::update();
     }
     return bna::scene_type::TEST_MAP;
 }

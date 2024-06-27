@@ -12,6 +12,7 @@
 constexpr bn::fixed VELOCIDAD_MOVIMIENTO_LIBRE = 2;
 #endif
 #endif
+#include "bn_sound_items.h"
 
 
 bna::Player::Player(CarBuilder& body) :
@@ -39,7 +40,7 @@ void bna::Player::update() {
     for (int i = 0; i < _enemies->size(); ++i) {
         _enemies->at(i).checkCollision(_cuerpo);
     }
-
+    bn::sound_items::turbo2.play();
     for (int i = 0; i < _walls->size(); i++) {
         _cuerpo.checkCollision(_walls->at(i));
     }
