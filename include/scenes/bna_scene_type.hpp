@@ -3,6 +3,7 @@ namespace bna {
         MAIN_MENU,
         CAR_SELECTION,
         OPTION_MENU,
+        PREPARING_CONNECTION,
         TEST_MAP
     };
 }

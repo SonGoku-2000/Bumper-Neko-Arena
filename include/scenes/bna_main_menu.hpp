@@ -14,12 +14,16 @@ namespace bna {
         private:
         TextManager _textoTitulo;
         TextManager _textoJugar;
+        TextManager _textoMultiplayer;
         TextManager _textoOpciones;
         TextManager _textoCreditos;
 
-        int _idOpcion;
+        enum class options :int {
+            PLAY, MULTIPLAYER, OPTIONS, CREDITS
+        };
+        options _idOpcion;
 
-        bn::vector<bna::Indicator, 4> _indicadores;
+        bn::vector<bna::Indicator, 5> _indicadores;
         bn::optional<bn::sprite_ptr> _puntero;
         bool _continuar;
     };

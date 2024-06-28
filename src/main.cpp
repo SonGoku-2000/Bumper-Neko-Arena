@@ -13,6 +13,7 @@
 #include "bna_test_map.hpp"
 #include "bna_brightness_manager.hpp"
 #include "bna_car_builder.hpp"
+#include "bna_preparing_connection.hpp"
 
 #ifdef DEBUG
 #include "bn_log.h"
@@ -31,10 +32,16 @@ int main() {
 
     bna::CarBuilder playerCar;
 
+    int id_propia;
+
     while (true) {
         switch (next_scene.value()) {
             case bna::scene_type::MAIN_MENU:
                 scene.reset(new bna::MainMenu());
+                break;
+
+            case bna::scene_type::PREPARING_CONNECTION:
+                scene.reset(new bna::PreparingConnection(id_propia));
                 break;
 
             case bna::scene_type::CAR_SELECTION:
