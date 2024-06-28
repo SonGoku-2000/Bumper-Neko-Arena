@@ -23,7 +23,7 @@ namespace bna {
         TextManager _textoMotor;
         TextManager _textoRueda;
         TextManager _textoPlay;
-        TextManager _textoVolver;
+        TextManager _textoEstado;
 
         enum class opcionesPartes :int {
             CUERPO,

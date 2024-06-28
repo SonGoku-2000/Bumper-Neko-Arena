@@ -12,6 +12,8 @@
 #include "bna_parts.hpp"
 #include "bna_car_builder.hpp"
 
+#include "bna_link.hpp"
+
 #ifdef DEBUG
 #include "bn_log.h"
 #endif
@@ -61,10 +63,10 @@ bna::CarSelectionMultiplayer::CarSelectionMultiplayer(CarBuilder& carBuilder) {
         _indicadores[4].y(),
         "Play"
     );
-    _textoVolver = bna::TextManager(
+    _textoEstado = bna::TextManager(
         _indicadores[5].x() + OFFSET_HORIZONTAL_TEXTO,
         _indicadores[5].y(),
-        "Back"
+        "Choosing"
     );
 
     _idBody = bna::parts::bodys(0);
@@ -82,7 +84,11 @@ bna::CarSelectionMultiplayer::CarSelectionMultiplayer(CarBuilder& carBuilder) {
 
 
 bn::optional<bna::scene_type> bna::CarSelectionMultiplayer::update() {
-    bn::fixed brillo;
+    bool listo = false;
+
+    bna::link::start mensajeEnviado;
+    bna::link::start mensajeResivido;
+
     while (!_continuar) {
         if (bn::keypad::down_pressed()) {
             _idOpcion = opcionesPartes(bna::loop(int(_idOpcion) + 1, 0, int(opcionesPartes::VOLVER)));
@@ -126,7 +132,7 @@ bn::optional<bna::scene_type> bna::CarSelectionMultiplayer::update() {
                 _carBuilder->body = _idBody;
                 _carBuilder->motor = _idMotor;
                 _carBuilder->wheel = _idWheel;
-                return bna::scene_type::TEST_MAP;
+                listo = true;
             }
         }
         if (bn::keypad::b_pressed()) {
@@ -136,7 +142,21 @@ bn::optional<bna::scene_type> bna::CarSelectionMultiplayer::update() {
             _carBuilder->body = _idBody;
             _carBuilder->motor = _idMotor;
             _carBuilder->wheel = _idWheel;
-            return bna::scene_type::TEST_MAP;
+            listo = true;
+        }
+
+
+        mensajeEnviado.keys.ready0 = listo;
+        if (listo) {
+            if (bna::link::checkJugadoresReady(mensajeEnviado, mensajeResivido)) {
+                return bna::scene_type::TEST_MAP;
+            }
+            else {
+                _textoEstado.updateText("Esperando demas jugadores...");
+            }
+        }
+        else {
+            _textoEstado.updateText("");
         }
 
         bn::core::update();

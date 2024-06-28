@@ -10,6 +10,7 @@
 #include "bna_main_menu.hpp"
 #include "bna_options_menu.hpp"
 #include "bna_car_selection.hpp"
+#include "bna_car_selection_multiplayer.hpp"
 #include "bna_test_map.hpp"
 #include "bna_brightness_manager.hpp"
 #include "bna_car_builder.hpp"
@@ -46,6 +47,10 @@ int main() {
 
             case bna::scene_type::CAR_SELECTION:
                 scene.reset(new bna::CarSelection(playerCar));
+                break;
+
+            case bna::scene_type::CAR_SELECTION_MULTIPLAYER:
+                scene.reset(new bna::CarSelectionMultiplayer(playerCar));
                 break;
 
             case bna::scene_type::OPTION_MENU:

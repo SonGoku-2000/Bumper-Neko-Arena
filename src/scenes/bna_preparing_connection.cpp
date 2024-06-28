@@ -62,5 +62,5 @@ bn::optional<bna::scene_type> bna::PreparingConnection::update() {
 
         bn::core::update();
     }
-    return bna::scene_type::TEST_MAP;
+    return bna::scene_type::CAR_SELECTION_MULTIPLAYER;
 }
