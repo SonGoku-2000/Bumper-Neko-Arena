@@ -5,12 +5,14 @@
 #include "bn_sprite_ptr.h"
 
 namespace bna {
-    union start {
-        struct {
-            bool ready0;
-        } keys;
-        int data = 0;
-    };
+    namespace link {
+        union start {
+            struct {
+                bool ready0;
+            } keys;
+            int data = 0;
+        };
 
-    bool comprobarConexion(int& idConeccion, const bna::start& mensajeEnviado, bna::start& mensajeRecibido);
+        bool comprobarConexion(int& idConeccion, const bna::link::start& mensajeEnviado, bna::link::start& mensajeRecibido);
+    } // namespace link
 }

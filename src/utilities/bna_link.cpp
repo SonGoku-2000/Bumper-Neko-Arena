@@ -3,7 +3,7 @@
 #include "bn_link.h"
 #include "bn_link_state.h"
 
-bool bna::comprobarConexion(int& idConeccion, const bna::start& mensajeEnviado, bna::start& mensajeRecibido) {
+bool bna::link::comprobarConexion(int& idConeccion, const bna::link::start& mensajeEnviado, bna::link::start& mensajeRecibido) {
     constexpr int max_failed_retries = 5;
     int failed_retries = 0;
 

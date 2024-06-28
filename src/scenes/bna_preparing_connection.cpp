@@ -33,13 +33,13 @@ bna::PreparingConnection::PreparingConnection(int& id_propia) {
 bn::optional<bna::scene_type> bna::PreparingConnection::update() {
     bool listo = false;
 
-    bna::start mensajeEnviado;
-    bna::start mensajeResivido;
+    bna::link::start mensajeEnviado;
+    bna::link::start mensajeResivido;
     mensajeEnviado.keys.ready0 = listo;
 
     while (true) {
         mensajeEnviado.keys.ready0 = listo;
-        if (bna::comprobarConexion(*_id_propia, mensajeEnviado, mensajeResivido)) {
+        if (bna::link::comprobarConexion(*_id_propia, mensajeEnviado, mensajeResivido)) {
             if (listo) {
                 _textoEstado.updateText("Esperando respuesta ...");
             }
