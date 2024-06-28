@@ -14,5 +14,7 @@ namespace bna {
         };
 
         bool comprobarConexion(int& idConeccion, const bna::link::start& mensajeEnviado, bna::link::start& mensajeRecibido);
+
+        bool checkJugadoresReady(const bna::link::start& mensajeEnviado, bna::link::start& mensajeRecibido);
     } // namespace link
 }
