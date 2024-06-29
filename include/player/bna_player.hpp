@@ -22,7 +22,7 @@ namespace bna {
         Player(CarBuilder& body);
         ~Player() = default;
 
-        void update();
+        void full_update();
         void spawn(bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>& enemie, bn::vector<bna::Hitbox, 4>& _walls, bn::camera_ptr& camera, bn::size size);
 
         bn::fixed_point getPosition();

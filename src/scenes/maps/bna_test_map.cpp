@@ -84,9 +84,9 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
             bn::profiler::show();
         }
 #endif
-        _player.update();
-            _enemiesManager.update();
-            bn::core::update();
+        _player.full_update();
+        _enemiesManager.update();
+        bn::core::update();
     }
     return bna::scene_type::TEST_MAP;
 }

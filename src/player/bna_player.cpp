@@ -9,7 +9,7 @@
 #include "bn_log.h"
 #define MOVIMIENTO_LIBRE
 #ifdef MOVIMIENTO_LIBRE
-constexpr bn::fixed VELOCIDAD_MOVIMIENTO_LIBRE = 2;
+constexpr bn::fixed VELOCIDAD_MOVIMIENTO_LIBRE = 2.5;
 #endif
 #endif
 #include "bn_sound_items.h"
@@ -19,7 +19,7 @@ bna::Player::Player(CarBuilder& body) :
     _cuerpo(body.build()) {
 }
 
-void bna::Player::update() {
+void bna::Player::full_update() {
     _eje.set_x(int(bn::keypad::left_held()) - int(bn::keypad::right_held()));
     _eje.set_y(int(bn::keypad::down_held()) - int(bn::keypad::up_held()));
 
