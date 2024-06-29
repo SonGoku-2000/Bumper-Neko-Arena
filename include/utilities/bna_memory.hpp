@@ -4,7 +4,6 @@
 #include "bn_vector.h"
 #include "bn_optional.h"
 #include "bn_random.h"
-#include "bna_car_builder.hpp"
 
 namespace bna {
     class Memory {
