@@ -13,6 +13,7 @@
 #include "bna_car_builder.hpp"
 
 #include "bna_link.hpp"
+#include "bn_link.h"
 
 #ifdef DEBUG
 #include "bn_log.h"
@@ -64,7 +65,7 @@ bna::CarSelectionMultiplayer::CarSelectionMultiplayer(CarBuilder& carBuilder) {
         "Play"
     );
     _textoEstado = bna::TextManager(
-        _indicadores[5].x() + OFFSET_HORIZONTAL_TEXTO,
+        0,
         _indicadores[5].y(),
         "Choosing"
     );
@@ -149,14 +150,15 @@ bn::optional<bna::scene_type> bna::CarSelectionMultiplayer::update() {
         mensajeEnviado.keys.ready0 = listo;
         if (listo) {
             if (bna::link::checkJugadoresReady(mensajeEnviado, mensajeResivido)) {
-                return bna::scene_type::TEST_MAP;
+                return bna::scene_type::TEST_MAP_LINK;
             }
             else {
                 _textoEstado.updateText("Esperando demas jugadores...");
             }
         }
         else {
-            _textoEstado.updateText("");
+            bna::link::checkJugadoresReady(mensajeEnviado, mensajeResivido);
+            _textoEstado.updateText("Eligiendo");
         }
 
         bn::core::update();
