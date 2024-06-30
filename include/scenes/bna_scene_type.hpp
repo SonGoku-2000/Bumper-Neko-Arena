@@ -5,6 +5,7 @@ namespace bna {
         CAR_SELECTION_MULTIPLAYER,
         OPTION_MENU,
         PREPARING_CONNECTION,
-        TEST_MAP
+        TEST_MAP,
+        TEST_MAP_LINK,
     };
 }

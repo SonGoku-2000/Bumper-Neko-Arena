@@ -21,7 +21,7 @@ namespace bna {
     class TestMapLink : public scene {
 
         public:
-        TestMapLink(CarBuilder& player);
+        TestMapLink(CarBuilder& player,int id_propia);
         ~TestMapLink() = default;
 
         [[nodiscard]] bn::optional<scene_type> update() final;
@@ -38,7 +38,7 @@ namespace bna {
         bn::vector<bna::Hitbox, 4> _walls;
 
         bn::vector<bna::Enemie, limit_values::MAX_ENEMIES> _enemies;
-        bn::vector<bna::Car*, limit_values::MAX_ENEMIES + 1> _cars;
+        bn::vector<bna::Car, limit_values::MAX_ENEMIES + 1> _cars;
         bn::array<bn::fixed_point, limit_values::MAX_ENEMIES + 1> _ejes;
 
         bna::EnemiesManager _enemiesManager;
@@ -46,6 +46,7 @@ namespace bna {
         bn::camera_ptr _camera;
 
         bna::Player _player;
+        const int _idPropia;
 
         void _setCamera(bn::camera_ptr& camera);
     };
