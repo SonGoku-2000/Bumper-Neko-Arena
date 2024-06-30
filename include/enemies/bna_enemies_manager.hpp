@@ -8,13 +8,14 @@
 #include "bna_test_values.hpp"
 
 namespace bna {
+    class Car;
     class EnemiesManager {
         public:
         EnemiesManager(bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>& enemies);
         ~EnemiesManager() = default;
 
         void update();
-        void spawn(bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>& carros, bna::Player& player, bn::vector<bna::Hitbox, 4>& _walls, bn::camera_ptr& camera, bn::size size);
+        void spawn(bn::vector<bna::Car, limit_values::MAX_ENEMIES + 1>& carros, bn::vector<bna::Hitbox, 4>& _walls, bn::camera_ptr& camera, bn::size size);
 
         private:
         bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>* _enemies;
