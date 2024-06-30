@@ -28,6 +28,9 @@ namespace bna {
         bn::fixed_point getPosition();
         
         void setBody(Car body);
+        bna::Car& getCarRef();
+        bna::Vector2 getEje();
+        void update();
 
         private:
         bna::Vector2 _eje;

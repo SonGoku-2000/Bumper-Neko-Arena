@@ -48,6 +48,20 @@ void bna::Player::full_update() {
     _cameraManager->update(_cuerpo.getPosition());
 }
 
+void bna::Player::update(){
+    _cameraManager->update(_cuerpo.getPosition());
+}
+
+bna::Vector2 bna::Player::getEje(){
+    _eje.set_x(int(bn::keypad::left_held()) - int(bn::keypad::right_held()));
+    _eje.set_y(int(bn::keypad::down_held()) - int(bn::keypad::up_held()));
+    return _eje;
+}
+
+bna::Car& bna::Player::getCarRef(){
+    return _cuerpo;
+}
+
 void bna::Player::spawn(bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>& enemie, bn::vector<bna::Hitbox, 4>& walls, bn::camera_ptr& camera, bn::size size) {
     _enemies = &enemie;
     _walls = &walls;

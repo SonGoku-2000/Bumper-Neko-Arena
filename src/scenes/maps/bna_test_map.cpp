@@ -7,6 +7,7 @@
 #include "bn_core.h"
 #include "bna_car_builder.hpp"
 #include "bna_parts.hpp"
+#include "bna_car.hpp"
 
 #define DEBUG_CPU
 #ifdef DEBUG_CPU
@@ -23,7 +24,7 @@ constexpr int CPU_CICLES = 64;
 
 bna::TestMap::TestMap(CarBuilder& player) :
     _fondo(bn::regular_bg_items::mapa_prueba.create_bg(0, 0)),
-    _enemiesManager(_carros),
+    _enemiesManager(_enemies),
     _camera(bn::camera_ptr::create(0, 0)),
     _player(player) {
     _size = _fondo.dimensions();
@@ -43,19 +44,21 @@ bna::TestMap::TestMap(CarBuilder& player) :
     car_builder.wheel = bna::parts::wheels::NORMAL;
 
     car_builder.position = bn::fixed_point(60, 0);
-    _carros.push_back(car_builder);
+    _enemies.push_back(car_builder);
 
     car_builder.position = bn::fixed_point(90, 0);
-    _carros.push_back(car_builder);
+    _enemies.push_back(car_builder);
 
     car_builder.position = bn::fixed_point(120, 0);
-    _carros.push_back(car_builder);
+    _enemies.push_back(car_builder);
 
     _setCamera(_camera);
 
-    _player.spawn(_carros, getWalls(), _camera, getSize());
+    _cars.push_back(&_player.getCarRef());
 
-    _enemiesManager.spawn(_carros, _player, getWalls(), _camera, getSize());
+    _player.spawn(_enemies, getWalls(), _camera, getSize());
+
+    _enemiesManager.spawn(_enemies, _player, getWalls(), _camera, getSize());
 }
 
 
@@ -84,7 +87,22 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
             bn::profiler::show();
         }
 #endif
-        _player.full_update();
+
+        _ejes[0] = _player.getEje();
+
+        for (int id_car = 0; id_car < _cars.size(); id_car++) {
+            _cars[id_car]->update(_ejes[id_car]);
+            for (int id_wall = 0; id_wall < _walls.size(); id_wall++) {
+                _cars[id_car]->checkCollision(_walls[id_wall]);
+            }
+
+            for (int id_enemie = 0; id_enemie < _enemies.size(); id_enemie++) {
+                _cars[id_car]->checkCollision(_enemies[id_enemie].getCar());
+            }
+
+        }
+
+        _player.update();
         _enemiesManager.update();
         bn::core::update();
     }
