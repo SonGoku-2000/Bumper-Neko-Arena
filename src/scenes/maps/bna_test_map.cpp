@@ -25,8 +25,7 @@ constexpr int CPU_CICLES = 64;
 bna::TestMap::TestMap(CarBuilder& player) :
     _fondo(bn::regular_bg_items::mapa_prueba.create_bg(0, 0)),
     _enemiesManager(_enemies),
-    _camera(bn::camera_ptr::create(0, 0)),
-    _player(player) {
+    _camera(bn::camera_ptr::create(0, 0)) {
     _size = _fondo.dimensions();
 
 
@@ -54,13 +53,14 @@ bna::TestMap::TestMap(CarBuilder& player) :
 
     _setCamera(_camera);
 
-    _cars.push_back(&_player.getCarRef());
+    _cars.push_back(player.build());
+    _player.setBody(_cars[0]);
 
-    for (int i = 0; i < _enemies.size(); i++) {
-        _cars.push_back(&_enemies[i].getCar());
-    }
+    // for (int i = 0; i < _enemies.size(); i++) {
+    //     _cars.push_back(&_enemies[i].getCar());
+    // }
 
-    _player.spawn(_enemies, getWalls(), _camera, getSize());
+    _player.spawn(_cars, getWalls(), 0, _camera, getSize());
 
     _enemiesManager.spawn(_enemies, _player, getWalls(), _camera, getSize());
 }
@@ -99,13 +99,13 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
 
 
         for (int id_car = 0; id_car < _cars.size(); id_car++) {
-            _cars[id_car]->update(_ejes[id_car]);
+            _cars[id_car].update(_ejes[id_car]);
             for (int id_wall = 0; id_wall < _walls.size(); id_wall++) {
-                _cars[id_car]->checkCollision(_walls[id_wall]);
+                _cars[id_car].checkCollision(_walls[id_wall]);
             }
 
             for (int id_other = id_car + 1; id_other < _cars.size(); id_other++) {
-                _cars[id_car]->checkCollision(*(_cars.at(id_other)));
+                _cars[id_car].checkCollision(_cars.at(id_other));
             }
         }
 
