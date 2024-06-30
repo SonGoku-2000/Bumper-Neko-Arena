@@ -56,6 +56,10 @@ bna::TestMap::TestMap(CarBuilder& player) :
 
     _cars.push_back(&_player.getCarRef());
 
+    for (int i = 0; i < _enemies.size(); i++) {
+        _cars.push_back(&_enemies[i].getCar());
+    }
+
     _player.spawn(_enemies, getWalls(), _camera, getSize());
 
     _enemiesManager.spawn(_enemies, _player, getWalls(), _camera, getSize());
@@ -89,6 +93,10 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
 #endif
 
         _ejes[0] = _player.getEje();
+        for (int i = 0; i < _enemies.size(); i++) {
+            _ejes[i + 1] = _enemies[i].getEje();
+        }
+
 
         for (int id_car = 0; id_car < _cars.size(); id_car++) {
             _cars[id_car]->update(_ejes[id_car]);
@@ -96,14 +104,13 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
                 _cars[id_car]->checkCollision(_walls[id_wall]);
             }
 
-            for (int id_enemie = 0; id_enemie < _enemies.size(); id_enemie++) {
-                _cars[id_car]->checkCollision(_enemies[id_enemie].getCar());
+            for (int id_other = id_car + 1; id_other < _cars.size(); id_other++) {
+                _cars[id_car]->checkCollision(*(_cars.at(id_other)));
             }
-
         }
 
         _player.update();
-        _enemiesManager.update();
+        // _enemiesManager.update();
         bn::core::update();
     }
     return bna::scene_type::TEST_MAP;

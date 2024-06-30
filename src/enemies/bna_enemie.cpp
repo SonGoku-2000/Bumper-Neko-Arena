@@ -48,6 +48,18 @@ void bna::Enemie::update() {
     _cuerpo.update(eje);
 }
 
+bn::fixed_point bna::Enemie::getEje() {
+    bn::fixed_point eje(0, 0);
+
+    int id_distancia_menor;
+
+    _comprobarIdDistanciaMenor(id_distancia_menor);
+
+    _comprobarAnguloObjetivo(eje, id_distancia_menor);
+
+    return eje;
+}
+
 void bna::Enemie::_comprobarIdDistanciaMenor(int& id_distancia_menor) {
     bn::fixed distancia_menor;
     bool distancia_menor_inicializado = false;

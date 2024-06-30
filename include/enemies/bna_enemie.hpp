@@ -25,6 +25,7 @@ namespace bna {
         void checkCollision(bna::Hitbox& hitbox);
 
         bna::Car& getCar();
+        bn::fixed_point getEje();
 
         private:
         bna::Car _cuerpo;
