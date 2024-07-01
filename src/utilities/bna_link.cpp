@@ -87,38 +87,43 @@ bn::vector<bna::CarBuilder, 3> bna::link::getCarBuilders(const bna::CarBuilder s
     return carros;
 }
 
-bn::array<bn::fixed_point, 3> bna::link::getCarEjes(const bn::fixed_point eje_enviado) {
-    constexpr int max_failed_retries = 5;
+void bna::link::getCarEjes(const bn::fixed_point eje_enviado, bn::array<bn::fixed_point, 4>& ejes) {
+    constexpr int max_failed_retries = 30;
     int failed_retries = 0;
 
+    bna::link::reset();
     bna::link::eje_presionado mensaje_enviar;
     mensaje_enviar.eje.x = eje_enviado.x().integer();
     mensaje_enviar.eje.y = eje_enviado.y().integer();
-    bn::link::send(mensaje_enviar.data);
 
-    bn::array<bn::fixed_point, 3> ejes;
     bn::fixed_point eje_recibido;
     bna::link::eje_presionado mensajeRecibido;
 
-    while (failed_retries <= max_failed_retries) {
+    while (true) {
+        bn::link::send(mensaje_enviar.data);
         if (bn::optional<bn::link_state> link_state = bn::link::receive()) {
-            for (int i = 0; i < link_state->other_players().size(); i++) {
-                const bn::link_player& other_player = link_state->other_players()[i];
-                mensajeRecibido.data = other_player.data();
+            if (link_state->player_count() == link_state->other_players().size() + 1) {
+                for (int i = 0; i < link_state->other_players().size(); i++) {
+                    const bn::link_player& other_player = link_state->other_players()[i];
+                    mensajeRecibido.data = other_player.data();
 
-                eje_recibido = bn::fixed_point(mensajeRecibido.eje.x, mensajeRecibido.eje.y);
-                    ejes[i] = eje_recibido;
+                    eje_recibido = bn::fixed_point(mensajeRecibido.eje.x, mensajeRecibido.eje.y);
+                    ejes[other_player.id()] = eje_recibido;
+                }
+                // return ejes;
+                ejes[link_state->current_player_id()] = eje_enviado;
+                return;
             }
         }
         else {
             ++failed_retries;
         }
     }
-    return ejes;
+    // return ejes;
 }
 
-void bna::link::reset(){
+void bna::link::reset() {
     bn::link::send(0);
-    // bn::link::receive();
+    void(bn::link::receive());
 }
 

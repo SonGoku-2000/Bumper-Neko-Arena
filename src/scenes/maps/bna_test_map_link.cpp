@@ -39,31 +39,31 @@ bna::TestMapLink::TestMapLink(CarBuilder& player, int id_propia) :
     _walls.push_back(bna::Hitbox(bna::Vector2((_size.width() / 2) - separacion, 0), bna::Vector2(_size.height() - 10, 10), debug, 2));
     _walls.push_back(bna::Hitbox(bna::Vector2((_size.width() / -2) + separacion, 0), bna::Vector2(_size.height() - 10, 10), debug, 3));
     // _walls.push_back(bna::Hitbox(bna::Vector2(60, 0), bna::Vector2(70, 10), debug, 3));
-    if (id_propia == 0) {
-        player.position.set_x(-20);
-    }
-    else {
-        player.position.set_x(20);
-    }
+    // if (id_propia == 0) {
+    //     player.position.set_x(-20);
+    // }
+    // else {
+    //     player.position.set_x(20);
+    // }
     bn::vector<bna::CarBuilder, 3> carBuilders = bna::link::getCarBuilders(player);
     for (int i = 0; i < id_propia; i++) {
-        if (id_propia == 0) {
-            carBuilders[i].position.set_x(20);
-        }
-        else {
-            carBuilders[i].position.set_x(-20);
-        }
+        // if (id_propia == 0) {
+        //     carBuilders[i].position.set_x(20);
+        // }
+        // else {
+        //     carBuilders[i].position.set_x(-20);
+        // }
         _cars.push_back(carBuilders[i].build());
     }
     _cars.push_back(player.build());
     _player.setBody(_cars[id_propia]);
     for (int i = id_propia; i < carBuilders.size(); i++) {
-        if (id_propia == 0) {
-            carBuilders[i].position.set_x(20);
-        }
-        else {
-            carBuilders[i].position.set_x(-20);
-        }
+        // if (id_propia == 0) {
+        //     carBuilders[i].position.set_x(20);
+        // }
+        // else {
+        //     carBuilders[i].position.set_x(-20);
+        // }
         _cars.push_back(carBuilders[i].build());
     }
 
@@ -84,7 +84,12 @@ bn::optional<bna::scene_type> bna::TestMapLink::update() {
     bn::fixed cpu = 0;
 #endif
     bn::music_items::forward.play();
-    bn::array<bn::fixed_point, 3> ejes_otros_jugadores;
+    bn::array<bn::fixed_point, 4> ejes_otros_jugadores{
+        bn::fixed_point(0,0),
+        bn::fixed_point(0,0),
+        bn::fixed_point(0,0),
+        bn::fixed_point(0,0)
+    };
     while (true) {
 #ifdef DEBUG_CPU
         if (cpuCont == CPU_CICLES) {
@@ -104,23 +109,27 @@ bn::optional<bna::scene_type> bna::TestMapLink::update() {
             bn::profiler::show();
         }
 #endif
-        bna::link::reset();
-        _ejes[_idPropia] = _player.getEje();
-        ejes_otros_jugadores = bna::link::getCarEjes(_ejes[_idPropia]);
-        if (cpuCont % 10 == 0) {
-            BN_LOG("----");
-            for (int i = 0; i < ejes_otros_jugadores.size(); i++) {
-                BN_LOG(i, " X: ", _ejes[i].x(), " Y: ", _ejes[i].y());
-            }
-        }
+        bna::link::getCarEjes(_player.getEje(),ejes_otros_jugadores);
 
+        // if (_idPropia == 0) {
+        //     _ejes[1] = ejes_otros_jugadores[0];
+        // }
+        // else {
+        //     _ejes[0] = ejes_otros_jugadores[0];
+        // }
+        
+        for (int i = 0; i < ejes_otros_jugadores.size(); i++) {
+            _ejes[i ] = ejes_otros_jugadores[i];
+        }
+        // _ejes[_idPropia] = _player.getEje();
 
-        for (int i = 0; i < _idPropia; i++) {
-            _ejes[i] = ejes_otros_jugadores[i];
-        }
-        for (int i = _idPropia; i < ejes_otros_jugadores.size(); i++) {
-            _ejes[i + 1] = ejes_otros_jugadores[i];
-        }
+        // BN_LOG("------");
+        // for (int i = 0; i < ejes_otros_jugadores.size(); i++)
+        // {
+        //     /* code */
+        // BN_LOG(i," x: ",ejes_otros_jugadores[i].x()," y: ",ejes_otros_jugadores[i].y());
+        // }
+        
 
 
         for (int id_car = 0; id_car < _cars.size(); id_car++) {

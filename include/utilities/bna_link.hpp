@@ -43,7 +43,7 @@ namespace bna {
         bool checkJugadoresReady(const bna::link::start& mensajeEnviado, bna::link::start& mensajeRecibido);
 
         bn::vector<CarBuilder, 3> getCarBuilders(const CarBuilder self_car_builder);
-        bn::array<bn::fixed_point, 3> getCarEjes(const bn::fixed_point eje_enviado);
+        void getCarEjes(const bn::fixed_point eje_enviado, bn::array<bn::fixed_point, 4>& ejes);
 
         void reset();
     } // namespace link
