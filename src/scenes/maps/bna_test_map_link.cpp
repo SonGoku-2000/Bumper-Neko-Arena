@@ -39,13 +39,31 @@ bna::TestMapLink::TestMapLink(CarBuilder& player, int id_propia) :
     _walls.push_back(bna::Hitbox(bna::Vector2((_size.width() / 2) - separacion, 0), bna::Vector2(_size.height() - 10, 10), debug, 2));
     _walls.push_back(bna::Hitbox(bna::Vector2((_size.width() / -2) + separacion, 0), bna::Vector2(_size.height() - 10, 10), debug, 3));
     // _walls.push_back(bna::Hitbox(bna::Vector2(60, 0), bna::Vector2(70, 10), debug, 3));
+    if (id_propia == 0) {
+        player.position.set_x(-20);
+    }
+    else {
+        player.position.set_x(20);
+    }
     bn::vector<bna::CarBuilder, 3> carBuilders = bna::link::getCarBuilders(player);
     for (int i = 0; i < id_propia; i++) {
+        if (id_propia == 0) {
+            carBuilders[i].position.set_x(20);
+        }
+        else {
+            carBuilders[i].position.set_x(-20);
+        }
         _cars.push_back(carBuilders[i].build());
     }
     _cars.push_back(player.build());
     _player.setBody(_cars[id_propia]);
-    for (int i = id_propia ; i < carBuilders.size(); i++) {
+    for (int i = id_propia; i < carBuilders.size(); i++) {
+        if (id_propia == 0) {
+            carBuilders[i].position.set_x(20);
+        }
+        else {
+            carBuilders[i].position.set_x(-20);
+        }
         _cars.push_back(carBuilders[i].build());
     }
 
@@ -56,6 +74,7 @@ bna::TestMapLink::TestMapLink(CarBuilder& player, int id_propia) :
     }
 
     _player.spawn(_cars, getWalls(), 0, _camera, getSize());
+    bna::link::reset();
 }
 
 
@@ -65,6 +84,7 @@ bn::optional<bna::scene_type> bna::TestMapLink::update() {
     bn::fixed cpu = 0;
 #endif
     bn::music_items::forward.play();
+    bn::array<bn::fixed_point, 3> ejes_otros_jugadores;
     while (true) {
 #ifdef DEBUG_CPU
         if (cpuCont == CPU_CICLES) {
@@ -84,8 +104,23 @@ bn::optional<bna::scene_type> bna::TestMapLink::update() {
             bn::profiler::show();
         }
 #endif
-
+        bna::link::reset();
         _ejes[_idPropia] = _player.getEje();
+        ejes_otros_jugadores = bna::link::getCarEjes(_ejes[_idPropia]);
+        if (cpuCont % 10 == 0) {
+            BN_LOG("----");
+            for (int i = 0; i < ejes_otros_jugadores.size(); i++) {
+                BN_LOG(i, " X: ", _ejes[i].x(), " Y: ", _ejes[i].y());
+            }
+        }
+
+
+        for (int i = 0; i < _idPropia; i++) {
+            _ejes[i] = ejes_otros_jugadores[i];
+        }
+        for (int i = _idPropia; i < ejes_otros_jugadores.size(); i++) {
+            _ejes[i + 1] = ejes_otros_jugadores[i];
+        }
 
 
         for (int id_car = 0; id_car < _cars.size(); id_car++) {

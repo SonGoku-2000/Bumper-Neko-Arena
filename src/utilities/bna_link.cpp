@@ -67,9 +67,11 @@ bn::vector<bna::CarBuilder, 3> bna::link::getCarBuilders(const bna::CarBuilder s
             for (int i = 0; i < link_state->other_players().size(); i++) {
                 const bn::link_player& other_player = link_state->other_players()[i];
                 mensajeRecibido.data = other_player.data();
+
                 car_builder.body = mensajeRecibido.car_parts.body;
                 car_builder.motor = mensajeRecibido.car_parts.motor;
                 car_builder.wheel = mensajeRecibido.car_parts.wheel;
+
                 if (i < carros.size()) {
                     carros[i] = car_builder;
                 }
@@ -84,3 +86,39 @@ bn::vector<bna::CarBuilder, 3> bna::link::getCarBuilders(const bna::CarBuilder s
     }
     return carros;
 }
+
+bn::array<bn::fixed_point, 3> bna::link::getCarEjes(const bn::fixed_point eje_enviado) {
+    constexpr int max_failed_retries = 5;
+    int failed_retries = 0;
+
+    bna::link::eje_presionado mensaje_enviar;
+    mensaje_enviar.eje.x = eje_enviado.x().integer();
+    mensaje_enviar.eje.y = eje_enviado.y().integer();
+    bn::link::send(mensaje_enviar.data);
+
+    bn::array<bn::fixed_point, 3> ejes;
+    bn::fixed_point eje_recibido;
+    bna::link::eje_presionado mensajeRecibido;
+
+    while (failed_retries <= max_failed_retries) {
+        if (bn::optional<bn::link_state> link_state = bn::link::receive()) {
+            for (int i = 0; i < link_state->other_players().size(); i++) {
+                const bn::link_player& other_player = link_state->other_players()[i];
+                mensajeRecibido.data = other_player.data();
+
+                eje_recibido = bn::fixed_point(mensajeRecibido.eje.x, mensajeRecibido.eje.y);
+                    ejes[i] = eje_recibido;
+            }
+        }
+        else {
+            ++failed_retries;
+        }
+    }
+    return ejes;
+}
+
+void bna::link::reset(){
+    bn::link::send(0);
+    // bn::link::receive();
+}
+
