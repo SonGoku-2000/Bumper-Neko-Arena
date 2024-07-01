@@ -245,6 +245,14 @@ void bna::Car::setPosition(bn::fixed_point position) {
     _sprite.set_position(position);
 }
 
+void bna::Car::setPositionX(bn::fixed x) {
+    setPosition(bn::fixed_point(x, getPosition().y()));
+}
+
+void bna::Car::setPositionY(bn::fixed y) {
+    setPosition(bn::fixed_point(getPosition().x(), y));
+}
+
 bn::fixed bna::Car::getMass() {
     return _weight;
 }
@@ -258,7 +266,7 @@ bn::fixed bna::Car::getRotation() const {
     }
 }
 
-void bna::Car::setRotation(bn::fixed rotation){
+void bna::Car::setRotation(bn::fixed rotation) {
     _rotation = rotation;
 }
 

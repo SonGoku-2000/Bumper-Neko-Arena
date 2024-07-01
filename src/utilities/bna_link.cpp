@@ -93,26 +93,26 @@ bn::array<bn::optional<bn::fixed>, 4> bna::link::get_fixed(const bn::fixed numbe
     bna::link::fixed mensaje_enviar;
     mensaje_enviar.fixed.data = bn::fixed_t<PRESITION>(number).data();
     mensaje_enviar.fixed.id = id;
-    bn::link::send(mensaje_enviar.data);
 
     bn::array<bn::optional<bn::fixed>, 4> respuesta;
     bna::link::fixed mensaje_recibido;
 
-    constexpr int max_failed_retries = 10;
-    int failed_retries = 0;
-    while (failed_retries <= max_failed_retries) {
+    // constexpr int max_failed_retries = 10;
+    // int failed_retries = 0;
+    while (true) {
+        bn::link::send(mensaje_enviar.data);
         if (bn::optional<bn::link_state> link_state = bn::link::receive()) {
-            for (int i = 0; i < link_state->other_players().size(); i++) {
-                const bn::link_player& other_player = link_state->other_players()[i];
-                mensaje_recibido.data = other_player.data();
-                if (mensaje_recibido.fixed.id == id) {
-                    respuesta[other_player.id()] = bn::fixed_t<PRESITION>().from_data(mensaje_recibido.fixed.data);
+            if (link_state->player_count() == link_state->other_players().size() + 1) {
+                for (int i = 0; i < link_state->other_players().size(); i++) {
+                    const bn::link_player& other_player = link_state->other_players()[i];
+                    mensaje_recibido.data = other_player.data();
+                    if (mensaje_recibido.fixed.id == id) {
+                        respuesta[other_player.id()] = bn::fixed_t<PRESITION>().from_data(mensaje_recibido.fixed.data);
+                    }
                 }
+                respuesta[link_state->current_player_id()] = number;
+                return respuesta;
             }
-            respuesta[link_state->current_player_id()] = number;
-        }
-        else {
-            ++failed_retries;
         }
     }
     return respuesta;
@@ -126,7 +126,7 @@ bn::array<bn::optional<bn::fixed_point>, 4> bna::link::get_fixed_point(const bn:
 
     for (int i = 0; i < respuesta.size(); i++) {
         // if (respuesta_x[i].has_value()) {
-            if (respuesta_x[i].has_value() && respuesta_y[i].has_value()) {
+        if (respuesta_x[i].has_value() && respuesta_y[i].has_value()) {
             respuesta[i] = bn::fixed_point(respuesta_x[i].value(), respuesta_y[i].value());
         }
     }
