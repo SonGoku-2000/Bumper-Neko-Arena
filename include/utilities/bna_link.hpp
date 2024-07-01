@@ -38,6 +38,17 @@ namespace bna {
             int data = 0;
         };
 
+        union fixed {
+            struct {
+                unsigned id : 2;
+                unsigned data : 14;
+            }fixed;
+            int data;
+        };
+
+        bn::array<bn::optional<bn::fixed>,4> getFixed(const bn::fixed number);
+        bn::array<bn::optional<bn::fixed>,4> getFixed_point(const bn::fixed number);
+
         bool comprobarConexion(int& idConeccion, const bna::link::start& mensajeEnviado, bna::link::start& mensajeRecibido);
 
         bool checkJugadoresReady(const bna::link::start& mensajeEnviado, bna::link::start& mensajeRecibido);

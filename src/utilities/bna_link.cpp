@@ -87,8 +87,34 @@ bn::vector<bna::CarBuilder, 3> bna::link::getCarBuilders(const bna::CarBuilder s
     return carros;
 }
 
+bn::array<bn::optional<bn::fixed>, 4> bna::link::getFixed(const bn::fixed number) {
+    constexpr int PRESITION = 4;
+    bna::link::fixed mensaje_enviar;
+    mensaje_enviar.fixed.data = bn::fixed_t<PRESITION>(number).data();
+    bn::link::send(mensaje_enviar.data);
+
+    bn::array<bn::optional<bn::fixed>, 4> respuesta;
+    bna::link::fixed mensaje_recibido;
+
+    constexpr int max_failed_retries = 5;
+    int failed_retries = 0;
+    while (failed_retries <= max_failed_retries) {
+        if (bn::optional<bn::link_state> link_state = bn::link::receive()) {
+            for (int i = 0; i < link_state->other_players().size(); i++) {
+                const bn::link_player& other_player = link_state->other_players()[i];
+                mensaje_recibido.data = other_player.data();
+                respuesta[other_player.id()] = bn::fixed_t<PRESITION>().from_data(mensaje_recibido.fixed.data);
+            }
+            respuesta[link_state->current_player_id()] = number;
+        }
+        else {
+            ++failed_retries;
+        }
+    }
+    return respuesta;
+}
+
 void bna::link::getCarEjes(const bn::fixed_point eje_enviado, bn::array<bn::fixed_point, 4>& ejes) {
-    constexpr int max_failed_retries = 30;
     int failed_retries = 0;
 
     bna::link::reset();
@@ -124,6 +150,16 @@ void bna::link::getCarEjes(const bn::fixed_point eje_enviado, bn::array<bn::fixe
 
 void bna::link::reset() {
     bn::link::send(0);
-    void(bn::link::receive());
+    constexpr int max_failed_retries = 5;
+    int failed_retries = 0;
+
+    while (failed_retries <= max_failed_retries) {
+        if (bn::optional<bn::link_state> link_state = bn::link::receive()) {
+
+        }
+        else {
+            ++failed_retries;
+        }
+    }
 }
 

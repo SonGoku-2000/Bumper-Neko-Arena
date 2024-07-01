@@ -258,5 +258,9 @@ bn::fixed bna::Car::getRotation() const {
     }
 }
 
+void bna::Car::setRotation(bn::fixed rotation){
+    _rotation = rotation;
+}
+
 
 

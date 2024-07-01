@@ -39,6 +39,7 @@ namespace bna {
         void setPosition(bn::fixed_point position);
 
         bn::fixed getRotation() const;
+        void setRotation(bn::fixed rotaion);
 
         bna::Vector2 getSpeed();
 
