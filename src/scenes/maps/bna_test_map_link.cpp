@@ -9,6 +9,8 @@
 #include "bna_parts.hpp"
 #include "bna_car.hpp"
 
+#include "bna_link.hpp"
+
 #define DEBUG_CPU
 #ifdef DEBUG_CPU
 constexpr int CPU_CICLES = 64;
@@ -22,9 +24,8 @@ constexpr int CPU_CICLES = 64;
 
 #include "bn_music_items.h"
 
-bna::TestMapLink::TestMapLink(CarBuilder& player,int id_propia) :
+bna::TestMapLink::TestMapLink(CarBuilder& player, int id_propia) :
     _fondo(bn::regular_bg_items::mapa_prueba.create_bg(0, 0)),
-    _enemiesManager(_enemies),
     _camera(bn::camera_ptr::create(0, 0)),
     _idPropia(id_propia) {
     _size = _fondo.dimensions();
@@ -32,31 +33,21 @@ bna::TestMapLink::TestMapLink(CarBuilder& player,int id_propia) :
 
     constexpr bool debug = true;
     constexpr int separacion = 10;
+
     _walls.push_back(bna::Hitbox(bna::Vector2(0, (_size.height() / -2) + separacion), bna::Vector2(10, _size.width() - 10), debug, 0));
     _walls.push_back(bna::Hitbox(bna::Vector2(0, (_size.height() / 2) - separacion), bna::Vector2(10, _size.width() - 10), debug, 1));
     _walls.push_back(bna::Hitbox(bna::Vector2((_size.width() / 2) - separacion, 0), bna::Vector2(_size.height() - 10, 10), debug, 2));
     _walls.push_back(bna::Hitbox(bna::Vector2((_size.width() / -2) + separacion, 0), bna::Vector2(_size.height() - 10, 10), debug, 3));
     // _walls.push_back(bna::Hitbox(bna::Vector2(60, 0), bna::Vector2(70, 10), debug, 3));
-
+    bn::vector<bna::CarBuilder, 3> carBuilders = bna::link::getCarBuilders(player);
+    for (int i = 0; i < id_propia; i++) {
+        _cars.push_back(carBuilders[i].build());
+    }
     _cars.push_back(player.build());
-    _player.setBody(_cars[0]);
-
-    CarBuilder car_builder;
-    car_builder.body = bna::parts::bodys::MEDIUM;
-    car_builder.motor = bna::parts::motors::SLOW;
-    car_builder.wheel = bna::parts::wheels::NORMAL;
-
-    car_builder.position = bn::fixed_point(60, 0);
-    _cars.push_back(car_builder.build());
-    _enemies.push_back(_cars.back());
-
-    car_builder.position = bn::fixed_point(90, 0);
-    _cars.push_back(car_builder.build());
-    _enemies.push_back(_cars.back());
-
-    car_builder.position = bn::fixed_point(120, 0);
-    _cars.push_back(car_builder.build());
-    _enemies.push_back(_cars.back());
+    _player.setBody(_cars[id_propia]);
+    for (int i = id_propia ; i < carBuilders.size(); i++) {
+        _cars.push_back(carBuilders[i].build());
+    }
 
     _setCamera(_camera);
 
@@ -65,8 +56,6 @@ bna::TestMapLink::TestMapLink(CarBuilder& player,int id_propia) :
     }
 
     _player.spawn(_cars, getWalls(), 0, _camera, getSize());
-
-    _enemiesManager.spawn(_cars,  getWalls(), _camera, getSize());
 }
 
 
@@ -96,10 +85,7 @@ bn::optional<bna::scene_type> bna::TestMapLink::update() {
         }
 #endif
 
-        _ejes[0] = _player.getEje();
-        for (int i = 0; i < _enemies.size(); i++) {
-            _ejes[i + 1] = _enemies[i].getEje();
-        }
+        _ejes[_idPropia] = _player.getEje();
 
 
         for (int id_car = 0; id_car < _cars.size(); id_car++) {
@@ -114,11 +100,10 @@ bn::optional<bna::scene_type> bna::TestMapLink::update() {
         }
 
         _player.update();
-        // _enemiesManager.update();
         bn::core::update();
-        }
-    return bna::scene_type::TEST_MAP;
     }
+    return bna::scene_type::TEST_MAP;
+}
 
 void bna::TestMapLink::_setCamera(bn::camera_ptr& camera) {
     _fondo.set_camera(camera);

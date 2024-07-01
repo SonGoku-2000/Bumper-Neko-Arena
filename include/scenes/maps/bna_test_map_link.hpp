@@ -37,11 +37,8 @@ namespace bna {
 
         bn::vector<bna::Hitbox, 4> _walls;
 
-        bn::vector<bna::Enemie, limit_values::MAX_ENEMIES> _enemies;
         bn::vector<bna::Car, limit_values::MAX_ENEMIES + 1> _cars;
         bn::array<bn::fixed_point, limit_values::MAX_ENEMIES + 1> _ejes;
-
-        bna::EnemiesManager _enemiesManager;
 
         bn::camera_ptr _camera;
 
