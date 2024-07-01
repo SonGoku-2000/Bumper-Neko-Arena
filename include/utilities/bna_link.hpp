@@ -46,8 +46,8 @@ namespace bna {
             int data;
         };
 
-        bn::array<bn::optional<bn::fixed>,4> getFixed(const bn::fixed number);
-        bn::array<bn::optional<bn::fixed>,4> getFixed_point(const bn::fixed number);
+        bn::array<bn::optional<bn::fixed>,4> get_fixed(const bn::fixed number,const int id);
+        bn::array<bn::optional<bn::fixed_point>,4> get_fixed_point(const bn::fixed_point number, const int id);
 
         bool comprobarConexion(int& idConeccion, const bna::link::start& mensajeEnviado, bna::link::start& mensajeRecibido);
 
