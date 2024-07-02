@@ -162,8 +162,9 @@ void esperarJugadores(int& id_propia) {
     }
 }
 
-void testLIniteValores() {
-    constexpr int  PRECICION = 2;
+
+void bna::testLimitValues() {
+    constexpr int  PRECICION = 4;
     // Precision  1 va de pasos de 0.5     max 8190
     // Precision  2 va de pasos de 0.25    max 4095
     // Precision  3 va de pasos de 0.125   max 2047.5

@@ -43,5 +43,6 @@ namespace bna {
     };
 
     void link();
+    void testLimitValues();
 }
 
