@@ -18,6 +18,9 @@
 namespace bna {
     class CarBuilder;
     class Car;
+    namespace link{
+        union fixed;
+    }
     class TestMapLink : public scene {
 
         public:
@@ -46,6 +49,8 @@ namespace bna {
         const int _idPropia;
 
         void _setCamera(bn::camera_ptr& camera);
+        void _sendData(int& frame_actual, bn::array<bn::optional<bna::link::fixed>, 4>& mensaje_recibido);
+        void _updateData(const bn::array<bn::optional<bna::link::fixed>, 4>& mensaje_recibido);
     };
 } // namespace bna
 

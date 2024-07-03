@@ -12,10 +12,11 @@
 #include "bna_car_selection.hpp"
 #include "bna_car_selection_multiplayer.hpp"
 #include "bna_test_map.hpp"
+#include "bna_test_map_link.hpp"
 #include "bna_brightness_manager.hpp"
 #include "bna_car_builder.hpp"
 #include "bna_preparing_connection.hpp"
-
+#define DEBUG
 #ifdef DEBUG
 #include "bn_log.h"
 #endif
@@ -29,7 +30,7 @@ int main() {
 
     bn::unique_ptr<bna::scene> scene;
 
-    bn::optional<bna::scene_type> next_scene = bna::scene_type::MAIN_MENU;
+    bn::optional<bna::scene_type> next_scene = bna::scene_type::PREPARING_CONNECTION;
 
     bna::CarBuilder playerCar;
 
@@ -59,6 +60,10 @@ int main() {
 
             case bna::scene_type::TEST_MAP:
                 scene.reset(new bna::TestMap(playerCar));
+                break;
+
+            case bna::scene_type::TEST_MAP_LINK:
+                scene.reset(new bna::TestMapLink(playerCar, id_propia));
                 break;
 
             default:

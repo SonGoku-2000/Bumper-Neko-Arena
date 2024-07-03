@@ -87,32 +87,28 @@ bn::vector<bna::CarBuilder, 3> bna::link::getCarBuilders(const bna::CarBuilder s
     return carros;
 }
 
-bn::array<bn::optional<bn::fixed>, 4> bna::link::get_fixed(const bn::fixed number, const int id) {
-    // bna::link::reset();
+bn::array<bn::optional<bna::link::fixed>, 4> bna::link::get_fixed(const bn::fixed number, const int id) {
     constexpr int PRESITION = 4;
     bna::link::fixed mensaje_enviar;
     mensaje_enviar.fixed.data = bn::fixed_t<PRESITION>(number).data();
     mensaje_enviar.fixed.id = id;
+    bn::link::send(mensaje_enviar.data);
 
-    bn::array<bn::optional<bn::fixed>, 4> respuesta;
+    bn::array<bn::optional<bna::link::fixed>, 4> respuesta;
     bna::link::fixed mensaje_recibido;
 
-    // constexpr int max_failed_retries = 10;
-    // int failed_retries = 0;
-    while (true) {
-        bn::link::send(mensaje_enviar.data);
+    constexpr int max_failed_retries = 5;
+    int failed_retries = 0;
+    while (failed_retries <= max_failed_retries) {
         if (bn::optional<bn::link_state> link_state = bn::link::receive()) {
-            if (link_state->player_count() == link_state->other_players().size() + 1) {
-                for (int i = 0; i < link_state->other_players().size(); i++) {
-                    const bn::link_player& other_player = link_state->other_players()[i];
-                    mensaje_recibido.data = other_player.data();
-                    if (mensaje_recibido.fixed.id == id) {
-                        respuesta[other_player.id()] = bn::fixed_t<PRESITION>().from_data(mensaje_recibido.fixed.data);
-                    }
-                }
-                respuesta[link_state->current_player_id()] = number;
-                return respuesta;
+            for (int i = 0; i < link_state->other_players().size(); i++) {
+                const bn::link_player& other_player = link_state->other_players()[i];
+                mensaje_recibido.data = other_player.data();
+                respuesta[other_player.id()] = mensaje_recibido;
             }
+        }
+        else {
+            ++failed_retries;
         }
     }
     return respuesta;
@@ -120,15 +116,17 @@ bn::array<bn::optional<bn::fixed>, 4> bna::link::get_fixed(const bn::fixed numbe
 
 bn::array<bn::optional<bn::fixed_point>, 4> bna::link::get_fixed_point(const bn::fixed_point number, const int id) {
     bn::array<bn::optional<bn::fixed_point>, 4> respuesta;
+    (void)number;
+    (void)id;
 
-    bn::array<bn::optional<bn::fixed>, 4> respuesta_x = bna::link::get_fixed(number.x(), id);
-    bn::array<bn::optional<bn::fixed>, 4> respuesta_y = bna::link::get_fixed(number.y(), id);
+    // bn::array<bn::optional<bn::fixed>, 4> respuesta_x = bna::link::get_fixed(number.x(), id);
+    // bn::array<bn::optional<bn::fixed>, 4> respuesta_y = bna::link::get_fixed(number.y(), id);
 
     for (int i = 0; i < respuesta.size(); i++) {
         // if (respuesta_x[i].has_value()) {
-        if (respuesta_x[i].has_value() && respuesta_y[i].has_value()) {
-            respuesta[i] = bn::fixed_point(respuesta_x[i].value(), respuesta_y[i].value());
-        }
+        // if (respuesta_x[i].has_value() && respuesta_y[i].has_value()) {
+            // respuesta[i] = bn::fixed_point(respuesta_x[i].value(), respuesta_y[i].value());
+    // }
     }
     return respuesta;
 }
@@ -168,7 +166,36 @@ void bna::link::getCarEjes(const bn::fixed_point eje_enviado, bn::array<bn::fixe
     // return ejes;
 }
 
+int bna::link::sinc(const int id) {
+    bn::link::send(id);
+    int respuesta = id;
+
+    constexpr int max_failed_retries = 5;
+    int failed_retries = 0;
+
+    while (failed_retries <= max_failed_retries) {
+        if (bn::optional<bn::link_state> link_state = bn::link::receive()) {
+            if (link_state->current_player_id() == 0) {
+                respuesta = id;
+                break;
+            }
+            else {
+                for (int i = 0; i < link_state->other_players().size(); i++) {
+                    if (link_state->other_players()[i].id() == 0) {
+                        respuesta = link_state->other_players()[i].data();
+                        break;
+                    }
+                }
+            }
+        }
+        else {
+            ++failed_retries;
+        }
+    }
+    return respuesta;
+}
 void bna::link::reset() {
+    bn::link::deactivate();
     bn::link::send(0);
     constexpr int max_failed_retries = 5;
     int failed_retries = 0;

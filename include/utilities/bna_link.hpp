@@ -40,13 +40,13 @@ namespace bna {
 
         union fixed {
             struct {
-                unsigned id : 2;
-                unsigned data : 14;
+                unsigned id : 3;
+                unsigned data : 13;
             }fixed;
             int data;
         };
 
-        bn::array<bn::optional<bn::fixed>,4> get_fixed(const bn::fixed number,const int id);
+        bn::array<bn::optional<bna::link::fixed>,4> get_fixed(const bn::fixed number,const int id);
         bn::array<bn::optional<bn::fixed_point>,4> get_fixed_point(const bn::fixed_point number, const int id);
 
         bool comprobarConexion(int& idConeccion, const bna::link::start& mensajeEnviado, bna::link::start& mensajeRecibido);
@@ -56,6 +56,7 @@ namespace bna {
         bn::vector<CarBuilder, 3> getCarBuilders(const CarBuilder self_car_builder);
         void getCarEjes(const bn::fixed_point eje_enviado, bn::array<bn::fixed_point, 4>& ejes);
 
+        int sinc(const int id);
         void reset();
     } // namespace link
 }

@@ -74,6 +74,7 @@ bna::TestMapLink::TestMapLink(CarBuilder& player, int id_propia) :
     }
 
     _player.spawn(_cars, getWalls(), 0, _camera, getSize());
+
     bna::link::reset();
 }
 
@@ -84,8 +85,7 @@ bn::optional<bna::scene_type> bna::TestMapLink::update() {
     bn::fixed cpu = 0;
 #endif
     bn::music_items::forward.play();
-    bn::array<bn::optional<bn::fixed>, 4> mensaje_recibido;
-    bn::array<bn::optional<bn::fixed_point>, 4> mensaje_recibido_point;
+    bn::array<bn::optional<bna::link::fixed>, 4> mensaje_recibido;
     int frame_actual = 0;
     while (true) {
 #ifdef DEBUG_CPU
@@ -106,52 +106,83 @@ bn::optional<bna::scene_type> bna::TestMapLink::update() {
             bn::profiler::show();
         }
 #endif
+
+        // for (int id_car = 0; id_car < _cars.size(); id_car++) {
+        //     _cars[id_car].update(_ejes[id_car]);
+        //     for (int id_wall = 0; id_wall < _walls.size(); id_wall++) {
+        //         _cars[id_car].checkCollision(_walls[id_wall]);
+        //     }
+
+        //     for (int id_other = id_car + 1; id_other < _cars.size(); id_other++) {
+        //         _cars[id_car].checkCollision(_cars.at(id_other));
+        //     }
+        // }
         _cars[_idPropia].update(_player.getEje());
         for (int id_car = 0; id_car < _cars.size(); id_car++) {
             if (id_car != _idPropia) {
                 _cars[id_car].update(bn::fixed_point(0, 0));
             }
         }
+        // for (int id_car = 0; id_car < _cars.size(); id_car++) {
+        //     for (int id_other = id_car + 1; id_other < _cars.size(); id_other++) {
+        //         _cars[id_car].checkCollision(_cars.at(id_other));
+        //     }
+        // }
+        // frame_actual = bna::link::sinc(frame_actual);
 
-        if (frame_actual == 0) {
-            BN_LOG("frame 1");
-            mensaje_recibido = bna::link::get_fixed(_cars[_idPropia].getRotation(), 1);
-            for (int i = 0; i < mensaje_recibido.size(); i++) {
-                if (mensaje_recibido[i].has_value()) {
-                    _cars[i].setRotation(mensaje_recibido[i].value());
-                }
-            }
-        }
-        else if (frame_actual == 1) {
-            mensaje_recibido = bna::link::get_fixed(_cars[_idPropia].getPosition().x(), 2);
-            BN_LOG("frame 2");
-
-            for (int i = 0; i < mensaje_recibido.size(); i++) {
-                if (mensaje_recibido[i].has_value()) {
-                    _cars[i].setPositionX(mensaje_recibido[i].value());
-                }
-            }
-        }
-        else if (frame_actual == 2) {
-            mensaje_recibido = bna::link::get_fixed(_cars[_idPropia].getPosition().y(), 3);
-            BN_LOG("frame 2");
-
-            for (int i = 0; i < mensaje_recibido.size(); i++) {
-                if (mensaje_recibido[i].has_value()) {
-                    _cars[i].setPositionY(mensaje_recibido[i].value());
-                }
-            }
-        }
-        else {
-            frame_actual = -1;
-        }
-        frame_actual++;
-
+        _sendData(frame_actual, mensaje_recibido);
+        _updateData(mensaje_recibido);
 
         _player.update();
         bn::core::update();
     }
     return bna::scene_type::TEST_MAP;
+}
+
+void bna::TestMapLink::_sendData(int& frame_actual, bn::array<bn::optional<bna::link::fixed>, 4>& mensaje_recibido) {
+    if (frame_actual == 0) {
+        mensaje_recibido = bna::link::get_fixed(_cars[_idPropia].getRotation(), 0);
+    }
+    else if (frame_actual == 1) {
+        mensaje_recibido = bna::link::get_fixed(_cars[_idPropia].getRotation(), 0);
+    }
+    else if (frame_actual == 2) {
+        mensaje_recibido = bna::link::get_fixed(_cars[_idPropia].getPosition().x(), 1);
+    }
+    else if (frame_actual == 3) {
+        mensaje_recibido = bna::link::get_fixed(_cars[_idPropia].getPosition().x(), 1);
+    }
+    else if (frame_actual == 4) {
+        mensaje_recibido = bna::link::get_fixed(_cars[_idPropia].getPosition().y(), 2);
+    }
+    else if (frame_actual == 5) {
+        mensaje_recibido = bna::link::get_fixed(_cars[_idPropia].getPosition().y(), 2);
+    }
+    else {
+        frame_actual = -1;
+    }
+    frame_actual++;
+}
+
+void bna::TestMapLink::_updateData(const bn::array<bn::optional<bna::link::fixed>, 4>& mensaje_recibido) {
+    for (int i = 0; i < mensaje_recibido.size(); i++) {
+        if (mensaje_recibido[i].has_value()) {
+            switch (mensaje_recibido[i]->fixed.id) {
+                case 0:
+                    _cars[i].setRotation(bn::fixed_t<4>().from_data(mensaje_recibido[i]->fixed.data));
+                    break;
+
+                case 1:
+                    _cars[i].setPositionX(bn::fixed_t<4>().from_data(mensaje_recibido[i]->fixed.data));
+                    break;
+                case 2:
+                    _cars[i].setPositionY(bn::fixed_t<4>().from_data(mensaje_recibido[i]->fixed.data));
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
 }
 
 void bna::TestMapLink::_setCamera(bn::camera_ptr& camera) {
