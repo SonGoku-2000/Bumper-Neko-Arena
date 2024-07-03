@@ -42,7 +42,7 @@ namespace bna {
         ~mensaje() {}
     };
 
-    void link();
+    void link_test();
     void testLimitValues();
 }
 

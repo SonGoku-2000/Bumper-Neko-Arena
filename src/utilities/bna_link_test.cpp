@@ -164,7 +164,7 @@ void esperarJugadores(int& id_propia) {
 
 
 void bna::testLimitValues() {
-    constexpr int  PRECICION = 4;
+    constexpr int  PRECICION = 1;
     // Precision  1 va de pasos de 0.5     max 8190
     // Precision  2 va de pasos de 0.25    max 4095
     // Precision  3 va de pasos de 0.125   max 2047.5
@@ -194,7 +194,7 @@ void bna::testLimitValues() {
     BN_LOG("Pases: ", bn::fixed_t<PRECICION>().from_data(1));
 }
 
-void bna::link() {
+void bna::link_test() {
 
     bn::sprite_text_generator text_generator(common::variable_8x16_sprite_font);
     bn::bg_palettes::set_transparent_color(bn::color(16, 16, 16));
