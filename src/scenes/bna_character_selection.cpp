@@ -93,31 +93,6 @@ bn::optional<bna::scene_type> bna::CharacterSelection::update() {
             _updateCharacterSelected();
         }
 
-
-        // int cambio_opcion = int(bn::keypad::right_pressed()) - int(bn::keypad::left_pressed());
-        // if (_idOpcion == opcionesCharacter::CUERPO) {
-        //     if (cambio_opcion) {
-        //         _idBody = bna::parts::bodys(bna::loop(int(_idBody) + cambio_opcion, 0, int(bna::parts::bodys::MAX) - 1));
-        //         _updateBodyText();
-        //         _updateStatsText();
-        //     }
-        // }
-        // else if (_idOpcion == opcionesCharacter::MOTOR) {
-        //     if (cambio_opcion) {
-        //         _idMotor = bna::parts::motors(bna::loop(int(_idMotor) + cambio_opcion, 0, int(bna::parts::motors::MAX) - 1));
-        //         _updateMotorText();
-        //         _updateStatsText();
-        //     }
-        // }
-        // else if (_idOpcion == opcionesCharacter::WHEEL) {
-        //     if (cambio_opcion) {
-        //         _idWheel = bna::parts::wheels(bna::loop(int(_idWheel) + cambio_opcion, 0, int(bna::parts::wheels::MAX) - 1));
-        //         _updateWheelText();
-        //         _updateStatsText();
-        //     }
-        // }
-
-
         if (bn::keypad::a_pressed()) {
             if (_idOpcion == opcionesCharacter::VOLVER) {
                 return bna::scene_type::MAIN_MENU;
@@ -133,15 +108,21 @@ bn::optional<bna::scene_type> bna::CharacterSelection::update() {
                 _updateCharacterSelected();
             }
         }
-        // if (bn::keypad::b_pressed()) {
-        //     return bna::scene_type::MAIN_MENU;
-        // }
-        // if (bn::keypad::start_pressed()) {
-        //     _carBuilder->body = _idBody;
-        //     _carBuilder->motor = _idMotor;
-        //     _carBuilder->wheel = _idWheel;
-        //     return bna::scene_type::TEST_MAP;
-        // }
+
+        if (bn::keypad::b_pressed()) {
+            if (_seleccionado == true) {
+                _seleccionado = false;
+                _updateCharacterSelected();
+            }
+            else {
+                return bna::scene_type::MAIN_MENU;
+            }
+        }
+        if (bn::keypad::start_pressed()) {
+            if (_seleccionado) {
+                return bna::scene_type::CAR_SELECTION;
+            }
+        }
 
         bn::core::update();
     }
