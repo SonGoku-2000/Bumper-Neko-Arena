@@ -64,7 +64,7 @@ bn::optional<bna::scene_type> bna::MainMenu::update() {
 
         if (bn::keypad::a_pressed()) {
             if (_idOpcion == options::PLAY) {
-                return bna::scene_type::CAR_SELECTION;
+                return bna::scene_type::CHARACTER_SELECTION;
             }
             else if(_idOpcion== options::MULTIPLAYER){
                 return bna::scene_type::PREPARING_CONNECTION;
