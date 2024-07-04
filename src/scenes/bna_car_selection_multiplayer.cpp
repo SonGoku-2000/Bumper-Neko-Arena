@@ -1,4 +1,4 @@
-#include "bna_car_selection.hpp"
+#include "bna_car_selection_multiplayer.hpp"
 #include "bn_core.h"
 
 #include "bn_sprite_items_pointer.h"
@@ -12,12 +12,15 @@
 #include "bna_parts.hpp"
 #include "bna_car_builder.hpp"
 
+#include "bna_link.hpp"
+#include "bn_link.h"
+
 #ifdef DEBUG
 #include "bn_log.h"
 #endif
 
 
-bna::CarSelection::CarSelection(CarBuilder& carBuilder) {
+bna::CarSelectionMultiplayer::CarSelectionMultiplayer(CarBuilder& carBuilder) {
     _carBuilder = &carBuilder;
     _continuar = false;
     _idOpcion = opcionesPartes(0);
@@ -61,10 +64,10 @@ bna::CarSelection::CarSelection(CarBuilder& carBuilder) {
         _indicadores[4].y(),
         "Play"
     );
-    _textoVolver = bna::TextManager(
-        _indicadores[5].x() + OFFSET_HORIZONTAL_TEXTO,
+    _textoEstado = bna::TextManager(
+        0,
         _indicadores[5].y(),
-        "Back"
+        "Choosing"
     );
 
     _idBody = bna::parts::bodys(0);
@@ -81,8 +84,12 @@ bna::CarSelection::CarSelection(CarBuilder& carBuilder) {
 }
 
 
-bn::optional<bna::scene_type> bna::CarSelection::update() {
-    bn::fixed brillo;
+bn::optional<bna::scene_type> bna::CarSelectionMultiplayer::update() {
+    bool listo = false;
+
+    bna::link::start mensajeEnviado;
+    bna::link::start mensajeResivido;
+
     while (!_continuar) {
         if (bn::keypad::down_pressed()) {
             _idOpcion = opcionesPartes(bna::loop(int(_idOpcion) + 1, 0, int(opcionesPartes::VOLVER)));
@@ -126,7 +133,7 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
                 _carBuilder->body = _idBody;
                 _carBuilder->motor = _idMotor;
                 _carBuilder->wheel = _idWheel;
-                return bna::scene_type::TEST_MAP;
+                listo = true;
             }
         }
         if (bn::keypad::b_pressed()) {
@@ -136,7 +143,22 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
             _carBuilder->body = _idBody;
             _carBuilder->motor = _idMotor;
             _carBuilder->wheel = _idWheel;
-            return bna::scene_type::TEST_MAP;
+            listo = true;
+        }
+
+
+        mensajeEnviado.keys.ready0 = listo;
+        if (listo) {
+            if (bna::link::checkJugadoresReady(mensajeEnviado, mensajeResivido)) {
+                return bna::scene_type::TEST_MAP_LINK;
+            }
+            else {
+                _textoEstado.updateText("Esperando demas jugadores...");
+            }
+        }
+        else {
+            bna::link::checkJugadoresReady(mensajeEnviado, mensajeResivido);
+            _textoEstado.updateText("Eligiendo");
         }
 
         bn::core::update();
@@ -144,7 +166,7 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
     return bna::scene_type::TEST_MAP;
 }
 
-void bna::CarSelection::_updateStatsText() {
+void bna::CarSelectionMultiplayer::_updateStatsText() {
     bna::Stats stats;
     stats = stats + bna::parts::getBody(_idBody);
     stats = stats + bna::parts::getMotor(_idMotor);
@@ -165,7 +187,7 @@ void bna::CarSelection::_updateStatsText() {
         35
     );
 }
-void bna::CarSelection::_updateBodyText() {
+void bna::CarSelectionMultiplayer::_updateBodyText() {
     bn::string<111> texto = "Body: ";
 
     if (bna::parts::bodys::LIGHT == _idBody) {
@@ -180,7 +202,7 @@ void bna::CarSelection::_updateBodyText() {
 
     _textoCuerpo.updateText(texto);
 }
-void bna::CarSelection::_updateMotorText() {
+void bna::CarSelectionMultiplayer::_updateMotorText() {
     bn::string<111> texto = "Motor: ";
 
     if (bna::parts::motors::SLOW == _idMotor) {
@@ -195,7 +217,7 @@ void bna::CarSelection::_updateMotorText() {
 
     _textoMotor.updateText(texto);
 }
-void bna::CarSelection::_updateWheelText() {
+void bna::CarSelectionMultiplayer::_updateWheelText() {
     bn::string<111> texto = "Wheel: ";
 
     if (bna::parts::wheels::NORMAL == _idWheel) {

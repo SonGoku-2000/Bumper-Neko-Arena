@@ -19,26 +19,31 @@ namespace bna {
     class CarBuilder;
     class Player {
         public:
-        Player(CarBuilder& body);
+        Player();
         ~Player() = default;
 
-        void update();
-        void spawn(bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>& enemie, bn::vector<bna::Hitbox, 4>& _walls, bn::camera_ptr& camera, bn::size size);
+        void full_update();
+        void spawn(bn::vector<bna::Car, limit_values::MAX_ENEMIES + 1>& cars, bn::vector<bna::Hitbox, 4>& walls, int id_propia, bn::camera_ptr& camera, bn::size size);
 
         bn::fixed_point getPosition();
-        
-        void setBody(Car body);
+
+        void setBody(Car& body);
+        bna::Car& getCarRef();
+        bna::Vector2 getEje();
+        void update();
 
         private:
         bna::Vector2 _eje;
 
-        bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>* _enemies;
+        bn::vector<bna::Car, limit_values::MAX_ENEMIES + 1>* _enemies;
 
-        bna::Car _cuerpo;
+        bna::Car* _cuerpo;
 
         bn::optional<bna::CameraManager> _cameraManager;
 
         bn::vector<bna::Hitbox, 4>* _walls;
+
+        int _idPropia;
     };
 } // namespace bna
 

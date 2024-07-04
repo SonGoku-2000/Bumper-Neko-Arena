@@ -2,7 +2,10 @@ namespace bna {
     enum class scene_type {
         MAIN_MENU,
         CAR_SELECTION,
+        CAR_SELECTION_MULTIPLAYER,
         OPTION_MENU,
-        TEST_MAP
+        PREPARING_CONNECTION,
+        TEST_MAP,
+        TEST_MAP_LINK,
     };
 }

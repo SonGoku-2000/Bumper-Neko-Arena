@@ -272,5 +272,8 @@ notas.txt
 *.elf
 *.gba
 *.sav
+*.sa2
+*.sa3
+*.sa4
 Raw Assets
 test.cpp

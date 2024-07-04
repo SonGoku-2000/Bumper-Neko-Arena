@@ -18,11 +18,14 @@
 namespace bna {
     class CarBuilder;
     class Car;
-    class TestMap : public scene {
-
+    namespace link {
+        union fixed;
+        union speed_info;
+    }
+    class TestMapLink : public scene {
         public:
-        TestMap(CarBuilder& player);
-        ~TestMap() = default;
+        TestMapLink(CarBuilder& player, int id_propia);
+        ~TestMapLink() = default;
 
         [[nodiscard]] bn::optional<scene_type> update() final;
 
@@ -37,17 +40,17 @@ namespace bna {
 
         bn::vector<bna::Hitbox, 4> _walls;
 
-        bn::vector<bna::Enemie, limit_values::MAX_ENEMIES> _enemies;
         bn::vector<bna::Car, limit_values::MAX_ENEMIES + 1> _cars;
         bn::array<bn::fixed_point, limit_values::MAX_ENEMIES + 1> _ejes;
-
-        bna::EnemiesManager _enemiesManager;
 
         bn::camera_ptr _camera;
 
         bna::Player _player;
+        const int _idPropia;
 
         void _setCamera(bn::camera_ptr& camera);
+        void _sendData(int& frame_actual, bn::array<bn::optional<bna::link::fixed>, 4>& mensaje_recibido, bn::array<bn::optional<bna::link::speed_info>, 4>& mensaje_speed_data);
+        void _updateData(const bn::array<bn::optional<bna::link::fixed>, 4>& mensaje_recibido, bn::array<bn::optional<bna::link::speed_info>, 4>& mensaje_speed_data);
     };
 } // namespace bna
 
