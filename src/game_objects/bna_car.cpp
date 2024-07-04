@@ -235,6 +235,22 @@ bna::Vector2 bna::Car::getSpeed() {
     return Vector2(_dx + _externalForce.x(), _dy + _externalForce.y());
 }
 
+bn::fixed bna::Car::getAbsoluteSpeed() {
+    return _speed;
+}
+
+bn::fixed_point bna::Car::getExternalForce() {
+    return _externalForce;
+}
+
+void bna::Car::setSpeed(bn::fixed speed) {
+    _speed = speed;
+}
+
+void bna::Car::setExternalForce(bn::fixed_point external_force) {
+    _externalForce = external_force;
+}
+
 bn::fixed_point bna::Car::getPosition() {
     return _pos;
 }

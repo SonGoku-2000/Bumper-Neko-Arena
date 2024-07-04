@@ -18,13 +18,13 @@
 namespace bna {
     class CarBuilder;
     class Car;
-    namespace link{
+    namespace link {
         union fixed;
+        union speed_info;
     }
     class TestMapLink : public scene {
-
         public:
-        TestMapLink(CarBuilder& player,int id_propia);
+        TestMapLink(CarBuilder& player, int id_propia);
         ~TestMapLink() = default;
 
         [[nodiscard]] bn::optional<scene_type> update() final;
@@ -49,8 +49,8 @@ namespace bna {
         const int _idPropia;
 
         void _setCamera(bn::camera_ptr& camera);
-        void _sendData(int& frame_actual, bn::array<bn::optional<bna::link::fixed>, 4>& mensaje_recibido);
-        void _updateData(const bn::array<bn::optional<bna::link::fixed>, 4>& mensaje_recibido);
+        void _sendData(int& frame_actual, bn::array<bn::optional<bna::link::fixed>, 4>& mensaje_recibido, bn::array<bn::optional<bna::link::speed_info>, 4>& mensaje_speed_data);
+        void _updateData(const bn::array<bn::optional<bna::link::fixed>, 4>& mensaje_recibido, bn::array<bn::optional<bna::link::speed_info>, 4>& mensaje_speed_data);
     };
 } // namespace bna
 

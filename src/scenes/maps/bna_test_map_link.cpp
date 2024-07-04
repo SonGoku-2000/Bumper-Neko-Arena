@@ -86,6 +86,7 @@ bn::optional<bna::scene_type> bna::TestMapLink::update() {
 #endif
     bn::music_items::forward.play();
     bn::array<bn::optional<bna::link::fixed>, 4> mensaje_recibido;
+    bn::array<bn::optional<bna::link::speed_info>, 4> mensaje_speed_data;
     int frame_actual = 0;
     while (true) {
 #ifdef DEBUG_CPU
@@ -117,21 +118,23 @@ bn::optional<bna::scene_type> bna::TestMapLink::update() {
         //         _cars[id_car].checkCollision(_cars.at(id_other));
         //     }
         // }
-        _cars[_idPropia].update(_player.getEje());
+
+        _sendData(frame_actual, mensaje_recibido, mensaje_speed_data);
+        _updateData(mensaje_recibido, mensaje_speed_data);
+
         for (int id_car = 0; id_car < _cars.size(); id_car++) {
-            if (id_car != _idPropia) {
+            if (id_car == _idPropia) {
+                _cars[_idPropia].update(_player.getEje());
+            }
+            else {
                 _cars[id_car].update(bn::fixed_point(0, 0));
             }
+            for (int id_other = id_car + 1; id_other < _cars.size(); id_other++) {
+                _cars[id_car].checkCollision(_cars.at(id_other));
+            }
         }
-        // for (int id_car = 0; id_car < _cars.size(); id_car++) {
-        //     for (int id_other = id_car + 1; id_other < _cars.size(); id_other++) {
-        //         _cars[id_car].checkCollision(_cars.at(id_other));
-        //     }
-        // }
         // frame_actual = bna::link::sinc(frame_actual);
 
-        _sendData(frame_actual, mensaje_recibido);
-        _updateData(mensaje_recibido);
 
         _player.update();
         bn::core::update();
@@ -139,32 +142,40 @@ bn::optional<bna::scene_type> bna::TestMapLink::update() {
     return bna::scene_type::TEST_MAP;
 }
 
-void bna::TestMapLink::_sendData(int& frame_actual, bn::array<bn::optional<bna::link::fixed>, 4>& mensaje_recibido) {
-    if (frame_actual == 0) {
-        mensaje_recibido = bna::link::get_fixed(_cars[_idPropia].getRotation(), 0);
-    }
-    else if (frame_actual == 1) {
-        mensaje_recibido = bna::link::get_fixed(_cars[_idPropia].getRotation(), 0);
-    }
-    else if (frame_actual == 2) {
-        mensaje_recibido = bna::link::get_fixed(_cars[_idPropia].getPosition().x(), 1);
-    }
-    else if (frame_actual == 3) {
-        mensaje_recibido = bna::link::get_fixed(_cars[_idPropia].getPosition().x(), 1);
-    }
-    else if (frame_actual == 4) {
-        mensaje_recibido = bna::link::get_fixed(_cars[_idPropia].getPosition().y(), 2);
-    }
-    else if (frame_actual == 5) {
-        mensaje_recibido = bna::link::get_fixed(_cars[_idPropia].getPosition().y(), 2);
-    }
-    else {
-        frame_actual = -1;
+void bna::TestMapLink::_sendData(int& frame_actual, bn::array<bn::optional<bna::link::fixed>, 4>& mensaje_recibido, bn::array<bn::optional<bna::link::speed_info>, 4>& mensaje_speed_data) {
+    switch (frame_actual) {
+        case 0:
+        case 1:
+        case 2:
+            mensaje_recibido = bna::link::get_fixed(_cars[_idPropia].getRotation(), 0);
+            break;
+
+        case 3:
+        case 4:
+        case 5:
+            mensaje_recibido = bna::link::get_fixed(_cars[_idPropia].getPosition().x(), 1);
+            break;
+
+        case 6:
+        case 7:
+        case 8:
+            mensaje_recibido = bna::link::get_fixed(_cars[_idPropia].getPosition().y(), 2);
+            break;
+
+        case 9:
+        case 10:
+        case 11:
+            mensaje_speed_data = bna::link::get_speed_info(_cars[_idPropia].getAbsoluteSpeed(), _cars[_idPropia].getExternalForce(), 3);
+            break;
+
+        default:
+            frame_actual = -1;
+            break;
     }
     frame_actual++;
 }
 
-void bna::TestMapLink::_updateData(const bn::array<bn::optional<bna::link::fixed>, 4>& mensaje_recibido) {
+void bna::TestMapLink::_updateData(const bn::array<bn::optional<bna::link::fixed>, 4>& mensaje_recibido, bn::array<bn::optional<bna::link::speed_info>, 4>& mensaje_speed_data) {
     for (int i = 0; i < mensaje_recibido.size(); i++) {
         if (mensaje_recibido[i].has_value()) {
             switch (mensaje_recibido[i]->fixed.id) {
@@ -177,6 +188,22 @@ void bna::TestMapLink::_updateData(const bn::array<bn::optional<bna::link::fixed
                     break;
                 case 2:
                     _cars[i].setPositionY(bn::fixed_t<4>().from_data(mensaje_recibido[i]->fixed.data));
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    for (int i = 0; i < mensaje_speed_data.size(); i++) {
+        if (mensaje_speed_data[i].has_value()) {
+            switch (mensaje_speed_data[i]->info.id) {
+                case 3:
+                    _cars[i].setSpeed(mensaje_speed_data[i]->info.speed);
+                    _cars[i].setExternalForce(bn::fixed_point(
+                        mensaje_speed_data[i]->info.external_force_x,
+                        mensaje_speed_data[i]->info.external_force_y
+                    ));
                     break;
                 default:
                     break;

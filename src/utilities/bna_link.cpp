@@ -114,19 +114,30 @@ bn::array<bn::optional<bna::link::fixed>, 4> bna::link::get_fixed(const bn::fixe
     return respuesta;
 }
 
-bn::array<bn::optional<bn::fixed_point>, 4> bna::link::get_fixed_point(const bn::fixed_point number, const int id) {
-    bn::array<bn::optional<bn::fixed_point>, 4> respuesta;
-    (void)number;
-    (void)id;
+bn::array<bn::optional<bna::link::speed_info>, 4> bna::link::get_speed_info(const bn::fixed speed, const bn::fixed_point external_force, const int id) {
+    bna::link::speed_info mensaje_enviar;
+    mensaje_enviar.info.speed = speed.round_integer();
+    mensaje_enviar.info.external_force_x = external_force.x().round_integer();
+    mensaje_enviar.info.external_force_y = external_force.y().round_integer();
+    mensaje_enviar.info.id = id;
+    bn::link::send(mensaje_enviar.data);
 
-    // bn::array<bn::optional<bn::fixed>, 4> respuesta_x = bna::link::get_fixed(number.x(), id);
-    // bn::array<bn::optional<bn::fixed>, 4> respuesta_y = bna::link::get_fixed(number.y(), id);
+    bn::array<bn::optional<bna::link::speed_info>, 4> respuesta;
+    bna::link::speed_info mensaje_recibido;
 
-    for (int i = 0; i < respuesta.size(); i++) {
-        // if (respuesta_x[i].has_value()) {
-        // if (respuesta_x[i].has_value() && respuesta_y[i].has_value()) {
-            // respuesta[i] = bn::fixed_point(respuesta_x[i].value(), respuesta_y[i].value());
-    // }
+    constexpr int max_failed_retries = 5;
+    int failed_retries = 0;
+    while (failed_retries <= max_failed_retries) {
+        if (bn::optional<bn::link_state> link_state = bn::link::receive()) {
+            for (int i = 0; i < link_state->other_players().size(); i++) {
+                const bn::link_player& other_player = link_state->other_players()[i];
+                mensaje_recibido.data = other_player.data();
+                respuesta[other_player.id()] = mensaje_recibido;
+            }
+        }
+        else {
+            ++failed_retries;
+        }
     }
     return respuesta;
 }

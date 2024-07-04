@@ -45,9 +45,22 @@ namespace bna {
             }fixed;
             int data;
         };
+        union speed_info {
+            struct {
+                unsigned id : 4;
+                int speed : 4;
+                int external_force_x: 4;
+                int external_force_y: 4;
+            }info;
+            int data;
+        };
+        union link_datas{
+            fixed link_fixed;
+            speed_info link_speed_info;
+        };
 
         bn::array<bn::optional<bna::link::fixed>,4> get_fixed(const bn::fixed number,const int id);
-        bn::array<bn::optional<bn::fixed_point>,4> get_fixed_point(const bn::fixed_point number, const int id);
+        bn::array<bn::optional<bna::link::speed_info>,4> get_speed_info(const bn::fixed speed,const bn::fixed_point external_force,const int id);
 
         bool comprobarConexion(int& idConeccion, const bna::link::start& mensajeEnviado, bna::link::start& mensajeRecibido);
 
