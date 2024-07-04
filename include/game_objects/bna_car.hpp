@@ -37,10 +37,17 @@ namespace bna {
 
         bn::fixed_point getPosition();
         void setPosition(bn::fixed_point position);
+        void setPositionX(bn::fixed rotaion);
+        void setPositionY(bn::fixed rotaion);
 
         bn::fixed getRotation() const;
+        void setRotation(bn::fixed rotaion);
 
         bna::Vector2 getSpeed();
+        bn::fixed getAbsoluteSpeed();
+        bn::fixed_point getExternalForce();
+        void setSpeed(bn::fixed speed);
+        void setExternalForce(bn::fixed_point external_force);
 
         bn::fixed getMass();
 

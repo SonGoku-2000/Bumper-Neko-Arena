@@ -15,23 +15,23 @@ namespace bna {
     class CarBuilder;
     class Enemie {
         public:
-        Enemie(CarBuilder& body);
+        Enemie(Car& body);
         ~Enemie() = default;
 
         void update();
-        void spawn(bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>& carros, bna::Player& player, bn::vector<bna::Hitbox, 4>& walls, bn::camera_ptr& camera, bn::size size);
+        void spawn(bn::vector<bna::Car, limit_values::MAX_ENEMIES + 1>& carros, bn::vector<bna::Hitbox, 4>& walls, bn::camera_ptr& camera, bn::size size);
         void checkCollision(bna::Car& car);
         void checkCollision(bna::Enemie& car);
         void checkCollision(bna::Hitbox& hitbox);
 
         bna::Car& getCar();
+        bn::fixed_point getEje();
 
         private:
-        bna::Car _cuerpo;
+        bna::Car* _cuerpo;
         bn::fixed_rect _vision;
 
-        bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>* _carros;
-        bna::Player* _player;
+        bn::vector<bna::Car, limit_values::MAX_ENEMIES + 1>* _carros;
         bn::vector<bna::Hitbox, 4>* _walls;
 
         bn::random _random;

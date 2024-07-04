@@ -24,9 +24,9 @@ void bna::EnemiesManager::update() {
     }
 }
 
-void bna::EnemiesManager::spawn(bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>& carros, bna::Player& player, bn::vector<bna::Hitbox, 4>& walls, bn::camera_ptr& camera, bn::size size) {
+void bna::EnemiesManager::spawn(bn::vector<bna::Car, limit_values::MAX_ENEMIES + 1>& carros, bn::vector<bna::Hitbox, 4>& walls, bn::camera_ptr& camera, bn::size size) {
     for (int i = 0; i < _enemies->size(); i++) {
-        _enemies->at(i).spawn(carros, player, walls, camera, size);
+        _enemies->at(i).spawn(carros, walls, camera, size);
     }
 
     _walls = &walls;

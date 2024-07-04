@@ -235,6 +235,22 @@ bna::Vector2 bna::Car::getSpeed() {
     return Vector2(_dx + _externalForce.x(), _dy + _externalForce.y());
 }
 
+bn::fixed bna::Car::getAbsoluteSpeed() {
+    return _speed;
+}
+
+bn::fixed_point bna::Car::getExternalForce() {
+    return _externalForce;
+}
+
+void bna::Car::setSpeed(bn::fixed speed) {
+    _speed = speed;
+}
+
+void bna::Car::setExternalForce(bn::fixed_point external_force) {
+    _externalForce = external_force;
+}
+
 bn::fixed_point bna::Car::getPosition() {
     return _pos;
 }
@@ -243,6 +259,14 @@ void bna::Car::setPosition(bn::fixed_point position) {
     _pos = position;
     _hitbox.setPosition(position);
     _sprite.set_position(position);
+}
+
+void bna::Car::setPositionX(bn::fixed x) {
+    setPosition(bn::fixed_point(x, getPosition().y()));
+}
+
+void bna::Car::setPositionY(bn::fixed y) {
+    setPosition(bn::fixed_point(getPosition().x(), y));
 }
 
 bn::fixed bna::Car::getMass() {
@@ -256,6 +280,10 @@ bn::fixed bna::Car::getRotation() const {
     else {
         return _rotation;
     }
+}
+
+void bna::Car::setRotation(bn::fixed rotation) {
+    _rotation = rotation;
 }
 
 
