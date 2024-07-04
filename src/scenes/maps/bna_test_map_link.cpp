@@ -118,10 +118,6 @@ bn::optional<bna::scene_type> bna::TestMapLink::update() {
         //         _cars[id_car].checkCollision(_cars.at(id_other));
         //     }
         // }
-
-        _sendData(frame_actual, mensaje_recibido, mensaje_speed_data);
-        _updateData(mensaje_recibido, mensaje_speed_data);
-
         for (int id_car = 0; id_car < _cars.size(); id_car++) {
             if (id_car == _idPropia) {
                 _cars[_idPropia].update(_player.getEje());
@@ -132,7 +128,15 @@ bn::optional<bna::scene_type> bna::TestMapLink::update() {
             for (int id_other = id_car + 1; id_other < _cars.size(); id_other++) {
                 _cars[id_car].checkCollision(_cars.at(id_other));
             }
+            for (int id_wall = 0; id_wall < _walls.size(); id_wall++) {
+                _cars[id_car].checkCollision(_walls[id_wall]);
+            }
         }
+
+        _sendData(frame_actual, mensaje_recibido, mensaje_speed_data);
+        _updateData(mensaje_recibido, mensaje_speed_data);
+
+
         // frame_actual = bna::link::sinc(frame_actual);
 
 

@@ -97,7 +97,7 @@ bn::array<bn::optional<bna::link::fixed>, 4> bna::link::get_fixed(const bn::fixe
     bn::array<bn::optional<bna::link::fixed>, 4> respuesta;
     bna::link::fixed mensaje_recibido;
 
-    constexpr int max_failed_retries = 5;
+    constexpr int max_failed_retries = 10;
     int failed_retries = 0;
     while (failed_retries <= max_failed_retries) {
         if (bn::optional<bn::link_state> link_state = bn::link::receive()) {
