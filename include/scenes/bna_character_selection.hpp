@@ -30,12 +30,14 @@ namespace bna {
             VOLVER
         };
         opcionesCharacter _idOpcion;
-
-        bn::vector<bna::Indicator, 8> _indicadores;
-        bn::optional<bn::sprite_ptr> _puntero;
+        opcionesCharacter _idOpcionSeleccionada;
 
         bool _continuar;
         bool _seleccionado;
+
+
+        bn::vector<bna::Indicator, 8> _indicadores;
+        bn::optional<bn::sprite_ptr> _puntero;
 
         CarBuilder* _carBuilder;
 

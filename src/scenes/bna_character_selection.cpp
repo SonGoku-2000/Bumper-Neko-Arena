@@ -118,17 +118,21 @@ bn::optional<bna::scene_type> bna::CharacterSelection::update() {
         // }
 
 
-        // if (bn::keypad::a_pressed()) {
-        //     if (_idOpcion == opcionesCharacter::VOLVER) {
-        //         return bna::scene_type::MAIN_MENU;
-        //     }
-        //     if (_idOpcion == opcionesCharacter::PLAY) {
-        //         _carBuilder->body = _idBody;
-        //         _carBuilder->motor = _idMotor;
-        //         _carBuilder->wheel = _idWheel;
-        //         return bna::scene_type::TEST_MAP;
-        //     }
-        // }
+        if (bn::keypad::a_pressed()) {
+            if (_idOpcion == opcionesCharacter::VOLVER) {
+                return bna::scene_type::MAIN_MENU;
+            }
+            if (_idOpcion == opcionesCharacter::NEXT) {
+                if (_seleccionado == true) {
+                    return bna::scene_type::CAR_SELECTION;
+                }
+            }
+            else {
+                _idOpcionSeleccionada = _idOpcion;
+                _seleccionado = true;
+                _updateCharacterSelected();
+            }
+        }
         // if (bn::keypad::b_pressed()) {
         //     return bna::scene_type::MAIN_MENU;
         // }
@@ -145,6 +149,22 @@ bn::optional<bna::scene_type> bna::CharacterSelection::update() {
 }
 
 void bna::CharacterSelection::_updateCharacterSelected() {
+    if (_seleccionado == true) {
+        if (opcionesCharacter::CAT_1 == _idOpcionSeleccionada) {
+            _textoCharacterSeleccionado.updateText("Cat 1");
+        }
+        if (opcionesCharacter::CAT_2 == _idOpcionSeleccionada) {
+            _textoCharacterSeleccionado.updateText("Cat 2");
+        }
+        if (opcionesCharacter::CAT_3 == _idOpcionSeleccionada) {
+            _textoCharacterSeleccionado.updateText("Cat 3");
+        }
+        if (opcionesCharacter::BIRD == _idOpcionSeleccionada) {
+            _textoCharacterSeleccionado.updateText("Cat Bird");
+        }
+        return;
+    }
+
     if (opcionesCharacter::CAT_1 == _idOpcion) {
         _textoCharacterSeleccionado.updateText("Cat 1");
     }
