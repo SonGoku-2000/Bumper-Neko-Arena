@@ -14,6 +14,8 @@
 #include "bna_player.hpp"
 #include "bna_scene.hpp"
 
+#include "bna_position_icon_manager.hpp"
+
 #include "bna_test_values.hpp"
 namespace bna {
     class CarBuilder;
@@ -43,6 +45,7 @@ namespace bna {
         bn::array<bn::fixed_point, limit_values::MAX_ENEMIES + 1> _ejes;
 
         bna::EnemiesManager _enemiesManager;
+        bna::PositionIconManager _positionIconManager;
 
         bn::camera_ptr _camera;
 

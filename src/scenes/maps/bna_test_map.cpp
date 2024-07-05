@@ -27,6 +27,7 @@ constexpr int CPU_CICLES = 64;
 bna::TestMap::TestMap(CarBuilder& playerCarBuilder, Characters& playerCharacter) :
     _fondo(bn::regular_bg_items::mapa_prueba.create_bg(0, 0)),
     _enemiesManager(_enemies),
+    _positionIconManager(_camera,_enemies),
     _camera(bn::camera_ptr::create(0, 0)) {
     _size = _fondo.dimensions();
 
@@ -63,7 +64,7 @@ bna::TestMap::TestMap(CarBuilder& playerCarBuilder, Characters& playerCharacter)
     bn::random random;
 
     for (int i = 0; i < _enemies.size(); i++) {
-        _enemies[i].setCharacter(bna::Characters(random.get_int(int(bna::Characters::BIRD))));
+        _enemies[i].setCharacter(bna::Characters(i));
     }
 
     _setCamera(_camera);
@@ -75,6 +76,7 @@ bna::TestMap::TestMap(CarBuilder& playerCarBuilder, Characters& playerCharacter)
     _player.spawn(_cars, getWalls(), 0, _camera, getSize());
 
     _enemiesManager.spawn(_cars, getWalls(), _camera, getSize());
+    _positionIconManager.generateIcons();
 }
 
 
