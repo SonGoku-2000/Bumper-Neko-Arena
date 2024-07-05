@@ -204,3 +204,7 @@ void bna::Enemie::checkCollision(bna::Enemie& car) {
 bna::Car& bna::Enemie::getCar() {
     return *_cuerpo;
 }
+
+void bna::Enemie::setCharacter(const Characters character){
+    _character = character;
+}

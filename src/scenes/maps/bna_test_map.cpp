@@ -5,6 +5,8 @@
 #include "bna_scene_type.hpp"
 
 #include "bn_core.h"
+#include "bn_random.h"
+#include "bna_characters.hpp"
 #include "bna_car_builder.hpp"
 #include "bna_parts.hpp"
 #include "bna_car.hpp"
@@ -22,7 +24,7 @@ constexpr int CPU_CICLES = 64;
 
 #include "bn_music_items.h"
 
-bna::TestMap::TestMap(CarBuilder& player) :
+bna::TestMap::TestMap(CarBuilder& playerCarBuilder, Characters& playerCharacter) :
     _fondo(bn::regular_bg_items::mapa_prueba.create_bg(0, 0)),
     _enemiesManager(_enemies),
     _camera(bn::camera_ptr::create(0, 0)) {
@@ -37,8 +39,9 @@ bna::TestMap::TestMap(CarBuilder& player) :
     _walls.push_back(bna::Hitbox(bna::Vector2((_size.width() / -2) + separacion, 0), bna::Vector2(_size.height() - 10, 10), debug, 3));
     // _walls.push_back(bna::Hitbox(bna::Vector2(60, 0), bna::Vector2(70, 10), debug, 3));
 
-    _cars.push_back(player.build());
+    _cars.push_back(playerCarBuilder.build());
     _player.setBody(_cars[0]);
+    _player.setCharacter(playerCharacter);
 
     CarBuilder car_builder;
     car_builder.body = bna::parts::bodys::MEDIUM;
@@ -57,6 +60,12 @@ bna::TestMap::TestMap(CarBuilder& player) :
     _cars.push_back(car_builder.build());
     _enemies.push_back(_cars.back());
 
+    bn::random random;
+
+    for (int i = 0; i < _enemies.size(); i++) {
+        _enemies[i].setCharacter(bna::Characters(random.get_int(int(bna::Characters::BIRD))));
+    }
+
     _setCamera(_camera);
 
     for (int i = 0; i < _cars.size(); i++) {
@@ -65,7 +74,7 @@ bna::TestMap::TestMap(CarBuilder& player) :
 
     _player.spawn(_cars, getWalls(), 0, _camera, getSize());
 
-    _enemiesManager.spawn(_cars,  getWalls(), _camera, getSize());
+    _enemiesManager.spawn(_cars, getWalls(), _camera, getSize());
 }
 
 
@@ -115,9 +124,9 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
         _player.update();
         // _enemiesManager.update();
         bn::core::update();
-        }
-    return bna::scene_type::TEST_MAP;
     }
+    return bna::scene_type::TEST_MAP;
+}
 
 void bna::TestMap::_setCamera(bn::camera_ptr& camera) {
     _fondo.set_camera(camera);

@@ -66,7 +66,7 @@ int main() {
                 break;
 
             case bna::scene_type::TEST_MAP:
-                scene.reset(new bna::TestMap(playerCar));
+                scene.reset(new bna::TestMap(playerCar, playerCharacter));
                 break;
 
             case bna::scene_type::TEST_MAP_LINK:

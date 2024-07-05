@@ -17,11 +17,12 @@
 #include "bna_test_values.hpp"
 namespace bna {
     class CarBuilder;
+    enum class Characters :int;
     class Car;
     class TestMap : public scene {
 
         public:
-        TestMap(CarBuilder& player);
+        TestMap(CarBuilder& playerCarBuilder, Characters& playerCharacter);
         ~TestMap() = default;
 
         [[nodiscard]] bn::optional<scene_type> update() final;
