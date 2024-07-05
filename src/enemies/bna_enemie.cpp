@@ -6,6 +6,7 @@
 #include "bn_math.h"
 #include "bna_math.hpp"
 #include "bn_display.h"
+#include "bna_characters.hpp"
 
 #include "bn_log.h"
 
@@ -58,6 +59,10 @@ bn::fixed_point bna::Enemie::getEje() {
     _comprobarAnguloObjetivo(eje, id_distancia_menor);
 
     return eje;
+}
+
+bn::fixed_point bna::Enemie::getPosition(){
+    return _cuerpo->getPosition();
 }
 
 void bna::Enemie::_comprobarIdDistanciaMenor(int& id_distancia_menor) {
@@ -205,6 +210,10 @@ bna::Car& bna::Enemie::getCar() {
     return *_cuerpo;
 }
 
-void bna::Enemie::setCharacter(const Characters character){
+void bna::Enemie::setCharacter(const Characters character) {
     _character = character;
+}
+
+bna::Characters bna::Enemie::getCharacter() {
+    return _character;
 }

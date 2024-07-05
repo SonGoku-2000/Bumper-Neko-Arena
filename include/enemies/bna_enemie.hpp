@@ -27,8 +27,10 @@ namespace bna {
 
         bna::Car& getCar();
         bn::fixed_point getEje();
+        bn::fixed_point getPosition();
 
         void setCharacter(const Characters character);
+        bna::Characters getCharacter();
 
         private:
         bna::Car* _cuerpo;
