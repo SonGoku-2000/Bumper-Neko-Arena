@@ -120,7 +120,7 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
 
         if (bn::keypad::a_pressed()) {
             if (_idOpcion == opcionesPartes::VOLVER) {
-                return bna::scene_type::MAIN_MENU;
+                return bna::scene_type::CHARACTER_SELECTION;
             }
             if (_idOpcion == opcionesPartes::PLAY) {
                 _carBuilder->body = _idBody;
@@ -130,7 +130,7 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
             }
         }
         if (bn::keypad::b_pressed()) {
-            return bna::scene_type::MAIN_MENU;
+            return bna::scene_type::CHARACTER_SELECTION;
         }
         if (bn::keypad::start_pressed()) {
             _carBuilder->body = _idBody;
