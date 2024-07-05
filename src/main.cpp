@@ -15,6 +15,7 @@
 #include "bna_test_map_link.hpp"
 #include "bna_brightness_manager.hpp"
 #include "bna_car_builder.hpp"
+#include "bna_characters.hpp"
 #include "bna_preparing_connection.hpp"
 #include "bna_character_selection.hpp"
 #define DEBUG
@@ -34,6 +35,7 @@ int main() {
     bn::optional<bna::scene_type> next_scene = bna::scene_type::MAIN_MENU;
 
     bna::CarBuilder playerCar;
+    bna::Characters playerCharacter;
 
     int id_propia;
 
@@ -47,8 +49,8 @@ int main() {
                 scene.reset(new bna::PreparingConnection(id_propia));
                 break;
 
-                case bna::scene_type::CHARACTER_SELECTION:
-                scene.reset(new bna::CharacterSelection(playerCar));
+            case bna::scene_type::CHARACTER_SELECTION:
+                scene.reset(new bna::CharacterSelection(playerCharacter));
                 break;
 
             case bna::scene_type::CAR_SELECTION:

@@ -9,16 +9,15 @@
 #include "bna_loop_value.hpp"
 
 #include "bn_string.h"
-#include "bna_parts.hpp"
-#include "bna_car_builder.hpp"
+#include "bna_characters.hpp"
 
 #ifdef DEBUG
 #include "bn_log.h"
 #endif
 
 
-bna::CharacterSelection::CharacterSelection(CarBuilder& carBuilder) {
-    _carBuilder = &carBuilder;
+bna::CharacterSelection::CharacterSelection(Characters& character) {
+    _character = &character;
     _continuar = false;
     _idOpcion = opcionesCharacter(0);
 
@@ -99,6 +98,7 @@ bn::optional<bna::scene_type> bna::CharacterSelection::update() {
             }
             if (_idOpcion == opcionesCharacter::NEXT) {
                 if (_seleccionado == true) {
+                    _updateCharacterPointer();
                     return bna::scene_type::CAR_SELECTION;
                 }
             }
@@ -127,6 +127,21 @@ bn::optional<bna::scene_type> bna::CharacterSelection::update() {
         bn::core::update();
     }
     return bna::scene_type::TEST_MAP;
+}
+
+void bna::CharacterSelection::_updateCharacterPointer() {
+    if (opcionesCharacter::CAT_1 == _idOpcionSeleccionada) {
+        *_character = Characters::CAT_1;
+    }
+    if (opcionesCharacter::CAT_2 == _idOpcionSeleccionada) {
+        *_character = Characters::CAT_2;
+    }
+    if (opcionesCharacter::CAT_3 == _idOpcionSeleccionada) {
+        *_character = Characters::CAT_3;
+    }
+    if (opcionesCharacter::BIRD == _idOpcionSeleccionada) {
+        *_character = Characters::BIRD;
+    }
 }
 
 void bna::CharacterSelection::_updateCharacterSelected() {

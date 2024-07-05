@@ -6,10 +6,10 @@
 #include "bna_indicator.hpp"
 
 namespace bna {
-    class CarBuilder;
+    enum class Characters:int;
     class CharacterSelection : public scene {
         public:
-        CharacterSelection(CarBuilder& carBuilder);
+        CharacterSelection(Characters& character);
         [[nodiscard]] bn::optional<scene_type> update() final;
 
         private:
@@ -31,6 +31,7 @@ namespace bna {
         };
         opcionesCharacter _idOpcion;
         opcionesCharacter _idOpcionSeleccionada;
+        Characters* _character;
 
         bool _continuar;
         bool _seleccionado;
@@ -39,8 +40,7 @@ namespace bna {
         bn::vector<bna::Indicator, 8> _indicadores;
         bn::optional<bn::sprite_ptr> _puntero;
 
-        CarBuilder* _carBuilder;
-
         void _updateCharacterSelected();
+        void _updateCharacterPointer();
     };
 }
