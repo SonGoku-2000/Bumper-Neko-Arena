@@ -12,7 +12,7 @@
 
 
 namespace bna {
-    constexpr int BORDE = 80;
+    constexpr int BORDE = 30;
 } // namespace bna
 
 
@@ -34,6 +34,15 @@ void bna::PositionIconManager::update() {
     bn::fixed_point objetivo;
     for (int i = 0; i < _enemies->size(); i++) {
         objetivo = _enemies->at(i).getPosition() - _camera.position();
+
+        if (_limite.contains(objetivo)) {
+            _icons[i].set_visible(false);
+            _iconsBack[i].set_visible(false);
+            continue;
+        }
+
+        _icons[i].set_visible(true);
+        _iconsBack[i].set_visible(true);
 
         objetivo = _getIconPosition(objetivo);
 
