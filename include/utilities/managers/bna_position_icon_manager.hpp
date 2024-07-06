@@ -23,6 +23,9 @@ namespace bna {
         bn::camera_ptr& _camera;
         bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>* _enemies;
         bn::vector<bn::sprite_ptr, limit_values::MAX_ENEMIES> _icons;
+        bn::vector<bn::sprite_ptr, limit_values::MAX_ENEMIES> _iconsBack;
         const bn::fixed_rect _limite;
+
+        bn::fixed_point _getIconPosition(bn::fixed_point car_objetive);
     };
 } // namespace bna
