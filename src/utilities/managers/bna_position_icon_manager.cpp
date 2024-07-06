@@ -36,7 +36,16 @@ void bna::PositionIconManager::update() {
             if (diferencia.y() > bn::display::half_height() - BORDE) {
                 diferencia = bna::math::interpolate_y(bn::fixed_point(0, 0), diferencia, bn::display::half_height() - BORDE);
             }
-            else if(diferencia.y() < -bn::display::half_height() + BORDE) {
+            else if (diferencia.y() < -bn::display::half_height() + BORDE) {
+                diferencia = bna::math::interpolate_y(bn::fixed_point(0, 0), diferencia, -bn::display::half_height() + BORDE);
+            }
+        }
+        else if (diferencia.x() < 0) {
+            diferencia = bna::math::interpolate_x(bn::fixed_point(0, 0), diferencia, -bn::display::half_width() + BORDE);
+            if (diferencia.y() > bn::display::half_height() - BORDE) {
+                diferencia = bna::math::interpolate_y(bn::fixed_point(0, 0), diferencia, bn::display::half_height() - BORDE);
+            }
+            else if (diferencia.y() < -bn::display::half_height() + BORDE) {
                 diferencia = bna::math::interpolate_y(bn::fixed_point(0, 0), diferencia, -bn::display::half_height() + BORDE);
             }
         }
