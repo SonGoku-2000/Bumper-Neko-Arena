@@ -107,9 +107,9 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
 #endif
 
         _ejes[0] = _player.getEje();
-        for (int i = 0; i < _enemies.size(); i++) {
-            _ejes[i + 1] = _enemies[i].getEje();
-        }
+        // for (int i = 0; i < _enemies.size(); i++) {
+        //     _ejes[i + 1] = _enemies[i].getEje();
+        // }
 
 
         for (int id_car = 0; id_car < _cars.size(); id_car++) {
@@ -124,6 +124,7 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
         }
 
         _player.update();
+        _positionIconManager.update();
         // _enemiesManager.update();
         bn::core::update();
     }
