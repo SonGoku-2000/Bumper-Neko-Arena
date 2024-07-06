@@ -10,12 +10,13 @@
 
 
 namespace bna {
-    constexpr int BORDE = 20;
+    constexpr int BORDE = 80;
 } // namespace bna
 
 
 bna::PositionIconManager::PositionIconManager(bn::camera_ptr& camera, bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>& enemies) :
-    _camera(camera) {
+    _camera(camera),
+    _limite(bn::point(0, 0), bn::display::size() - bn::size(BORDE, BORDE)) {
     _enemies = &enemies;
 }
 
@@ -32,21 +33,21 @@ void bna::PositionIconManager::update() {
         diferencia = _enemies->at(i).getPosition() - _camera.position();
 
         if (diferencia.x() > 0) {
-            diferencia = bna::math::interpolate_x(bn::fixed_point(0, 0), diferencia, bn::display::half_width() - BORDE);
-            if (diferencia.y() > bn::display::half_height() - BORDE) {
-                diferencia = bna::math::interpolate_y(bn::fixed_point(0, 0), diferencia, bn::display::half_height() - BORDE);
+            diferencia = bna::math::interpolate_x(bn::fixed_point(0, 0), diferencia, _limite.right());
+            if (diferencia.y() > _limite.bottom()) {
+                diferencia = bna::math::interpolate_y(bn::fixed_point(0, 0), diferencia, _limite.bottom());
             }
-            else if (diferencia.y() < -bn::display::half_height() + BORDE) {
-                diferencia = bna::math::interpolate_y(bn::fixed_point(0, 0), diferencia, -bn::display::half_height() + BORDE);
+            else if (diferencia.y() < _limite.top()) {
+                diferencia = bna::math::interpolate_y(bn::fixed_point(0, 0), diferencia, _limite.top());
             }
         }
         else if (diferencia.x() < 0) {
-            diferencia = bna::math::interpolate_x(bn::fixed_point(0, 0), diferencia, -bn::display::half_width() + BORDE);
-            if (diferencia.y() > bn::display::half_height() - BORDE) {
-                diferencia = bna::math::interpolate_y(bn::fixed_point(0, 0), diferencia, bn::display::half_height() - BORDE);
+            diferencia = bna::math::interpolate_x(bn::fixed_point(0, 0), diferencia, _limite.left());
+            if (diferencia.y() > _limite.bottom()) {
+                diferencia = bna::math::interpolate_y(bn::fixed_point(0, 0), diferencia, _limite.bottom());
             }
-            else if (diferencia.y() < -bn::display::half_height() + BORDE) {
-                diferencia = bna::math::interpolate_y(bn::fixed_point(0, 0), diferencia, -bn::display::half_height() + BORDE);
+            else if (diferencia.y() < _limite.top()) {
+                diferencia = bna::math::interpolate_y(bn::fixed_point(0, 0), diferencia, _limite.top());
             }
         }
         _icons[i].set_position(diferencia);
