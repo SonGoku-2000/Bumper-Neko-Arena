@@ -8,6 +8,7 @@
 
 #include "bna_math.hpp"
 #include "bna_display.hpp"
+#include "bna_vector2.hpp"
 
 
 namespace bna {
@@ -38,6 +39,7 @@ void bna::PositionIconManager::update() {
 
         _icons[i].set_position(objetivo);
         _iconsBack[i].set_position(objetivo);
+        _iconsBack[i].set_tiles(bn::sprite_items::icons_back.tiles_item(), _getIconFrame(objetivo));
     }
 }
 
@@ -61,4 +63,10 @@ bn::fixed_point bna::PositionIconManager::_getIconPosition(bn::fixed_point car_o
         }
     }
     return car_objetive;
+}
+
+int bna::PositionIconManager::_getIconFrame(bna::Vector2 car_objetive) {
+    car_objetive.set_y(-car_objetive.y());
+    bn::fixed angulo = car_objetive.anglePositive();
+    return angulo.division(10).integer();
 }

@@ -10,6 +10,7 @@
 
 namespace bna {
     class Enemie;
+    class Vector2;
     class PositionIconManager {
         public:
         PositionIconManager(bn::camera_ptr& camera, bn::vector<bna::Enemie, limit_values::MAX_ENEMIES>& enemies);
@@ -27,5 +28,6 @@ namespace bna {
         const bn::fixed_rect _limite;
 
         bn::fixed_point _getIconPosition(bn::fixed_point car_objetive);
+        int _getIconFrame(bna::Vector2 car_objetive);
     };
 } // namespace bna
