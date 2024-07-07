@@ -27,7 +27,7 @@ constexpr int CPU_CICLES = 64;
 bna::TestMap::TestMap(CarBuilder& playerCarBuilder, Characters& playerCharacter) :
     _fondo(bn::regular_bg_items::mapa_prueba.create_bg(0, 0)),
     _enemiesManager(_enemies),
-    _positionIconManager(_camera,_enemies),
+    _positionIconManager(_camera, _enemies),
     _camera(bn::camera_ptr::create(0, 0)) {
     _size = _fondo.dimensions();
 
@@ -40,6 +40,9 @@ bna::TestMap::TestMap(CarBuilder& playerCarBuilder, Characters& playerCharacter)
     _walls.push_back(bna::Hitbox(bna::Vector2((_size.width() / -2) + separacion, 0), bna::Vector2(_size.height() - 10, 10), debug, 3));
     // _walls.push_back(bna::Hitbox(bna::Vector2(60, 0), bna::Vector2(70, 10), debug, 3));
 
+    _generateSpawnPoints();
+
+    playerCarBuilder.position = _spawnPoints[0];
     _cars.push_back(playerCarBuilder.build());
     _player.setBody(_cars[0]);
     _player.setCharacter(playerCharacter);
@@ -49,15 +52,15 @@ bna::TestMap::TestMap(CarBuilder& playerCarBuilder, Characters& playerCharacter)
     car_builder.motor = bna::parts::motors::SLOW;
     car_builder.wheel = bna::parts::wheels::NORMAL;
 
-    car_builder.position = bn::fixed_point(60, 0);
+    car_builder.position = _spawnPoints[_cars.size()];
     _cars.push_back(car_builder.build());
     _enemies.push_back(_cars.back());
 
-    car_builder.position = bn::fixed_point(90, 0);
+    car_builder.position = _spawnPoints[_cars.size()];
     _cars.push_back(car_builder.build());
     _enemies.push_back(_cars.back());
 
-    car_builder.position = bn::fixed_point(120, 0);
+    car_builder.position = _spawnPoints[_cars.size()];
     _cars.push_back(car_builder.build());
     _enemies.push_back(_cars.back());
 
@@ -77,6 +80,19 @@ bna::TestMap::TestMap(CarBuilder& playerCarBuilder, Characters& playerCharacter)
 
     _enemiesManager.spawn(_cars, getWalls(), _camera, getSize());
     _positionIconManager.generateIcons();
+}
+
+void bna::TestMap::_generateSpawnPoints() {
+    constexpr bool debug = true;
+    _spawnPoints.push_back(bna::Indicator(200, 200, debug));
+    _spawnPoints.push_back(bna::Indicator(-200, 200, debug));
+    _spawnPoints.push_back(bna::Indicator(-200, -200, debug));
+    _spawnPoints.push_back(bna::Indicator(200, -200, debug));
+    _spawnPoints.push_back(bna::Indicator(0, 0, debug));
+
+    for (int i = 0; i < _spawnPoints.size(); i++) {
+        _spawnPoints[i].set_camera(_camera);
+    }
 }
 
 

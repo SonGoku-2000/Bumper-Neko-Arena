@@ -8,6 +8,7 @@
 
 #include "bn_size.h"
 #include "bna_hitbox.hpp"
+#include "bna_indicator.hpp"
 
 #include "bna_enemie.hpp"
 #include "bna_enemies_manager.hpp"
@@ -17,6 +18,8 @@
 #include "bna_position_icon_manager.hpp"
 
 #include "bna_test_values.hpp"
+
+
 namespace bna {
     class CarBuilder;
     enum class Characters :int;
@@ -42,6 +45,7 @@ namespace bna {
 
         bn::vector<bna::Enemie, limit_values::MAX_ENEMIES> _enemies;
         bn::vector<bna::Car, limit_values::MAX_ENEMIES + 1> _cars;
+        bn::vector<bna::Indicator, limit_values::MAX_ENEMIES + 1> _spawnPoints;
         bn::array<bn::fixed_point, limit_values::MAX_ENEMIES + 1> _ejes;
 
         bna::EnemiesManager _enemiesManager;
@@ -52,6 +56,7 @@ namespace bna {
         bna::Player _player;
 
         void _setCamera(bn::camera_ptr& camera);
+        void _generateSpawnPoints();
     };
 } // namespace bna
 
