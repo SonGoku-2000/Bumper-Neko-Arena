@@ -6,10 +6,13 @@
 #include "bn_math.h"
 #include "bna_math.hpp"
 #include "bn_display.h"
+#include "bna_characters.hpp"
 
 #include "bn_log.h"
 
 #include "bn_sprite_items_indicator.h"
+
+// #define IGNORE_PLAYER
 
 
 bna::Enemie::Enemie(Car& body) :
@@ -60,6 +63,10 @@ bn::fixed_point bna::Enemie::getEje() {
     return eje;
 }
 
+bn::fixed_point bna::Enemie::getPosition() {
+    return _cuerpo->getPosition();
+}
+
 void bna::Enemie::_comprobarIdDistanciaMenor(int& id_distancia_menor) {
     bn::fixed distancia_menor;
     bool distancia_menor_inicializado = false;
@@ -76,10 +83,11 @@ void bna::Enemie::_comprobarIdDistanciaMenor(int& id_distancia_menor) {
             continue;
         }
 
-        // ignora al jugador en modo single player
+#ifdef IGNORE_PLAYER
         if (i == 0) {
             continue;
         }
+#endif
 
         vectorDistancia = bna::Vector2(_cuerpo->getPosition(), _carros->at(i).getPosition());
 
@@ -203,4 +211,12 @@ void bna::Enemie::checkCollision(bna::Enemie& car) {
 
 bna::Car& bna::Enemie::getCar() {
     return *_cuerpo;
+}
+
+void bna::Enemie::setCharacter(const Characters character) {
+    _character = character;
+}
+
+bna::Characters bna::Enemie::getCharacter() {
+    return _character;
 }

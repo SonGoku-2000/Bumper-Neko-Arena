@@ -73,6 +73,10 @@ void bna::Player::setBody(Car& body) {
     _cuerpo = &body;
 }
 
+void bna::Player::setCharacter(const Characters& character) {
+    _character = character;
+}
+
 
 bn::fixed_point bna::Player::getPosition() {
     return _cuerpo->getPosition();

@@ -5,9 +5,13 @@
 #include "bna_scene_type.hpp"
 
 #include "bn_core.h"
+#include "bn_random.h"
+#include "bna_characters.hpp"
 #include "bna_car_builder.hpp"
 #include "bna_parts.hpp"
 #include "bna_car.hpp"
+
+#define MOVE_ENEMIES
 
 #define DEBUG_CPU
 #ifdef DEBUG_CPU
@@ -22,13 +26,41 @@ constexpr int CPU_CICLES = 64;
 
 #include "bn_music_items.h"
 
-bna::TestMap::TestMap(CarBuilder& player) :
+bna::TestMap::TestMap(CarBuilder& playerCarBuilder, Characters& playerCharacter) :
     _fondo(bn::regular_bg_items::mapa_prueba.create_bg(0, 0)),
     _enemiesManager(_enemies),
+    _positionIconManager(_camera, _enemies),
     _camera(bn::camera_ptr::create(0, 0)) {
     _size = _fondo.dimensions();
 
 
+    _generateWalls();
+
+    _generateSpawnPoints();
+
+    _generatePlayer(playerCarBuilder, playerCharacter);
+
+    _setCamera(_camera);
+
+    _generateEnemies();
+
+    _positionIconManager.generateIcons();
+}
+
+void bna::TestMap::_generateSpawnPoints() {
+    constexpr bool debug = true;
+    _spawnPoints.push_back(bna::Indicator(200, 200, debug));
+    _spawnPoints.push_back(bna::Indicator(-200, 200, debug));
+    _spawnPoints.push_back(bna::Indicator(-200, -200, debug));
+    _spawnPoints.push_back(bna::Indicator(200, -200, debug));
+    _spawnPoints.push_back(bna::Indicator(0, 0, debug));
+
+    for (int i = 0; i < _spawnPoints.size(); i++) {
+        _spawnPoints[i].set_camera(_camera);
+    }
+}
+
+void bna::TestMap::_generateWalls() {
     constexpr bool debug = true;
     constexpr int separacion = 10;
     _walls.push_back(bna::Hitbox(bna::Vector2(0, (_size.height() / -2) + separacion), bna::Vector2(10, _size.width() - 10), debug, 0));
@@ -37,36 +69,49 @@ bna::TestMap::TestMap(CarBuilder& player) :
     _walls.push_back(bna::Hitbox(bna::Vector2((_size.width() / -2) + separacion, 0), bna::Vector2(_size.height() - 10, 10), debug, 3));
     // _walls.push_back(bna::Hitbox(bna::Vector2(60, 0), bna::Vector2(70, 10), debug, 3));
 
-    _cars.push_back(player.build());
-    _player.setBody(_cars[0]);
+    for (int i = 0; i < _walls.size(); i++) {
+        _walls[i].setCamera(_camera);
+    }
+}
 
+void bna::TestMap::_generatePlayer(CarBuilder& playerCarBuilder, Characters& playerCharacter) {
+    playerCarBuilder.position = _spawnPoints[0];
+    _cars.push_back(playerCarBuilder.build());
+    _player.setBody(_cars[0]);
+    _player.setCharacter(playerCharacter);
+
+    _player.spawn(_cars, getWalls(), 0, _camera, getSize());
+}
+
+void bna::TestMap::_generateEnemies() {
     CarBuilder car_builder;
     car_builder.body = bna::parts::bodys::MEDIUM;
     car_builder.motor = bna::parts::motors::SLOW;
     car_builder.wheel = bna::parts::wheels::NORMAL;
 
-    car_builder.position = bn::fixed_point(60, 0);
+    car_builder.position = _spawnPoints[_cars.size()];
     _cars.push_back(car_builder.build());
     _enemies.push_back(_cars.back());
 
-    car_builder.position = bn::fixed_point(90, 0);
+    car_builder.position = _spawnPoints[_cars.size()];
     _cars.push_back(car_builder.build());
     _enemies.push_back(_cars.back());
 
-    car_builder.position = bn::fixed_point(120, 0);
+    car_builder.position = _spawnPoints[_cars.size()];
     _cars.push_back(car_builder.build());
     _enemies.push_back(_cars.back());
 
-    _setCamera(_camera);
+    for (int i = 0; i < _enemies.size(); i++) {
+        _enemies[i].setCharacter(bna::Characters(i));
+    }
 
     for (int i = 0; i < _cars.size(); i++) {
         _cars[i].spawn(_camera, getSize());
     }
 
-    _player.spawn(_cars, getWalls(), 0, _camera, getSize());
-
-    _enemiesManager.spawn(_cars,  getWalls(), _camera, getSize());
+    _enemiesManager.spawn(_cars, getWalls(), _camera, getSize());
 }
+
 
 
 bn::optional<bna::scene_type> bna::TestMap::update() {
@@ -96,9 +141,12 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
 #endif
 
         _ejes[0] = _player.getEje();
+
+#ifdef MOVE_ENEMIES
         for (int i = 0; i < _enemies.size(); i++) {
             _ejes[i + 1] = _enemies[i].getEje();
         }
+#endif
 
 
         for (int id_car = 0; id_car < _cars.size(); id_car++) {
@@ -113,17 +161,15 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
         }
 
         _player.update();
+        _positionIconManager.update();
         // _enemiesManager.update();
         bn::core::update();
-        }
-    return bna::scene_type::TEST_MAP;
     }
+    return bna::scene_type::TEST_MAP;
+}
 
 void bna::TestMap::_setCamera(bn::camera_ptr& camera) {
     _fondo.set_camera(camera);
-    for (int i = 0; i < _walls.size(); i++) {
-        _walls[i].setCamera(camera);
-    }
 }
 
 bn::size bna::TestMap::getSize() {
