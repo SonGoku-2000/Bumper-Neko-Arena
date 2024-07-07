@@ -32,6 +32,33 @@ bna::TestMap::TestMap(CarBuilder& playerCarBuilder, Characters& playerCharacter)
     _size = _fondo.dimensions();
 
 
+    _generateWalls();
+
+    _generateSpawnPoints();
+
+    _generatePlayer(playerCarBuilder, playerCharacter);
+
+    _setCamera(_camera);
+
+    _generateEnemies();
+
+    _positionIconManager.generateIcons();
+}
+
+void bna::TestMap::_generateSpawnPoints() {
+    constexpr bool debug = true;
+    _spawnPoints.push_back(bna::Indicator(200, 200, debug));
+    _spawnPoints.push_back(bna::Indicator(-200, 200, debug));
+    _spawnPoints.push_back(bna::Indicator(-200, -200, debug));
+    _spawnPoints.push_back(bna::Indicator(200, -200, debug));
+    _spawnPoints.push_back(bna::Indicator(0, 0, debug));
+
+    for (int i = 0; i < _spawnPoints.size(); i++) {
+        _spawnPoints[i].set_camera(_camera);
+    }
+}
+
+void bna::TestMap::_generateWalls() {
     constexpr bool debug = true;
     constexpr int separacion = 10;
     _walls.push_back(bna::Hitbox(bna::Vector2(0, (_size.height() / -2) + separacion), bna::Vector2(10, _size.width() - 10), debug, 0));
@@ -40,13 +67,21 @@ bna::TestMap::TestMap(CarBuilder& playerCarBuilder, Characters& playerCharacter)
     _walls.push_back(bna::Hitbox(bna::Vector2((_size.width() / -2) + separacion, 0), bna::Vector2(_size.height() - 10, 10), debug, 3));
     // _walls.push_back(bna::Hitbox(bna::Vector2(60, 0), bna::Vector2(70, 10), debug, 3));
 
-    _generateSpawnPoints();
+    for (int i = 0; i < _walls.size(); i++) {
+        _walls[i].setCamera(_camera);
+    }
+}
 
+void bna::TestMap::_generatePlayer(CarBuilder& playerCarBuilder, Characters& playerCharacter) {
     playerCarBuilder.position = _spawnPoints[0];
     _cars.push_back(playerCarBuilder.build());
     _player.setBody(_cars[0]);
     _player.setCharacter(playerCharacter);
 
+    _player.spawn(_cars, getWalls(), 0, _camera, getSize());
+}
+
+void bna::TestMap::_generateEnemies() {
     CarBuilder car_builder;
     car_builder.body = bna::parts::bodys::MEDIUM;
     car_builder.motor = bna::parts::motors::SLOW;
@@ -64,36 +99,17 @@ bna::TestMap::TestMap(CarBuilder& playerCarBuilder, Characters& playerCharacter)
     _cars.push_back(car_builder.build());
     _enemies.push_back(_cars.back());
 
-    bn::random random;
-
     for (int i = 0; i < _enemies.size(); i++) {
         _enemies[i].setCharacter(bna::Characters(i));
     }
-
-    _setCamera(_camera);
 
     for (int i = 0; i < _cars.size(); i++) {
         _cars[i].spawn(_camera, getSize());
     }
 
-    _player.spawn(_cars, getWalls(), 0, _camera, getSize());
-
     _enemiesManager.spawn(_cars, getWalls(), _camera, getSize());
-    _positionIconManager.generateIcons();
 }
 
-void bna::TestMap::_generateSpawnPoints() {
-    constexpr bool debug = true;
-    _spawnPoints.push_back(bna::Indicator(200, 200, debug));
-    _spawnPoints.push_back(bna::Indicator(-200, 200, debug));
-    _spawnPoints.push_back(bna::Indicator(-200, -200, debug));
-    _spawnPoints.push_back(bna::Indicator(200, -200, debug));
-    _spawnPoints.push_back(bna::Indicator(0, 0, debug));
-
-    for (int i = 0; i < _spawnPoints.size(); i++) {
-        _spawnPoints[i].set_camera(_camera);
-    }
-}
 
 
 bn::optional<bna::scene_type> bna::TestMap::update() {
@@ -149,9 +165,6 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
 
 void bna::TestMap::_setCamera(bn::camera_ptr& camera) {
     _fondo.set_camera(camera);
-    for (int i = 0; i < _walls.size(); i++) {
-        _walls[i].setCamera(camera);
-    }
 }
 
 bn::size bna::TestMap::getSize() {

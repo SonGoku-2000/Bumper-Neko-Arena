@@ -57,6 +57,9 @@ namespace bna {
 
         void _setCamera(bn::camera_ptr& camera);
         void _generateSpawnPoints();
+        void _generateWalls();
+        void _generatePlayer(CarBuilder& playerCarBuilder, Characters& playerCharacter);
+        void _generateEnemies();
     };
 } // namespace bna
 
