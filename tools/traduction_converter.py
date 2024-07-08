@@ -11,7 +11,7 @@ def get_max_lenght_string(texts: list[str]) -> int:
 
 def get_languages_string(languages: list[str]) -> str:
     respuesta: list[str] = []
-    respuesta.append("enum languages{")
+    respuesta.append("enum languages {")
 
     for language in languages:
         respuesta.append(f"    {language},")
@@ -22,10 +22,26 @@ def get_languages_string(languages: list[str]) -> str:
 
 
 def get_traduction_string(languages: list[str], filas: Iterable | list[list[str]]) -> str:
-    respuesta: str
-    respuesta = ""
+    respuesta: str = ""
     for fila in filas:
-        respuesta += f'bn::string<{get_max_lenght_string(fila[1:])}> {fila[0]}();\n'
+        respuesta += f'bn::string<{get_max_lenght_string(fila[1:])}> {fila[0]}(languages language) {"{"}\n'
+        respuesta += get_traduction_implementation(languages, fila)
+        respuesta += "}\n"
+        respuesta += "\n"
+
+    return respuesta
+
+
+def get_traduction_implementation(languages: list[str], traduccion: list[str]) -> str:
+    respuesta: str = ""
+
+    respuesta += "    switch (language) {\n"
+    for id, language in enumerate(languages):
+        respuesta += f"        case languages::{language}:\n"
+        respuesta += f'            return "{traduccion[id]}";\n'
+    respuesta += "        default:\n"
+    respuesta += '            return "";\n'
+    respuesta += "    }\n"
     return respuesta
 
 
