@@ -55,6 +55,8 @@ namespace bna {
 
         void applyDamage(bn::fixed damage);
 
+        bool isAlive();
+
         private:
         bn::fixed_point _pos;
         bn::fixed _rotation; // en grados
@@ -77,6 +79,13 @@ namespace bna {
         bn::sprite_ptr _sprite;
 
         bn::size _mapBorders;
+
+        enum state {
+            LIFE,
+            DEATH
+        };
+
+        state _state;
 
         void _checkBorders();
         void _hurt(Car& other);

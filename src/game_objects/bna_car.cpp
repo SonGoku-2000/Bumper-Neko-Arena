@@ -49,6 +49,7 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats) :
     _rotation = 0;
 
     _life = 30;
+    _state = state::LIFE;
 }
 
 
@@ -62,47 +63,60 @@ void bna::Car::update(bna::Vector2 eje) {
 #ifdef PROFILE
     BN_PROFILER_START("Car update");
 #endif
-    if (_life <= 0) {
-        _sprite.set_visible(false);
-        return;
+    switch (_state) {
+        case state::LIFE: {
+            _eje = eje;
+
+            _rotation += eje.x() * _turn;
+            _rotation = _rotation.modulo(360);
+
+            bn::fixed_point newPos = _pos;
+            _speed = _speed + _aceleration * _eje.y();
+            _speed = bn::max(-_maxSpeed, bn::min(_speed, _maxSpeed));
+
+            if (_eje.y() == 0) {
+                _speed *= bna::FRICCION;
+            }
+
+            bna::Vector2 movimiento(0, _speed);
+            movimiento = movimiento.rotate(_rotation);
+            _dx = movimiento.x();
+            // _dx += _externalForce.x();
+
+            _dy = movimiento.y();
+            // _dy += _externalForce.y();
+
+            _externalForce *= FRICCION;
+
+            newPos.set_x(newPos.x() + _dx);
+            newPos.set_y(newPos.y() + _dy);
+
+            newPos.set_x(newPos.x() + _externalForce.x());
+            newPos.set_y(newPos.y() + _externalForce.y());
+
+            _hitbox.setRotation(_rotation);
+            _hitbox.setPosition(newPos);
+
+            _pos = newPos;
+            _checkBorders();
+
+            _sprite.set_position(_pos);
+            _sprite.set_rotation_angle(getRotation());
+
+            if (_life <= 0) {
+                _sprite.set_visible(false);
+                _state = state::DEATH;
+            }
+            break;
+        }
+
+        case state::DEATH:
+            break;
+
+        default:
+            break;
     }
-    _eje = eje;
 
-    _rotation += eje.x() * _turn;
-    _rotation = _rotation.modulo(360);
-
-    bn::fixed_point newPos = _pos;
-    _speed = _speed + _aceleration * _eje.y();
-    _speed = bn::max(-_maxSpeed, bn::min(_speed, _maxSpeed));
-
-    if (_eje.y() == 0) {
-        _speed *= bna::FRICCION;
-    }
-
-    bna::Vector2 movimiento(0, _speed);
-    movimiento = movimiento.rotate(_rotation);
-    _dx = movimiento.x();
-    // _dx += _externalForce.x();
-
-    _dy = movimiento.y();
-    // _dy += _externalForce.y();
-
-    _externalForce *= FRICCION;
-
-    newPos.set_x(newPos.x() + _dx);
-    newPos.set_y(newPos.y() + _dy);
-
-    newPos.set_x(newPos.x() + _externalForce.x());
-    newPos.set_y(newPos.y() + _externalForce.y());
-
-    _hitbox.setRotation(_rotation);
-    _hitbox.setPosition(newPos);
-
-    _pos = newPos;
-    _checkBorders();
-
-    _sprite.set_position(_pos);
-    _sprite.set_rotation_angle(getRotation());
 
 #ifdef PROFILE
     BN_PROFILER_STOP();
@@ -110,12 +124,6 @@ void bna::Car::update(bna::Vector2 eje) {
 }
 
 
-void bna::Car::checkCollision(bna::Car& otherCar) {
-    if (isColliding(otherCar)) {
-        resolveCollision(otherCar);
-        _hurt(otherCar);
-    }
-}
 
 void bna::Car::_hurt(bna::Car& other) {
     bn::fixed speedA = getSpeed();
@@ -135,7 +143,24 @@ void bna::Car::applyDamage(bn::fixed damage) {
     _life -= bn::abs(damage);
 }
 
+
+
+void bna::Car::checkCollision(bna::Car& otherCar) {
+    if (!isAlive() or !otherCar.isAlive()) {
+        return;
+    }
+
+    if (isColliding(otherCar)) {
+        resolveCollision(otherCar);
+        _hurt(otherCar);
+    }
+}
+
 void bna::Car::checkCollision(bna::Hitbox& otherHitbox) {
+    if (!isAlive()) {
+        return;
+    }
+
     if (otherHitbox.checkCollision(getHitbox())) {
         bna::CollisionPoint collisionPoint = isColliding(otherHitbox);
         resolveCollision(collisionPoint);
@@ -148,6 +173,10 @@ bool bna::Car::isColliding(Car& other) {
 
 bna::CollisionPoint bna::Car::isColliding(bna::Hitbox& other) {
     return other.checkCollisionPoint(getHitbox());
+}
+
+bool bna::Car::isAlive() {
+    return _life > 0;
 }
 
 
