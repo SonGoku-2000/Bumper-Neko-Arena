@@ -43,8 +43,8 @@ namespace bna {
         bn::fixed getRotation() const;
         void setRotation(bn::fixed rotaion);
 
-        bna::Vector2 getSpeed();
-        bn::fixed getAbsoluteSpeed();
+        bna::Vector2 getVelocity();
+        bn::fixed getSpeed();
         bn::fixed_point getExternalForce();
         void setSpeed(bn::fixed speed);
         void setExternalForce(bn::fixed_point external_force);
@@ -52,6 +52,10 @@ namespace bna {
         bn::fixed getMass();
 
         void applyExternalForce(bn::fixed_point force);
+
+        void applyDamage(bn::fixed damage);
+
+        bool isAlive();
 
         private:
         bn::fixed_point _pos;
@@ -68,13 +72,23 @@ namespace bna {
         bn::fixed _turn;
         bn::fixed _weight;
 
+        bn::fixed _life;
+
         Hitbox _hitbox;
 
         bn::sprite_ptr _sprite;
 
         bn::size _mapBorders;
 
+        enum state {
+            LIFE,
+            DEATH
+        };
+
+        state _state;
+
         void _checkBorders();
+        void _hurt(Car& other);
     };
 } // namespace bna
 

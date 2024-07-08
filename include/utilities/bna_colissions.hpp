@@ -18,7 +18,7 @@ namespace bna {
     bool checkCollision(bna::Hitbox& hb1, bna::Hitbox& hb2);
 
     struct CollisionPoint {
-        bool collided;
+        bool collided = false;
         Vector2 collisionPoint;
         Vector2 correctionVector;
     };

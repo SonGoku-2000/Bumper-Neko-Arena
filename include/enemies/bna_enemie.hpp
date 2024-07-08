@@ -32,6 +32,8 @@ namespace bna {
         void setCharacter(const Characters character);
         bna::Characters getCharacter();
 
+        bool isAlive();
+
         private:
         bna::Car* _cuerpo;
         bna::Characters _character;

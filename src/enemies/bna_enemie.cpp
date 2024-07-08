@@ -76,6 +76,9 @@ void bna::Enemie::_comprobarIdDistanciaMenor(int& id_distancia_menor) {
     _vision.set_position(_cuerpo->getPosition());
 
     for (int i = 0; i < _carros->size(); i++) {
+        if(!_carros->at(i).isAlive()){
+            continue;
+        }
         if (_cuerpo->getPosition() == _carros->at(i).getPosition()) {
             continue;
         }
@@ -148,7 +151,7 @@ bn::fixed_point bna::Enemie::_direccionGiro(bn::fixed angulo_objetivo) {
 }
 
 void bna::Enemie::_comprobarTiempoQuieto() {
-    _averageSpeed += {bn::abs(_cuerpo->getSpeed().x()), bn::abs(_cuerpo->getSpeed().y())};
+    _averageSpeed += {bn::abs(_cuerpo->getVelocity().x()), bn::abs(_cuerpo->getVelocity().y())};
 
     constexpr int framesEspera = 32;
     constexpr bn::fixed velocidadReversa = framesEspera * 0.4;
@@ -219,4 +222,8 @@ void bna::Enemie::setCharacter(const Characters character) {
 
 bna::Characters bna::Enemie::getCharacter() {
     return _character;
+}
+
+bool bna::Enemie::isAlive(){
+    return _cuerpo->isAlive();
 }
