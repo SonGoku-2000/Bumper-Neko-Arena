@@ -12,11 +12,21 @@ def get_max_lenght_string(texts: list[str]) -> int:
 def get_languages_string(languages: list[str]) -> str:
     respuesta: list[str] = []
     respuesta.append("enum languages{")
+
     for language in languages:
         respuesta.append(f"    {language},")
+
     respuesta.append("};")
     respuesta.append("")
     return "\n".join(respuesta)
+
+
+def get_traduction_string(languages: list[str], filas: Iterable | list[list[str]]) -> str:
+    respuesta: str
+    respuesta = ""
+    for fila in filas:
+        respuesta += f'bn::string<{get_max_lenght_string(fila[1:])}> {fila[0]}();\n'
+    return respuesta
 
 
 def crear_archivo(path: str, idiomas: list, filas: Iterable | list[list[str]]):
@@ -29,18 +39,14 @@ def crear_archivo(path: str, idiomas: list, filas: Iterable | list[list[str]]):
 
         archivo.write('\n')
 
-        for fila in filas:
-            archivo.write(
-                f'bn::string<{get_max_lenght_string(fila[1:])}> texto_prueba();\n')
+        archivo.write(get_traduction_string(idiomas, filas))
 
 
 with open("traduction/traduccion_prueba.csv") as file:
     data = csv.reader(file, delimiter=";")
-    print(type(data))
     idiomas: list
     for fila in data:
         idiomas = fila
         idiomas.pop(0)
         break
-    print(idiomas)
     crear_archivo("archivo_prueba", idiomas, data)
