@@ -4,7 +4,9 @@
 
 enum idioma{
     ESPANOL,
-    INGLES
+    INGLES,
+    FRANCES,
+    ALEMAN
 };
 
 bn::string<12> texto_prueba(idioma idiom);
