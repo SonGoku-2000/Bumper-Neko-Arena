@@ -169,7 +169,7 @@ void bna::TestMapLink::_sendData(int& frame_actual, bn::array<bn::optional<bna::
         case 9:
         case 10:
         case 11:
-            mensaje_speed_data = bna::link::get_speed_info(_cars[_idPropia].getAbsoluteSpeed(), _cars[_idPropia].getExternalForce(), 3);
+            mensaje_speed_data = bna::link::get_speed_info(_cars[_idPropia].getSpeed(), _cars[_idPropia].getExternalForce(), 3);
             break;
 
         default:

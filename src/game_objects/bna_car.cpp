@@ -118,15 +118,12 @@ void bna::Car::checkCollision(bna::Car& otherCar) {
 }
 
 void bna::Car::_hurt(bna::Car& other) {
-    // Step 1: Calculate speeds
-    bn::fixed speedA = getAbsoluteSpeed();
-    bn::fixed speedB = other.getAbsoluteSpeed();
+    bn::fixed speedA = getSpeed();
+    bn::fixed speedB = other.getSpeed();
 
-    // Step 2: Calculate relative velocity
-    Vector2 relativeVelocity = getSpeed() - other.getSpeed();
+    Vector2 relativeVelocity = getVelocity() - other.getVelocity();
     bn::fixed relativeSpeed = relativeVelocity.length();
 
-    // Step 3: Calculate damage
     bn::fixed damageToB = speedA * relativeSpeed;
     bn::fixed damageToA = speedB * relativeSpeed;
 
@@ -166,8 +163,8 @@ void bna::Car::resolveCollision(Car& other) {
     bn::fixed ny = dy / distance;
 
     // // Relative velocity
-        // bn::vector<bna::Vector2, 4> vertices2 = hb2.getVertices();
-    bna::Vector2 relativeVelocity = getSpeed() - other.getSpeed();
+    // bn::vector<bna::Vector2, 4> vertices2 = hb2.getVertices();
+    bna::Vector2 relativeVelocity = getVelocity() - other.getVelocity();
     bn::fixed dotProduct = relativeVelocity.dot(bna::Vector2(nx, ny));
 
     // // If the particles are moving apart, no need to resolve collision
@@ -199,7 +196,7 @@ void bna::Car::resolveCollision(bna::CollisionPoint collisionPoint) {
     bn::fixed ny = dy / distance;
 
     // // Relative velocity
-    bna::Vector2 relativeVelocity = getSpeed();
+    bna::Vector2 relativeVelocity = getVelocity();
     bn::fixed dotProduct = relativeVelocity.dot(bna::Vector2(nx, ny));
 
     // // If the particles are moving apart, no need to resolve collision
@@ -260,11 +257,11 @@ bna::Hitbox& bna::Car::getHitbox() {
     return _hitbox;
 }
 
-bna::Vector2 bna::Car::getSpeed() {
+bna::Vector2 bna::Car::getVelocity() {
     return Vector2(_dx + _externalForce.x(), _dy + _externalForce.y());
 }
 
-bn::fixed bna::Car::getAbsoluteSpeed() {
+bn::fixed bna::Car::getSpeed() {
     return _speed;
 }
 

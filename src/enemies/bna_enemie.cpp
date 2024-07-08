@@ -148,7 +148,7 @@ bn::fixed_point bna::Enemie::_direccionGiro(bn::fixed angulo_objetivo) {
 }
 
 void bna::Enemie::_comprobarTiempoQuieto() {
-    _averageSpeed += {bn::abs(_cuerpo->getSpeed().x()), bn::abs(_cuerpo->getSpeed().y())};
+    _averageSpeed += {bn::abs(_cuerpo->getVelocity().x()), bn::abs(_cuerpo->getVelocity().y())};
 
     constexpr int framesEspera = 32;
     constexpr bn::fixed velocidadReversa = framesEspera * 0.4;
