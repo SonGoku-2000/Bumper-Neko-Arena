@@ -6,6 +6,7 @@
 
 #include "bna_parts.hpp"
 
+#define DEBUG
 #ifdef  DEBUG
 #include "bn_log.h"
 #endif
@@ -46,6 +47,8 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats) :
     _dx = 0;
     _dy = 0;
     _rotation = 0;
+
+    _life = 30;
 }
 
 
@@ -59,6 +62,10 @@ void bna::Car::update(bna::Vector2 eje) {
 #ifdef PROFILE
     BN_PROFILER_START("Car update");
 #endif
+    if (_life <= 0) {
+        _sprite.set_visible(false);
+        return;
+    }
     _eje = eje;
 
     _rotation += eje.x() * _turn;
@@ -106,7 +113,29 @@ void bna::Car::update(bna::Vector2 eje) {
 void bna::Car::checkCollision(bna::Car& otherCar) {
     if (isColliding(otherCar)) {
         resolveCollision(otherCar);
+        _hurt(otherCar);
     }
+}
+
+void bna::Car::_hurt(bna::Car& other) {
+    // Step 1: Calculate speeds
+    bn::fixed speedA = getAbsoluteSpeed();
+    bn::fixed speedB = other.getAbsoluteSpeed();
+
+    // Step 2: Calculate relative velocity
+    Vector2 relativeVelocity = getSpeed() - other.getSpeed();
+    bn::fixed relativeSpeed = relativeVelocity.length();
+
+    // Step 3: Calculate damage
+    bn::fixed damageToB = speedA * relativeSpeed;
+    bn::fixed damageToA = speedB * relativeSpeed;
+
+    applyDamage(damageToA);
+    other.applyDamage(damageToB);
+}
+
+void bna::Car::applyDamage(bn::fixed damage) {
+    _life -= bn::abs(damage);
 }
 
 void bna::Car::checkCollision(bna::Hitbox& otherHitbox) {

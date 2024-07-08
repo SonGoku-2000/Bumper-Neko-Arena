@@ -53,6 +53,8 @@ namespace bna {
 
         void applyExternalForce(bn::fixed_point force);
 
+        void applyDamage(bn::fixed damage);
+
         private:
         bn::fixed_point _pos;
         bn::fixed _rotation; // en grados
@@ -68,6 +70,8 @@ namespace bna {
         bn::fixed _turn;
         bn::fixed _weight;
 
+        bn::fixed _life;
+
         Hitbox _hitbox;
 
         bn::sprite_ptr _sprite;
@@ -75,6 +79,7 @@ namespace bna {
         bn::size _mapBorders;
 
         void _checkBorders();
+        void _hurt(Car& other);
     };
 } // namespace bna
 
