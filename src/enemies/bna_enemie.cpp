@@ -76,6 +76,9 @@ void bna::Enemie::_comprobarIdDistanciaMenor(int& id_distancia_menor) {
     _vision.set_position(_cuerpo->getPosition());
 
     for (int i = 0; i < _carros->size(); i++) {
+        if(!_carros->at(i).isAlive()){
+            continue;
+        }
         if (_cuerpo->getPosition() == _carros->at(i).getPosition()) {
             continue;
         }
