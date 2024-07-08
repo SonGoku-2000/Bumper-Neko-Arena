@@ -223,3 +223,7 @@ void bna::Enemie::setCharacter(const Characters character) {
 bna::Characters bna::Enemie::getCharacter() {
     return _character;
 }
+
+bool bna::Enemie::isAlive(){
+    return _cuerpo->isAlive();
+}

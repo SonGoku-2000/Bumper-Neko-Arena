@@ -41,6 +41,12 @@ void bna::PositionIconManager::update() {
             continue;
         }
 
+        if (!_enemies->at(i).isAlive()) {
+            _icons[i].set_visible(false);
+            _iconsBack[i].set_visible(false);
+            continue;
+        }
+
         _icons[i].set_visible(true);
         _iconsBack[i].set_visible(true);
 
