@@ -4,6 +4,11 @@ from typing import Iterable
 import csv
 
 
+def procesar_carpeta(folder_path: str, output_folder: str):
+    for path in Path(folder_path).iterdir():
+        procesar_archivo(path.__str__(), output_folder)
+
+
 def procesar_archivo(file_path: str, output_folder: str):
     with open(file_path) as file:
         data = csv.reader(file, delimiter=";")
@@ -82,7 +87,6 @@ def get_traduction_implementation(languages: list[str], traduccion: list[str]) -
 def process(output_folder: str, input_dirs: str | list[str]):
     traduction_paths: list[str] = []
     traduction_folder_paths: list[str] = []
-    dicImgPaths = {}
 
     for dir in input_dirs:
         if Path(dir).is_file():
@@ -99,8 +103,10 @@ def process(output_folder: str, input_dirs: str | list[str]):
                 raise
 
     for traduction_path in traduction_paths:
-        print(traduction_path)
         procesar_archivo(traduction_path, output_folder)
+
+    for traduction_folder_path in traduction_folder_paths:
+        procesar_carpeta(traduction_folder_path, output_folder)
 
 
 if __name__ == "__main__":
