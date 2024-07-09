@@ -4,6 +4,7 @@ from typing import Iterable
 import csv
 import sys
 import traceback
+import string
 
 
 def procesar_carpeta(folder_path: str, output_folder: str, recursive: bool):
@@ -33,19 +34,27 @@ def procesar_archivo(file_path: str, output_folder: str):
 
 def comprobar_formato(file_path: str) -> bool:
     path = Path(file_path)
-    if file_path.find(" ") != -1:
-        try:
-            raise ValueError(
-                f"\nError: Invalid file name: '{path.name}' (invalid character: ' ')")
-        except ValueError as ex:
-            sys.stderr.write(str(ex) + '\n\n')
-            traceback.print_exc()
-            raise
+
+    comprobar_caracteres_validos(file_path)
 
     if (path.suffix == ".csv" or path.suffix == ".CSV"):
         return True
 
     return False
+
+
+def comprobar_caracteres_validos(texto: str):
+    valid_characters = '_%s%s' % (string.ascii_lowercase, string.digits)
+    for character in texto:
+        if character not in valid_characters:
+            try:
+                raise ValueError(
+                    f'\nInvalid file name: {texto} (invalid character: "{character}")'
+                )
+            except ValueError as ex:
+                sys.stderr.write(str(ex) + '\n\n')
+                traceback.print_exc()
+                raise
 
 
 def crear_archivo(path: str, idiomas: list, filas: Iterable | list[list[str]]):
