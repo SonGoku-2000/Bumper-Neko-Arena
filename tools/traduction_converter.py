@@ -1,3 +1,4 @@
+import argparse
 from typing import Iterable
 import csv
 
@@ -63,11 +64,20 @@ def get_traduction_implementation(languages: list[str], traduccion: list[str]) -
     return respuesta
 
 
-with open("traduction/traduccion_prueba.csv") as file:
-    data = csv.reader(file, delimiter=";")
-    idiomas: list
-    for fila in data:
-        idiomas = fila
-        idiomas.pop(0)
-        break
-    crear_archivo("archivo_prueba", idiomas, data)
+def process(args: argparse.Namespace):
+    with open("traduction/traduccion_prueba.csv") as file:
+        data = csv.reader(file, delimiter=";")
+        idiomas: list
+        for fila in data:
+            idiomas = fila
+            idiomas.pop(0)
+            break
+        crear_archivo("archivo_prueba", idiomas, data)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='External tool example.')
+    parser.add_argument('--build', "-b", required=True,
+                        help='build folder path')
+    args = parser.parse_args()
+    process(args)
