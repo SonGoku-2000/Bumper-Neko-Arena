@@ -7,12 +7,17 @@ def crear_archivo(path: str, idiomas: list, filas: Iterable | list[list[str]]):
         archivo.write('#pragma once\n')
         archivo.write('\n')
         archivo.write('#include "bn_string.h"\n')
+        archivo.write('\n')
+        archivo.write('\n')
 
+        archivo.write("namespace tranlations {\n")
+        archivo.write('\n')
         archivo.write(get_languages_string(idiomas))
 
         archivo.write('\n')
 
         archivo.write(get_traduction_string(idiomas, filas))
+        archivo.write("}")
 
 
 def get_languages_string(languages: list[str]) -> str:
@@ -51,7 +56,7 @@ def get_traduction_implementation(languages: list[str], traduccion: list[str]) -
     respuesta += "    switch (language) {\n"
     for id, language in enumerate(languages):
         respuesta += f"        case languages::{language}:\n"
-        respuesta += f'            return "{traduccion[id]}";\n'
+        respuesta += f'            return "{traduccion[id+1]}";\n'
     respuesta += "        default:\n"
     respuesta += '            return "";\n'
     respuesta += "    }\n"
