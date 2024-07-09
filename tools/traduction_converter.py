@@ -1,6 +1,11 @@
+from pathlib import Path
 import argparse
 from typing import Iterable
 import csv
+
+
+def procesar_archivo(path: str):
+    ...
 
 
 def crear_archivo(path: str, idiomas: list, filas: Iterable | list[list[str]]):
@@ -64,7 +69,25 @@ def get_traduction_implementation(languages: list[str], traduccion: list[str]) -
     return respuesta
 
 
-def process(args: argparse.Namespace):
+def process(output_folder: str, input_dirs: str | list[str]):
+    traduction_paths: list[str] = []
+    traduction_folder_paths: list[str] = []
+    dicImgPaths = {}
+
+    for dir in input_dirs:
+        if Path(dir).is_file():
+            traduction_paths.append(dir)
+
+        elif Path(dir).is_dir():
+            traduction_folder_paths.append(dir)
+
+        else:
+            try:
+                raise ValueError('File or path not exist')
+            except ValueError:
+                print(f"'{dir}' is not a real file or path")
+                raise
+
     with open("traduction/traduccion_prueba.csv") as file:
         data = csv.reader(file, delimiter=";")
         idiomas: list
@@ -77,7 +100,12 @@ def process(args: argparse.Namespace):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='External tool example.')
-    parser.add_argument('--build', "-b", required=True,
-                        help='build folder path')
+    parser.add_argument('--output', "-o", required=True,
+                        help='output folder path')
+
+    parser.add_argument('--dirs', "-d", required=True,
+                        type=str, nargs='+', help='Dirs for traductions or folder with traductions')
     args = parser.parse_args()
-    process(args)
+    # args = parser.parse_args(['-o', 'external_tool', '-d', 'traduction','LICENCE'])
+
+    process(args.output, args.dirs)
