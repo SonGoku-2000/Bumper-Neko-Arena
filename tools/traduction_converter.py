@@ -4,8 +4,18 @@ from typing import Iterable
 import csv
 
 
-def procesar_archivo(path: str):
-    ...
+def procesar_archivo(file_path: str, output_folder: str):
+    with open(file_path) as file:
+        data = csv.reader(file, delimiter=";")
+        idiomas: list
+        for fila in data:
+            idiomas = fila
+            idiomas.pop(0)
+            break
+        output_path: Path = Path(output_folder).joinpath("include")
+        output_path.mkdir(exist_ok=True, parents=True)
+        output_path = output_path.joinpath(Path(file_path).stem)
+        crear_archivo(output_path.__str__(), idiomas, data)
 
 
 def crear_archivo(path: str, idiomas: list, filas: Iterable | list[list[str]]):
@@ -88,14 +98,9 @@ def process(output_folder: str, input_dirs: str | list[str]):
                 print(f"'{dir}' is not a real file or path")
                 raise
 
-    with open("traduction/traduccion_prueba.csv") as file:
-        data = csv.reader(file, delimiter=";")
-        idiomas: list
-        for fila in data:
-            idiomas = fila
-            idiomas.pop(0)
-            break
-        crear_archivo("archivo_prueba", idiomas, data)
+    for traduction_path in traduction_paths:
+        print(traduction_path)
+        procesar_archivo(traduction_path, output_folder)
 
 
 if __name__ == "__main__":
@@ -106,6 +111,9 @@ if __name__ == "__main__":
     parser.add_argument('--dirs', "-d", required=True,
                         type=str, nargs='+', help='Dirs for traductions or folder with traductions')
     args = parser.parse_args()
-    # args = parser.parse_args(['-o', 'external_tool', '-d', 'traduction','LICENCE'])
+    # args = parser.parse_args([
+    #     '-o', 'external_tool',
+    #     '-d', 'traduction', 'traduccion_prueba copy.csv'
+    # ])
 
     process(args.output, args.dirs)
