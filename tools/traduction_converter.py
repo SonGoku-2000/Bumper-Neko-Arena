@@ -4,9 +4,13 @@ from typing import Iterable
 import csv
 
 
-def procesar_carpeta(folder_path: str, output_folder: str):
+def procesar_carpeta(folder_path: str, output_folder: str, recursive:bool):
     for path in Path(folder_path).iterdir():
-        procesar_archivo(path.__str__(), output_folder)
+        if path.is_file():
+            procesar_archivo(path.__str__(), output_folder)
+
+        elif recursive and path.is_dir():
+            procesar_carpeta(path.__str__(),output_folder,recursive)
 
 
 def procesar_archivo(file_path: str, output_folder: str):
@@ -84,7 +88,7 @@ def get_traduction_implementation(languages: list[str], traduccion: list[str]) -
     return respuesta
 
 
-def process(output_folder: str, input_dirs: str | list[str]):
+def process(output_folder: str, input_dirs: str | list[str], recursive: bool):
     traduction_paths: list[str] = []
     traduction_folder_paths: list[str] = []
 
@@ -106,7 +110,7 @@ def process(output_folder: str, input_dirs: str | list[str]):
         procesar_archivo(traduction_path, output_folder)
 
     for traduction_folder_path in traduction_folder_paths:
-        procesar_carpeta(traduction_folder_path, output_folder)
+        procesar_carpeta(traduction_folder_path, output_folder, recursive)
 
 
 if __name__ == "__main__":
@@ -116,10 +120,14 @@ if __name__ == "__main__":
 
     parser.add_argument('--dirs', "-d", required=True,
                         type=str, nargs='+', help='Dirs for traductions or folder with traductions')
+
+    parser.add_argument('--recursive', "-r", required=False, default=True,
+                        type=bool, help='If a folder is given in dirs, it processes it recursively True by default.')
+
     args = parser.parse_args()
     # args = parser.parse_args([
     #     '-o', 'external_tool',
     #     '-d', 'traduction', 'traduccion_prueba copy.csv'
     # ])
 
-    process(args.output, args.dirs)
+    process(args.output, args.dirs, args.recursive)
