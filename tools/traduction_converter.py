@@ -5,6 +5,7 @@ import csv
 import sys
 import traceback
 import string
+from traduction_converter_file_info import FileInfo
 
 
 def procesar_carpeta(folder_path: str, output_folder: str, recursive: bool, remove_invalid_characters: bool, verbose: bool, delimiter: str):
@@ -23,7 +24,7 @@ def procesar_archivo(file_path: str, output_folder: str, remove_invalid_characte
     if (remove_invalid_characters):
         file_output_path = eliminar_caracteres_invalidos(file_output_path)
 
-    if (not comprobar_formato(file_output_path)):
+    if (FileInfo.validate(file_output_path)):
         return
 
     if (verbose):
@@ -56,29 +57,6 @@ def eliminar_caracteres_invalidos(texto: str):
             texto = texto.replace(character, "")
 
     return texto+extencion
-
-
-def comprobar_formato(file_path: str) -> bool:
-    path = Path(file_path)
-    if (path.suffix == ".csv" or path.suffix == ".CSV"):
-        comprobar_caracteres_validos(path.stem)
-        return True
-
-    return False
-
-
-def comprobar_caracteres_validos(texto: str):
-    valid_characters = '_%s%s' % (string.ascii_lowercase, string.digits)
-    for character in texto:
-        if character not in valid_characters:
-            try:
-                raise ValueError(
-                    f'\nInvalid file name: {texto} (invalid character: "{character}")'
-                )
-            except ValueError as ex:
-                sys.stderr.write(str(ex) + '\n\n')
-                traceback.print_exc()
-                exit(-1)
 
 
 def crear_archivo(path: str, idiomas: list, filas: Iterable | list[list[str]]):
@@ -195,7 +173,8 @@ if __name__ == "__main__":
     #     '-o', 'external_tool',
     #     '-d', 'traduction',
     #     "-v",
-    #     "-de",'";"'
+    #     "-rm",
+    #     "-de", '";"'
     # ])
 
     process(args.output, args.dirs, args.recursive,
