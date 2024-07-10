@@ -42,7 +42,18 @@ def procesar_archivo(file_path: str, output_folder: str, remove_invalid_characte
 def eliminar_caracteres_invalidos(texto: str):
     texto = texto.lower()
     texto = texto.replace(" ", "_")
-    return texto
+
+    extencion:str = Path(texto).suffix
+    texto = Path(texto).stem
+    
+    aux: str = ""
+    valid_characters = '_%s%s' % (string.ascii_lowercase, string.digits)
+    for character in texto:
+        if character not in valid_characters:
+            print("caracter invalido: ",character)
+            texto = texto.replace(character,"")
+
+    return texto+extencion
 
 
 def comprobar_formato(file_path: str) -> bool:
