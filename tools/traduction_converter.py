@@ -7,24 +7,27 @@ import traceback
 import string
 
 
-def procesar_carpeta(folder_path: str, output_folder: str, recursive: bool, remove_invalid_characters: bool):
+def procesar_carpeta(folder_path: str, output_folder: str, recursive: bool, remove_invalid_characters: bool, verbose: bool):
     for path in Path(folder_path).iterdir():
         if path.is_file():
             procesar_archivo(path.__str__(), output_folder,
-                             remove_invalid_characters)
+                             remove_invalid_characters, verbose)
 
         elif recursive and path.is_dir():
             procesar_carpeta(path.__str__(), output_folder, recursive,
-                             remove_invalid_characters)
+                             remove_invalid_characters, verbose)
 
 
-def procesar_archivo(file_path: str, output_folder: str, remove_invalid_characters: bool):
+def procesar_archivo(file_path: str, output_folder: str, remove_invalid_characters: bool, verbose: bool):
     file_output_path: str = file_path
     if (remove_invalid_characters):
         file_output_path = eliminar_caracteres_invalidos(file_output_path)
 
     if (not comprobar_formato(file_output_path)):
         return
+    
+    if(verbose):
+        print("    ", Path(file_path).name)
 
     with open(file_path) as file:
         data = csv.reader(file, delimiter=";")
@@ -43,15 +46,14 @@ def eliminar_caracteres_invalidos(texto: str):
     texto = texto.lower()
     texto = texto.replace(" ", "_")
 
-    extencion:str = Path(texto).suffix
+    extencion: str = Path(texto).suffix
     texto = Path(texto).stem
-    
+
     aux: str = ""
     valid_characters = '_%s%s' % (string.ascii_lowercase, string.digits)
     for character in texto:
         if character not in valid_characters:
-            print("caracter invalido: ",character)
-            texto = texto.replace(character,"")
+            texto = texto.replace(character, "")
 
     return texto+extencion
 
@@ -140,7 +142,7 @@ def get_traduction_implementation(languages: list[str], traduccion: list[str]) -
     return respuesta
 
 
-def process(output_folder: str, input_dirs: str | list[str], recursive: bool, remove_invalid_characters: bool):
+def process(output_folder: str, input_dirs: str | list[str], recursive: bool, remove_invalid_characters: bool, verbose: bool):
     traduction_paths: list[str] = []
     traduction_folder_paths: list[str] = []
 
@@ -160,11 +162,11 @@ def process(output_folder: str, input_dirs: str | list[str], recursive: bool, re
 
     for traduction_path in traduction_paths:
         procesar_archivo(traduction_path, output_folder,
-                         remove_invalid_characters)
+                         remove_invalid_characters, verbose)
 
     for traduction_folder_path in traduction_folder_paths:
         procesar_carpeta(traduction_folder_path, output_folder,
-                         recursive, remove_invalid_characters)
+                         recursive, remove_invalid_characters, verbose)
 
 
 if __name__ == "__main__":
@@ -181,12 +183,15 @@ if __name__ == "__main__":
     parser.add_argument('--remove_invalid_characters', "-rm",
                         action='store_true', help='Remove invalid characters from the final name')
 
+    parser.add_argument('--verbose', '-v', action='store_true')
+
     args = parser.parse_args()
     # args = parser.parse_args([
     #     '-o', 'external_tool',
     #     '-d', 'traduction', 'traduccion_prueba copy.csv',
-    #     '--remove_invalid_characters'
+    #     '-rm',
+    #     "-v"
     # ])
 
     process(args.output, args.dirs, args.recursive,
-            args.remove_invalid_characters)
+            args.remove_invalid_characters, args.verbose)
