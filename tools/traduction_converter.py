@@ -7,30 +7,30 @@ import traceback
 import string
 
 
-def procesar_carpeta(folder_path: str, output_folder: str, recursive: bool, remove_invalid_characters: bool, verbose: bool):
+def procesar_carpeta(folder_path: str, output_folder: str, recursive: bool, remove_invalid_characters: bool, verbose: bool, delimiter: str):
     for path in Path(folder_path).iterdir():
         if path.is_file():
             procesar_archivo(path.__str__(), output_folder,
-                             remove_invalid_characters, verbose)
+                             remove_invalid_characters, verbose, delimiter)
 
         elif recursive and path.is_dir():
             procesar_carpeta(path.__str__(), output_folder, recursive,
-                             remove_invalid_characters, verbose)
+                             remove_invalid_characters, verbose, delimiter)
 
 
-def procesar_archivo(file_path: str, output_folder: str, remove_invalid_characters: bool, verbose: bool):
+def procesar_archivo(file_path: str, output_folder: str, remove_invalid_characters: bool, verbose: bool, delimiter: str):
     file_output_path: str = file_path
     if (remove_invalid_characters):
         file_output_path = eliminar_caracteres_invalidos(file_output_path)
 
     if (not comprobar_formato(file_output_path)):
         return
-    
-    if(verbose):
+
+    if (verbose):
         print("    ", Path(file_path).name)
 
     with open(file_path) as file:
-        data = csv.reader(file, delimiter=";")
+        data = csv.reader(file, delimiter=delimiter)
         idiomas: list
         for fila in data:
             idiomas = fila
@@ -78,7 +78,7 @@ def comprobar_caracteres_validos(texto: str):
             except ValueError as ex:
                 sys.stderr.write(str(ex) + '\n\n')
                 traceback.print_exc()
-                raise
+                exit(-1)
 
 
 def crear_archivo(path: str, idiomas: list, filas: Iterable | list[list[str]]):
@@ -142,7 +142,7 @@ def get_traduction_implementation(languages: list[str], traduccion: list[str]) -
     return respuesta
 
 
-def process(output_folder: str, input_dirs: str | list[str], recursive: bool, remove_invalid_characters: bool, verbose: bool):
+def process(output_folder: str, input_dirs: str | list[str], recursive: bool, remove_invalid_characters: bool, verbose: bool, delimiter: str):
     traduction_paths: list[str] = []
     traduction_folder_paths: list[str] = []
 
@@ -156,17 +156,19 @@ def process(output_folder: str, input_dirs: str | list[str], recursive: bool, re
         else:
             try:
                 raise ValueError('File or path not exist')
-            except ValueError:
+            except ValueError as ex:
+                sys.stderr.write(str(ex) + '\n\n')
+                traceback.print_exc()
                 print(f"'{dir}' is not a real file or path")
-                raise
+                exit(-1)
 
     for traduction_path in traduction_paths:
         procesar_archivo(traduction_path, output_folder,
-                         remove_invalid_characters, verbose)
+                         remove_invalid_characters, verbose, delimiter)
 
     for traduction_folder_path in traduction_folder_paths:
         procesar_carpeta(traduction_folder_path, output_folder,
-                         recursive, remove_invalid_characters, verbose)
+                         recursive, remove_invalid_characters, verbose, delimiter)
 
 
 if __name__ == "__main__":
@@ -183,15 +185,18 @@ if __name__ == "__main__":
     parser.add_argument('--remove_invalid_characters', "-rm",
                         action='store_true', help='Remove invalid characters from the final name')
 
+    parser.add_argument('--delimiter', "-de", required=False, default=";",
+                        type=str, help='Delimiter for the cels values')
+
     parser.add_argument('--verbose', '-v', action='store_true')
 
     args = parser.parse_args()
     # args = parser.parse_args([
     #     '-o', 'external_tool',
-    #     '-d', 'traduction', 'traduccion_prueba copy.csv',
-    #     '-rm',
-    #     "-v"
+    #     '-d', 'traduction',
+    #     "-v",
+    #     "-de",'";"'
     # ])
 
     process(args.output, args.dirs, args.recursive,
-            args.remove_invalid_characters, args.verbose)
+            args.remove_invalid_characters, args.verbose, args.delimiter)
