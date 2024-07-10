@@ -7,18 +7,25 @@ import traceback
 import string
 
 
-def procesar_carpeta(folder_path: str, output_folder: str, recursive: bool):
+def procesar_carpeta(folder_path: str, output_folder: str, recursive: bool, remove_invalid_characters: bool):
     for path in Path(folder_path).iterdir():
         if path.is_file():
-            procesar_archivo(path.__str__(), output_folder)
+            procesar_archivo(path.__str__(), output_folder,
+                             remove_invalid_characters)
 
         elif recursive and path.is_dir():
-            procesar_carpeta(path.__str__(), output_folder, recursive)
+            procesar_carpeta(path.__str__(), output_folder, recursive,
+                             remove_invalid_characters)
 
 
-def procesar_archivo(file_path: str, output_folder: str):
-    if (not comprobar_formato(file_path)):
+def procesar_archivo(file_path: str, output_folder: str, remove_invalid_characters: bool):
+    file_output_path: str = file_path
+    if (remove_invalid_characters):
+        file_output_path = eliminar_caracteres_invalidos(file_output_path)
+
+    if (not comprobar_formato(file_output_path)):
         return
+
     with open(file_path) as file:
         data = csv.reader(file, delimiter=";")
         idiomas: list
@@ -28,16 +35,20 @@ def procesar_archivo(file_path: str, output_folder: str):
             break
         output_path: Path = Path(output_folder).joinpath("include")
         output_path.mkdir(exist_ok=True, parents=True)
-        output_path = output_path.joinpath(Path(file_path).stem)
+        output_path = output_path.joinpath(Path(file_output_path).stem)
         crear_archivo(output_path.__str__(), idiomas, data)
+
+
+def eliminar_caracteres_invalidos(texto: str):
+    texto = texto.lower()
+    texto = texto.replace(" ", "_")
+    return texto
 
 
 def comprobar_formato(file_path: str) -> bool:
     path = Path(file_path)
-
-    comprobar_caracteres_validos(file_path)
-
     if (path.suffix == ".csv" or path.suffix == ".CSV"):
+        comprobar_caracteres_validos(path.stem)
         return True
 
     return False
@@ -118,7 +129,7 @@ def get_traduction_implementation(languages: list[str], traduccion: list[str]) -
     return respuesta
 
 
-def process(output_folder: str, input_dirs: str | list[str], recursive: bool):
+def process(output_folder: str, input_dirs: str | list[str], recursive: bool, remove_invalid_characters: bool):
     traduction_paths: list[str] = []
     traduction_folder_paths: list[str] = []
 
@@ -137,10 +148,12 @@ def process(output_folder: str, input_dirs: str | list[str], recursive: bool):
                 raise
 
     for traduction_path in traduction_paths:
-        procesar_archivo(traduction_path, output_folder)
+        procesar_archivo(traduction_path, output_folder,
+                         remove_invalid_characters)
 
     for traduction_folder_path in traduction_folder_paths:
-        procesar_carpeta(traduction_folder_path, output_folder, recursive)
+        procesar_carpeta(traduction_folder_path, output_folder,
+                         recursive, remove_invalid_characters)
 
 
 if __name__ == "__main__":
@@ -154,10 +167,15 @@ if __name__ == "__main__":
     parser.add_argument('--recursive', "-r", required=False, default=True,
                         type=bool, help='If a folder is given in dirs, it processes it recursively True by default.')
 
-    # args = parser.parse_args()
-    args = parser.parse_args([
-        '-o', 'external_tool',
-        '-d', 'traduction', 'traduccion_prueba copy.csv'
-    ])
+    parser.add_argument('--remove_invalid_characters', "-rm",
+                        action='store_true', help='Remove invalid characters from the final name')
 
-    process(args.output, args.dirs, args.recursive)
+    args = parser.parse_args()
+    # args = parser.parse_args([
+    #     '-o', 'external_tool',
+    #     '-d', 'traduction', 'traduccion_prueba copy.csv',
+    #     '--remove_invalid_characters'
+    # ])
+
+    process(args.output, args.dirs, args.recursive,
+            args.remove_invalid_characters)
