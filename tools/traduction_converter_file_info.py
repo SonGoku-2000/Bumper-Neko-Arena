@@ -43,12 +43,11 @@ class FileInfo:
         return FileInfo(info, read_failed)
 
     @staticmethod
-    def build_from_files(file_paths):
+    def build_from_files(file_path: str):
         info = []
 
-        for file_path in file_paths:
-            info.append(file_path)
-            info.append(str(os.path.getmtime(file_path)))
+        info.append(file_path)
+        info.append(str(os.path.getmtime(file_path)))
 
         return FileInfo('\n'.join(info), False)
 

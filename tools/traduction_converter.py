@@ -24,7 +24,16 @@ def procesar_archivo(file_path: str, output_folder: str, remove_invalid_characte
     if (remove_invalid_characters):
         file_output_path = eliminar_caracteres_invalidos(file_output_path)
 
-    if (FileInfo.validate(file_output_path)):
+    if (not FileInfo.validate(file_output_path)):
+        return
+
+    text_file_info_path = Path(output_folder).joinpath(
+        f"_{Path(file_path).name}_text_file_info.txt"
+    )
+
+    old_text_file_info = FileInfo.read(text_file_info_path)
+    new_text_file_info = FileInfo.build_from_files(file_path)
+    if old_text_file_info == new_text_file_info and old_text_file_info == new_text_file_info:
         return
 
     if (verbose):
@@ -41,6 +50,8 @@ def procesar_archivo(file_path: str, output_folder: str, remove_invalid_characte
         output_path.mkdir(exist_ok=True, parents=True)
         output_path = output_path.joinpath(Path(file_output_path).stem)
         crear_archivo(output_path.__str__(), idiomas, data)
+
+    new_text_file_info.write(text_file_info_path.__str__())
 
 
 def eliminar_caracteres_invalidos(texto: str):
@@ -168,14 +179,14 @@ if __name__ == "__main__":
 
     parser.add_argument('--verbose', '-v', action='store_true')
 
-    args = parser.parse_args()
-    # args = parser.parse_args([
-    #     '-o', 'external_tool',
-    #     '-d', 'traduction',
-    #     "-v",
-    #     "-rm",
-    #     "-de", '";"'
-    # ])
+    # args = parser.parse_args()
+    args = parser.parse_args([
+        '-o', 'external_tool',
+        '-d', 'traduction',
+        "-v",
+        "-rm",
+        "-de", ';'
+    ])
 
     process(args.output, args.dirs, args.recursive,
             args.remove_invalid_characters, args.verbose, args.delimiter)
