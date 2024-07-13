@@ -50,6 +50,8 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats) :
 
     _life = 30;
     _state = state::LIFE;
+
+    _crash = false;
 }
 
 
@@ -63,6 +65,7 @@ void bna::Car::update(bna::Vector2 eje) {
 #ifdef PROFILE
     BN_PROFILER_START("Car update");
 #endif
+    _crash = false;
     switch (_state) {
         case state::LIFE: {
             _eje = eje;
@@ -153,6 +156,7 @@ void bna::Car::checkCollision(bna::Car& otherCar) {
     if (isColliding(otherCar)) {
         resolveCollision(otherCar);
         _hurt(otherCar);
+        _crash = true;
     }
 }
 
@@ -164,6 +168,7 @@ void bna::Car::checkCollision(bna::Hitbox& otherHitbox) {
     if (otherHitbox.checkCollision(getHitbox())) {
         bna::CollisionPoint collisionPoint = isColliding(otherHitbox);
         resolveCollision(collisionPoint);
+        _crash = true;
     }
 }
 
@@ -341,5 +346,8 @@ void bna::Car::setRotation(bn::fixed rotation) {
     _rotation = rotation;
 }
 
+bool bna::Car::isCrash() {
+    return _crash;
+}
 
 

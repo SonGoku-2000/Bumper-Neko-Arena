@@ -57,6 +57,8 @@ namespace bna {
 
         bool isAlive();
 
+        bool isCrash();
+
         private:
         bn::fixed_point _pos;
         bn::fixed _rotation; // en grados
@@ -86,6 +88,8 @@ namespace bna {
         };
 
         state _state;
+
+        bool _crash;
 
         void _checkBorders();
         void _hurt(Car& other);

@@ -36,14 +36,6 @@ void bna::Player::full_update() {
     _cuerpo->update(_eje);
 #endif
 
-    for (int i = 0; i < _enemies->size(); ++i) {
-        _enemies->at(i).checkCollision(*_cuerpo);
-    }
-    bn::sound_items::turbo2.play();
-    for (int i = 0; i < _walls->size(); i++) {
-        _cuerpo->checkCollision(_walls->at(i));
-    }
-
     _cameraManager->update(_cuerpo->getPosition());
 }
 

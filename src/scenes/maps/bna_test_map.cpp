@@ -25,6 +25,7 @@ constexpr int CPU_CICLES = 64;
 #endif
 
 #include "bn_music_items.h"
+#include "bn_sound_items.h"
 
 bna::TestMap::TestMap(CarBuilder& playerCarBuilder, Characters& playerCharacter) :
     _fondo(bn::regular_bg_items::mapa_prueba.create_bg(0, 0)),
@@ -157,6 +158,9 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
 
             for (int id_other = id_car + 1; id_other < _cars.size(); id_other++) {
                 _cars[id_car].checkCollision(_cars.at(id_other));
+            }
+            if (_cars[id_car].isCrash()) {
+                bn::sound_items::crash.play();
             }
         }
 
