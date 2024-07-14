@@ -10,18 +10,19 @@
 
 #include "bn_string.h"
 #include "bna_characters.hpp"
+#include "bn_regular_bg_items_cat_gray.h"
 
 #ifdef DEBUG
 #include "bn_log.h"
 #endif
-
+ 
 
 bna::CharacterSelection::CharacterSelection(Characters& character) {
     _character = &character;
     _continuar = false;
     _idOpcion = opcionesCharacter(0);
 
-    constexpr int ALINEACION_HORIZONTAL = -40;
+    constexpr int ALINEACION_HORIZONTAL = -110;
     constexpr bool MOSTRAR_INDICADORES = false;
 
     _indicadores.push_back(bna::Indicator(bn::fixed_point(0, -70), MOSTRAR_INDICADORES));
@@ -148,6 +149,7 @@ void bna::CharacterSelection::_updateCharacterSelected() {
     if (_seleccionado == true) {
         if (opcionesCharacter::CAT_1 == _idOpcionSeleccionada) {
             _textoCharacterSeleccionado.updateText("Cat 1");
+            _character_image = bn::regular_bg_items::cat_gray.create_bg(80,0);
         }
         if (opcionesCharacter::CAT_2 == _idOpcionSeleccionada) {
             _textoCharacterSeleccionado.updateText("Cat 2");

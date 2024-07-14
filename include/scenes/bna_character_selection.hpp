@@ -5,8 +5,12 @@
 #include "bna_text_manager.hpp"
 #include "bna_indicator.hpp"
 
+#include "bn_optional.h"
+#include "bn_regular_bg_ptr.h"
+
+
 namespace bna {
-    enum class Characters:int;
+    enum class Characters :int;
     class CharacterSelection : public scene {
         public:
         CharacterSelection(Characters& character);
@@ -39,6 +43,8 @@ namespace bna {
 
         bn::vector<bna::Indicator, 8> _indicadores;
         bn::optional<bn::sprite_ptr> _puntero;
+
+        bn::optional<bn::regular_bg_ptr > _character_image;
 
         void _updateCharacterSelected();
         void _updateCharacterPointer();
