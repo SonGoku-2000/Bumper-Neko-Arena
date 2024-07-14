@@ -15,6 +15,10 @@ bna::Indicator::Indicator(bn::fixed x, bn::fixed y, bool visible, int color) :
     Indicator(bn::fixed_point(x, y), visible, color) {
 }
 
+bna::Indicator::Indicator() :
+    Indicator(bn::fixed_point(0, 0), false, 0) {
+}
+
 void bna::Indicator::set_camera(bn::camera_ptr camara) {
     if (_sprite.has_value()) {
         _sprite->set_camera(camara);
