@@ -47,6 +47,7 @@ namespace bna {
 
         bn::optional<bn::regular_bg_ptr > _character_image;
 
+        void _updateArrowPress();
         void _updateCharacterSelected();
         void _updateCharacterPointer();
     };

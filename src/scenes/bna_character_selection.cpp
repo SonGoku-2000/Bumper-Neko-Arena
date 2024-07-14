@@ -68,16 +68,7 @@ bna::CharacterSelection::CharacterSelection(Characters& character) {
 bn::optional<bna::scene_type> bna::CharacterSelection::update() {
     bn::fixed brillo;
     while (!_continuar) {
-        if (bn::keypad::down_pressed()) {
-            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) + 1, 0, int(opcionesCharacter::VOLVER)));
-            _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
-            _updateCharacterSelected();
-        }
-        else if (bn::keypad::up_pressed()) {
-            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) - 1, 0, int(opcionesCharacter::VOLVER)));
-            _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
-            _updateCharacterSelected();
-        }
+        _updateArrowPress();
 
         if (bn::keypad::a_pressed()) {
             if (_idOpcion == opcionesCharacter::VOLVER) {
@@ -114,6 +105,19 @@ bn::optional<bna::scene_type> bna::CharacterSelection::update() {
         bn::core::update();
     }
     return bna::scene_type::TEST_MAP;
+}
+
+void bna::CharacterSelection::_updateArrowPress() {
+    if (bn::keypad::down_pressed()) {
+        _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) + 1, 0, int(opcionesCharacter::VOLVER)));
+        _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
+        _updateCharacterSelected();
+    }
+    else if (bn::keypad::up_pressed()) {
+        _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) - 1, 0, int(opcionesCharacter::VOLVER)));
+        _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
+        _updateCharacterSelected();
+    }
 }
 
 void bna::CharacterSelection::_updateCharacterPointer() {
