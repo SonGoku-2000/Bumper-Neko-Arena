@@ -82,6 +82,7 @@ void bna::TestMap::_generatePlayer(CarBuilder& playerCarBuilder, Characters& pla
     _player.setCharacter(playerCharacter);
 
     _player.spawn(_cars, getWalls(), 0, _camera, getSize());
+    _uiLife.setCar(_cars[0]);
 }
 
 void bna::TestMap::_generateEnemies() {
@@ -165,6 +166,7 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
         }
 
         _player.update();
+        _uiLife.update();
         _positionIconManager.update();
         // _enemiesManager.update();
         bn::core::update();

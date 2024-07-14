@@ -56,6 +56,7 @@ namespace bna {
         void applyDamage(bn::fixed damage);
 
         bool isAlive();
+        bn::fixed getLife();
 
         bool isCrash();
 
