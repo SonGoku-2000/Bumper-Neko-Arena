@@ -11,25 +11,26 @@
 #include "bn_string.h"
 #include "bna_characters.hpp"
 #include "bn_regular_bg_items_cat_gray.h"
+#include "bn_sprite_items_icons_selection.h"
 
 #ifdef DEBUG
 #include "bn_log.h"
 #endif
- 
+
 
 bna::CharacterSelection::CharacterSelection(Characters& character) {
     _character = &character;
     _continuar = false;
     _idOpcion = opcionesCharacter(0);
 
-    constexpr int ALINEACION_HORIZONTAL = -110;
+    constexpr int ALINEACION_HORIZONTAL = -90;
     constexpr bool MOSTRAR_INDICADORES = false;
 
     _indicadores.push_back(bna::Indicator(bn::fixed_point(0, -70), MOSTRAR_INDICADORES));
     _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, -40), MOSTRAR_INDICADORES));
-    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, -20), MOSTRAR_INDICADORES));
-    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 0), MOSTRAR_INDICADORES));
-    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 20), MOSTRAR_INDICADORES));
+    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL + 64, -40), MOSTRAR_INDICADORES));
+    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 10), MOSTRAR_INDICADORES));
+    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL + 64, 10), MOSTRAR_INDICADORES));
     _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 40), MOSTRAR_INDICADORES));
     _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 60), MOSTRAR_INDICADORES));
 
@@ -42,26 +43,11 @@ bna::CharacterSelection::CharacterSelection(Characters& character) {
     );
     _textoCharacterSeleccionado.set_aligment(bn::sprite_text_generator::alignment_type::CENTER);
 
-    _textoCharacter1 = bna::TextManager(
-        _indicadores[1].x() + OFFSET_HORIZONTAL_TEXTO,
-        _indicadores[1].y(),
-        "Character 1"
-    );
-    _textoCharacter2 = bna::TextManager(
-        _indicadores[2].x() + OFFSET_HORIZONTAL_TEXTO,
-        _indicadores[2].y(),
-        "Character 2"
-    );
-    _textoCharacter3 = bna::TextManager(
-        _indicadores[3].x() + OFFSET_HORIZONTAL_TEXTO,
-        _indicadores[3].y(),
-        "Character 3"
-    );
-    _textoCharacter4 = bna::TextManager(
-        _indicadores[4].x() + OFFSET_HORIZONTAL_TEXTO,
-        _indicadores[4].y(),
-        "Character 4"
-    );
+    _iconosCharacters.push_back(bn::sprite_items::icons_selection.create_sprite(_indicadores[1], 0));
+    _iconosCharacters.push_back(bn::sprite_items::icons_selection.create_sprite(_indicadores[2], 1));
+    _iconosCharacters.push_back(bn::sprite_items::icons_selection.create_sprite(_indicadores[3], 2));
+    _iconosCharacters.push_back(bn::sprite_items::icons_selection.create_sprite(_indicadores[4], 3));
+
     _textoNext = bna::TextManager(
         _indicadores[5].x() + OFFSET_HORIZONTAL_TEXTO,
         _indicadores[5].y(),
@@ -149,7 +135,7 @@ void bna::CharacterSelection::_updateCharacterSelected() {
     if (_seleccionado == true) {
         if (opcionesCharacter::CAT_1 == _idOpcionSeleccionada) {
             _textoCharacterSeleccionado.updateText("Cat 1");
-            _character_image = bn::regular_bg_items::cat_gray.create_bg(80,0);
+            _character_image = bn::regular_bg_items::cat_gray.create_bg(80, 0);
         }
         if (opcionesCharacter::CAT_2 == _idOpcionSeleccionada) {
             _textoCharacterSeleccionado.updateText("Cat 2");
