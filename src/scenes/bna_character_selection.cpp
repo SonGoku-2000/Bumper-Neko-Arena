@@ -109,12 +109,48 @@ bn::optional<bna::scene_type> bna::CharacterSelection::update() {
 
 void bna::CharacterSelection::_updateArrowPress() {
     if (bn::keypad::down_pressed()) {
-        _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) + 1, 0, int(opcionesCharacter::VOLVER)));
+        if (int(_idOpcion) == 0 or int(_idOpcion) == 1) {
+            _idOpcion = opcionesCharacter(int(_idOpcion) + 2);
+        }
+        else if (int(_idOpcion) == 2 or int(_idOpcion) == 3) {
+            _idOpcion = opcionesCharacter::NEXT;
+        }
+        else {
+            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) + 1, 0, int(opcionesCharacter::VOLVER)));
+        }
         _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
         _updateCharacterSelected();
     }
     else if (bn::keypad::up_pressed()) {
-        _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) - 1, 0, int(opcionesCharacter::VOLVER)));
+        if (int(_idOpcion) == 0 or int(_idOpcion) == 1) {
+            _idOpcion = opcionesCharacter::VOLVER;
+        }
+        else if (int(_idOpcion) == 2 or int(_idOpcion) == 3) {
+            _idOpcion = opcionesCharacter(int(_idOpcion) - 2);
+        }
+        else {
+            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) - 1, 0, int(opcionesCharacter::VOLVER)));
+        }
+        _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
+        _updateCharacterSelected();
+    }
+    else if (bn::keypad::right_pressed()) {
+        if (int(_idOpcion) == 0 or int(_idOpcion) == 1) {
+            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) + 1, 0, 1));
+        }
+        else if (int(_idOpcion) == 2 or int(_idOpcion) == 3) {
+            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) + 1, 2, 3));
+        }
+        _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
+        _updateCharacterSelected();
+    }
+    else if (bn::keypad::left_pressed()) {
+        if (int(_idOpcion) == 0 or int(_idOpcion) == 1) {
+            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) - 1, 0, 1));
+        }
+        else if (int(_idOpcion) == 2 or int(_idOpcion) == 3) {
+            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) - 1, 2, 3));
+        }
         _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
         _updateCharacterSelected();
     }
