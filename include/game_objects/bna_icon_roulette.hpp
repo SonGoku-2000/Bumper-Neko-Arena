@@ -11,7 +11,7 @@
 namespace bna {
     class IconRoulette {
         public:
-        IconRoulette(bn::fixed_point position, bn::fixed separation);
+        IconRoulette(bn::fixed_point position, bn::fixed separation, bn::vector<bn::sprite_ptr, 3> icons);
         IconRoulette(bn::vector<bn::sprite_ptr, 3> icons);
         IconRoulette(bn::vector<bn::sprite_ptr, 3> icons, int initial_option);
         ~IconRoulette() = default;
