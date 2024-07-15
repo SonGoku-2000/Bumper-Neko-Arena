@@ -20,6 +20,7 @@ namespace bna {
 
         int getSelection();
         void setIcons(bn::array<bn::sprite_ptr, 3> icons);
+        void setPosition(bn::fixed_point position, bn::fixed separation);
 
         void netxOption();
         void previousOption();
@@ -30,5 +31,6 @@ namespace bna {
         int _selection;
 
         void _updateIconsPosition();
+        void _generateIconsPosition(bn::fixed_point position, bn::fixed separation);
     };
 } // namespace bna

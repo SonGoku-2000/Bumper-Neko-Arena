@@ -9,9 +9,7 @@ namespace bna {
 
 bna::IconRoulette::IconRoulette(bn::fixed_point position, bn::fixed separation, bn::array<bn::sprite_ptr, 3> icons, int initial_option) {
     setIcons(icons);
-    _positions[0] = Indicator(position - bn::fixed_point(separation, 0), MOSTRAR_INDICADORES);
-    _positions[1] = Indicator(position, MOSTRAR_INDICADORES);
-    _positions[2] = Indicator(position + bn::fixed_point(separation, 0), MOSTRAR_INDICADORES);
+    _generateIconsPosition(position, separation);
 
     _selection = initial_option;
     _updateIconsPosition();
@@ -22,10 +20,7 @@ bna::IconRoulette::IconRoulette(bn::fixed_point position, bn::fixed separation, 
 }
 
 bna::IconRoulette::IconRoulette(bn::fixed_point position, bn::fixed separation) {
-    _positions[0] = Indicator(position - bn::fixed_point(separation, 0), MOSTRAR_INDICADORES);
-    _positions[1] = Indicator(position, MOSTRAR_INDICADORES);
-    _positions[2] = Indicator(position + bn::fixed_point(separation, 0), MOSTRAR_INDICADORES);
-
+    _generateIconsPosition(position, separation);
     _selection = 0;
 }
 
@@ -34,6 +29,18 @@ bna::IconRoulette::IconRoulette() {
 
 
 
+void bna::IconRoulette::setPosition(bn::fixed_point position, bn::fixed separation) {
+    _generateIconsPosition(position, separation);
+    if (_icons[0].has_value()) {
+        _updateIconsPosition();
+    }
+}
+
+void bna::IconRoulette::_generateIconsPosition(bn::fixed_point position, bn::fixed separation) {
+    _positions[0] = Indicator(position - bn::fixed_point(separation, 0), MOSTRAR_INDICADORES);
+    _positions[1] = Indicator(position, MOSTRAR_INDICADORES);
+    _positions[2] = Indicator(position + bn::fixed_point(separation, 0), MOSTRAR_INDICADORES);
+}
 
 void bna::IconRoulette::setIcons(bn::array<bn::sprite_ptr, 3> icons) {
     for (int i = 0; i < icons.size(); i++) {
