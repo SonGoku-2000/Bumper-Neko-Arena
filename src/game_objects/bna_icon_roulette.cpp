@@ -2,8 +2,8 @@
 
 #include "bna_loop_value.hpp"
 
-bna::IconRoulette::IconRoulette(bn::fixed_point position, bn::fixed separation, bn::vector<bn::sprite_ptr, 3> icons, int initial_option) {
-    _icons = icons;
+bna::IconRoulette::IconRoulette(bn::fixed_point position, bn::fixed separation, bn::array<bn::sprite_ptr, 3> icons, int initial_option) :
+    _icons(icons) {
     _positions[0] = Indicator(position - bn::fixed_point(separation, 0), true);
     _positions[1] = Indicator(position, true);
     _positions[2] = Indicator(position + bn::fixed_point(separation, 0), true);
@@ -12,13 +12,13 @@ bna::IconRoulette::IconRoulette(bn::fixed_point position, bn::fixed separation, 
     _updateIconsPosition();
 }
 
-bna::IconRoulette::IconRoulette(bn::fixed_point position, bn::fixed separation, bn::vector<bn::sprite_ptr, 3> icons) :
+bna::IconRoulette::IconRoulette(bn::fixed_point position, bn::fixed separation, bn::array<bn::sprite_ptr, 3> icons) :
     IconRoulette(position, separation, icons, 0) {
 }
 
 
 
-int bna::IconRoulette::getSelection(){
+int bna::IconRoulette::getSelection() {
     return _selection;
 }
 
