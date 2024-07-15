@@ -1,12 +1,31 @@
 #include "bna_icon_roulette.hpp"
 
+#include "bna_loop_value.hpp"
+
 bna::IconRoulette::IconRoulette(bn::fixed_point position, bn::fixed separation, bn::vector<bn::sprite_ptr, 3> icons) {
     _icons = icons;
     _positions[0] = Indicator(position - bn::fixed_point(separation, 0), true);
     _positions[1] = Indicator(position, true);
     _positions[2] = Indicator(position + bn::fixed_point(separation, 0), true);
 
-    for (int i = 0; i < _icons.size(); i++) {
-        _icons[i].set_position(_positions[i]);
-    }
+    _selection = 0;
+    _updateIconsPosition();
 }
+
+
+void bna::IconRoulette::netxOption() {
+    _selection = bna::loop(_selection + 1, 0, _icons.size() - 1);
+    _updateIconsPosition();
+}
+
+void bna::IconRoulette::previousOption() {
+    _selection = bna::loop(_selection - 1, 0, _icons.size() - 1);
+    _updateIconsPosition();
+}
+
+void bna::IconRoulette::_updateIconsPosition() {
+    _icons[bna::loop(_selection - 1, 0, _icons.size() - 1)].set_position(_positions[0]);
+    _icons[_selection].set_position(_positions[1]);
+    _icons[bna::loop(_selection + 1, 0, _icons.size() - 1)].set_position(_positions[2]);
+}
+

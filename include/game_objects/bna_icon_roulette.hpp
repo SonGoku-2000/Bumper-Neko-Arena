@@ -25,5 +25,7 @@ namespace bna {
         bn::vector<bn::sprite_ptr, 3> _icons;
         bn::array<bna::Indicator, 3> _positions;
         int _selection;
+
+        void _updateIconsPosition();
     };
 } // namespace bna
