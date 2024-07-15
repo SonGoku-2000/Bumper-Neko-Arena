@@ -18,6 +18,11 @@ bna::IconRoulette::IconRoulette(bn::fixed_point position, bn::fixed separation, 
 
 
 
+int bna::IconRoulette::getSelection(){
+    return _selection;
+}
+
+
 void bna::IconRoulette::netxOption() {
     _selection = bna::loop(_selection + 1, 0, _icons.size() - 1);
     _updateIconsPosition();
