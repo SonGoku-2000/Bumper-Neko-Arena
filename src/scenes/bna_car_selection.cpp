@@ -2,6 +2,8 @@
 #include "bn_core.h"
 
 #include "bn_sprite_items_pointer.h"
+#include "bn_sprite_items_cuerpos.h"
+#include "bn_sprite_items_motores.h"
 
 #include "bna_scene_type.hpp"
 
@@ -15,6 +17,7 @@
 #ifdef DEBUG
 #include "bn_log.h"
 #endif
+
 
 
 bna::CarSelection::CarSelection(CarBuilder& carBuilder) {
@@ -41,16 +44,30 @@ bna::CarSelection::CarSelection(CarBuilder& carBuilder) {
     );
     _textoStats.set_aligment(bn::sprite_text_generator::alignment_type::CENTER);
 
+_bodysRoulette.setPosition(_indicadores[1],20);
+_bodysRoulette.setIcons({
+        bn::sprite_items::cuerpos.create_sprite(0,0,0),
+        bn::sprite_items::cuerpos.create_sprite(0,0,1),
+        bn::sprite_items::cuerpos.create_sprite(0,0,2)
+    });
     _textoCuerpo = bna::TextManager(
         _indicadores[1].x() + OFFSET_HORIZONTAL_TEXTO,
         _indicadores[1].y(),
         ""
     );
+
+    _motorsRoulette.setPosition(_indicadores[2], 20);
+    _motorsRoulette.setIcons({
+        bn::sprite_items::motores.create_sprite(0,0,0),
+        bn::sprite_items::motores.create_sprite(0,0,1),
+        bn::sprite_items::motores.create_sprite(0,0,2)
+    });
     _textoMotor = bna::TextManager(
         _indicadores[2].x() + OFFSET_HORIZONTAL_TEXTO,
         _indicadores[2].y(),
         ""
     );
+
     _textoRueda = bna::TextManager(
         _indicadores[3].x() + OFFSET_HORIZONTAL_TEXTO,
         _indicadores[3].y(),
@@ -97,14 +114,16 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
         int cambio_opcion = int(bn::keypad::right_pressed()) - int(bn::keypad::left_pressed());
         if (_idOpcion == opcionesPartes::CUERPO) {
             if (cambio_opcion) {
-                _idBody = bna::parts::bodys(bna::loop(int(_idBody) + cambio_opcion, 0, int(bna::parts::bodys::MAX) - 1));
+                _bodysRoulette.changeOption(cambio_opcion);
+                _idBody = bna::parts::bodys(_bodysRoulette.getSelection());
                 _updateBodyText();
                 _updateStatsText();
             }
         }
         else if (_idOpcion == opcionesPartes::MOTOR) {
             if (cambio_opcion) {
-                _idMotor = bna::parts::motors(bna::loop(int(_idMotor) + cambio_opcion, 0, int(bna::parts::motors::MAX) - 1));
+                _motorsRoulette.changeOption(cambio_opcion);
+                _idMotor = bna::parts::motors(_motorsRoulette.getSelection());
                 _updateMotorText();
                 _updateStatsText();
             }
