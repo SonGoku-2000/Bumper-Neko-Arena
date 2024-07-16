@@ -30,7 +30,12 @@ bna::Stats bna::parts::getMotor(motors id) {
 
 bna::Stats bna::parts::getWheels(wheels id) {
     bna::Stats stats;
-    if (bna::parts::wheels::NORMAL == id) {
+    if (bna::parts::wheels::OLD == id) {
+        stats.turn = 1;
+        stats.maxSpeed = -0.2;
+        stats.aceleration = -0.01;
+    }
+    else if (bna::parts::wheels::NORMAL == id) {
         stats.turn = 1.5;
     }
     else if (bna::parts::wheels::SPIKES == id) {

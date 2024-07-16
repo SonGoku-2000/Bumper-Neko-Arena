@@ -44,6 +44,7 @@ namespace bna {
         };
 
         enum class wheels :int {
+            OLD,
             NORMAL,
             SPIKES,
             MAX
