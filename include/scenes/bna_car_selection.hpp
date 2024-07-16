@@ -43,7 +43,8 @@ namespace bna {
 
         bna::IconRoulette _bodysRoulette;
         bna::IconRoulette _motorsRoulette;
-        // bna::IconRoulette _wheelsRoulette;
+        bna::IconRoulette _wheelsRoulette;
+
         bna::parts::motors _idMotor;
         bna::parts::bodys _idBody;
         bna::parts::wheels _idWheel;

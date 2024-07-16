@@ -4,6 +4,7 @@
 #include "bn_sprite_items_pointer.h"
 #include "bn_sprite_items_cuerpos.h"
 #include "bn_sprite_items_motores.h"
+#include "bn_sprite_items_ruedas.h"
 
 #include "bna_scene_type.hpp"
 
@@ -44,12 +45,12 @@ bna::CarSelection::CarSelection(CarBuilder& carBuilder) {
     );
     _textoStats.set_aligment(bn::sprite_text_generator::alignment_type::CENTER);
 
-_bodysRoulette.setPosition(_indicadores[1],20);
-_bodysRoulette.setIcons({
-        bn::sprite_items::cuerpos.create_sprite(0,0,0),
-        bn::sprite_items::cuerpos.create_sprite(0,0,1),
-        bn::sprite_items::cuerpos.create_sprite(0,0,2)
-    });
+    _bodysRoulette.setPosition(_indicadores[1], 20);
+    _bodysRoulette.setIcons({
+            bn::sprite_items::cuerpos.create_sprite(0,0,0),
+            bn::sprite_items::cuerpos.create_sprite(0,0,1),
+            bn::sprite_items::cuerpos.create_sprite(0,0,2)
+        });
     _textoCuerpo = bna::TextManager(
         _indicadores[1].x() + OFFSET_HORIZONTAL_TEXTO,
         _indicadores[1].y(),
@@ -61,18 +62,25 @@ _bodysRoulette.setIcons({
         bn::sprite_items::motores.create_sprite(0,0,0),
         bn::sprite_items::motores.create_sprite(0,0,1),
         bn::sprite_items::motores.create_sprite(0,0,2)
-    });
+        });
     _textoMotor = bna::TextManager(
         _indicadores[2].x() + OFFSET_HORIZONTAL_TEXTO,
         _indicadores[2].y(),
         ""
     );
 
+    _wheelsRoulette.setPosition(_indicadores[3], 20);
+    _wheelsRoulette.setIcons({
+            bn::sprite_items::ruedas.create_sprite(0,0,0),
+            bn::sprite_items::ruedas.create_sprite(0,0,1),
+            bn::sprite_items::ruedas.create_sprite(0,0,2)
+        });
     _textoRueda = bna::TextManager(
         _indicadores[3].x() + OFFSET_HORIZONTAL_TEXTO,
         _indicadores[3].y(),
         ""
     );
+
     _textoPlay = bna::TextManager(
         _indicadores[4].x() + OFFSET_HORIZONTAL_TEXTO,
         _indicadores[4].y(),
@@ -217,6 +225,9 @@ void bna::CarSelection::_updateMotorText() {
 void bna::CarSelection::_updateWheelText() {
     bn::string<111> texto = "Wheel: ";
 
+    if (bna::parts::wheels::OLD == _idWheel) {
+        texto.append("Normal");
+    }
     if (bna::parts::wheels::NORMAL == _idWheel) {
         texto.append("Normal");
     }
