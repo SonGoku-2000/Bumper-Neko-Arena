@@ -8,13 +8,14 @@
 namespace bna {
     class OptionsMenu : public scene {
         public:
-        OptionsMenu();
+        OptionsMenu(bn::fixed& brillo_memory);
         [[nodiscard]] bn::optional<scene_type> update() final;
 
         private:
         TextManager _textoBrillo;
         TextManager _textoVolver;
 
+        bn::fixed& _brillo;
         int _idOpcion;
 
         bn::vector<bna::Indicator, 4> _indicadores;

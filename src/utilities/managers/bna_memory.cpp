@@ -3,6 +3,8 @@
 #include "bn_sram.h"
 #include "bn_string_view.h"
 
+#include "bna_brightness_manager.hpp"
+
 // #define DEBUG
 #ifdef DEBUG
 #include "bn_log.h"
@@ -18,10 +20,11 @@ bna::Memory::Memory() {
 #ifdef DEBUG
         BN_LOG("Error al leer Memory creando nuevos datos");
 #endif
-        dinero = 0;
-
-        volumen = bn::fixed(0.5);
+        brillo = 0;
     }
+
+    bna::brightness_manager::set_brightness(brillo);
+
     write();
 }
 
@@ -44,3 +47,4 @@ void bna::Memory::write() {
     BN_LOG("Datos escritos");
 #endif
 }
+

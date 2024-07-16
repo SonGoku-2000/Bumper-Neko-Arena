@@ -18,6 +18,8 @@
 #include "bna_characters.hpp"
 #include "bna_preparing_connection.hpp"
 #include "bna_character_selection.hpp"
+
+#include "bna_memory.hpp"
 #define DEBUG
 #ifdef DEBUG
 #include "bn_log.h"
@@ -29,6 +31,7 @@
 int main() {
     bn::core::init();
     bn::bg_palettes::set_transparent_color(bn::colors::gray);
+    bna::Memory memoria;
 
     bn::unique_ptr<bna::scene> scene;
 
@@ -62,7 +65,7 @@ int main() {
                 break;
 
             case bna::scene_type::OPTION_MENU:
-                scene.reset(new bna::OptionsMenu());
+                scene.reset(new bna::OptionsMenu(memoria.brillo));
                 break;
 
             case bna::scene_type::TEST_MAP:
@@ -79,6 +82,8 @@ int main() {
         }
 
         next_scene = scene->update();
+
+        memoria.write();
 
         bn::core::update();
     }

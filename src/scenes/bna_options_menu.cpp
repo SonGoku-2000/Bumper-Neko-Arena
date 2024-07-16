@@ -13,7 +13,8 @@
 
 
 
-bna::OptionsMenu::OptionsMenu() {
+bna::OptionsMenu::OptionsMenu(bn::fixed& brillo_memory) :
+    _brillo(brillo_memory) {
     _continuar = false;
     _idOpcion = 0;
 
@@ -70,11 +71,13 @@ bn::optional<bna::scene_type> bna::OptionsMenu::update() {
 
         if (bn::keypad::a_pressed()) {
             if (_idOpcion == 1) {
+                _brillo = brillo;
                 return bna::scene_type::MAIN_MENU;
             }
         }
 
         if (bn::keypad::b_pressed()) {
+            _brillo = brillo;
             return bna::scene_type::MAIN_MENU;
         }
         bn::core::update();

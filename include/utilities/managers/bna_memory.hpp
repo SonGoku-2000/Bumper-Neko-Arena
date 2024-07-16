@@ -13,13 +13,7 @@ namespace bna {
 
         char label[8] = {};
 
-        int dinero;
-
-        bn::random random_regalo;
-
-        bn::fixed volumen;
-
-        // bn::vector<id_objeto, 10> _inventario;
+        bn::fixed brillo;
 
         Memory();
         ~Memory() = default;
