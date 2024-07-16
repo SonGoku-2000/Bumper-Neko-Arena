@@ -44,7 +44,7 @@ void bna::Memory::write() {
     label_stream.append(valid_label);
     bn::sram::write(*this);
 #ifdef DEBUG
-    BN_LOG("Datos escritos");
+    BN_LOG("Datos escritos: ",sizeof(*this)," bytes.");
 #endif
 }
 
