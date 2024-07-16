@@ -64,6 +64,11 @@ void bna::IconRoulette::previousOption() {
     _updateIconsPosition();
 }
 
+void bna::IconRoulette::changeOption(int direction) {
+    _selection = bna::loop(_selection + direction, 0, _icons.size() - 1);
+    _updateIconsPosition();
+}
+
 void bna::IconRoulette::_updateIconsPosition() {
     _icons[bna::loop(_selection - 1, 0, _icons.size() - 1)]->set_position(_positions[0]);
     _icons[_selection]->set_position(_positions[1]);

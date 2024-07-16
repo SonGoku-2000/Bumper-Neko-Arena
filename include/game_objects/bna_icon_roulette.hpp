@@ -24,6 +24,7 @@ namespace bna {
 
         void netxOption();
         void previousOption();
+        void changeOption(int direction);
 
         private:
         bn::array<bn::optional<bn::sprite_ptr>, 3> _icons;
