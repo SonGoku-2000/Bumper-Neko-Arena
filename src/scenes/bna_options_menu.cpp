@@ -73,6 +73,10 @@ bn::optional<bna::scene_type> bna::OptionsMenu::update() {
                 return bna::scene_type::MAIN_MENU;
             }
         }
+
+        if (bn::keypad::b_pressed()) {
+            return bna::scene_type::MAIN_MENU;
+        }
         bn::core::update();
     }
     return bna::scene_type::TEST_MAP;
