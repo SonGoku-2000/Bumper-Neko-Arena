@@ -5,6 +5,10 @@
 #include "bna_text_manager.hpp"
 #include "bna_indicator.hpp"
 
+#include "bn_vector.h"
+#include "bn_sprite_ptr.h"
+#include "bna_icon_roulette.hpp"
+
 namespace bna {
     namespace parts {
         enum class motors : int;
@@ -36,6 +40,10 @@ namespace bna {
 
         bn::vector<bna::Indicator, 6> _indicadores;
         bn::optional<bn::sprite_ptr> _puntero;
+
+        bna::IconRoulette _bodysRoulette;
+        bna::IconRoulette _motorsRoulette;
+        bna::IconRoulette _wheelsRoulette;
 
         bna::parts::motors _idMotor;
         bna::parts::bodys _idBody;

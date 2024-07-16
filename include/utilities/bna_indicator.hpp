@@ -9,6 +9,7 @@ namespace bna {
         public:
         Indicator(bn::fixed x, bn::fixed y, bool visible, int color = 7);
         Indicator(bn::fixed_point pos, bool visible, int color = 7);
+        Indicator();
         ~Indicator() = default;
         void set_camera(bn::camera_ptr camara);
 

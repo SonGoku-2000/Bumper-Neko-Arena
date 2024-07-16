@@ -56,6 +56,9 @@ namespace bna {
         void applyDamage(bn::fixed damage);
 
         bool isAlive();
+        bn::fixed getLife();
+
+        bool isCrash();
 
         private:
         bn::fixed_point _pos;
@@ -86,6 +89,8 @@ namespace bna {
         };
 
         state _state;
+
+        bool _crash;
 
         void _checkBorders();
         void _hurt(Car& other);

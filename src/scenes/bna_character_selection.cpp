@@ -10,6 +10,8 @@
 
 #include "bn_string.h"
 #include "bna_characters.hpp"
+#include "bn_regular_bg_items_cat_gray.h"
+#include "bn_sprite_items_icons_selection.h"
 
 #ifdef DEBUG
 #include "bn_log.h"
@@ -21,14 +23,14 @@ bna::CharacterSelection::CharacterSelection(Characters& character) {
     _continuar = false;
     _idOpcion = opcionesCharacter(0);
 
-    constexpr int ALINEACION_HORIZONTAL = -40;
+    constexpr int ALINEACION_HORIZONTAL = -90;
     constexpr bool MOSTRAR_INDICADORES = false;
 
     _indicadores.push_back(bna::Indicator(bn::fixed_point(0, -70), MOSTRAR_INDICADORES));
     _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, -40), MOSTRAR_INDICADORES));
-    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, -20), MOSTRAR_INDICADORES));
-    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 0), MOSTRAR_INDICADORES));
-    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 20), MOSTRAR_INDICADORES));
+    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL + 64, -40), MOSTRAR_INDICADORES));
+    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 10), MOSTRAR_INDICADORES));
+    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL + 64, 10), MOSTRAR_INDICADORES));
     _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 40), MOSTRAR_INDICADORES));
     _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 60), MOSTRAR_INDICADORES));
 
@@ -41,26 +43,11 @@ bna::CharacterSelection::CharacterSelection(Characters& character) {
     );
     _textoCharacterSeleccionado.set_aligment(bn::sprite_text_generator::alignment_type::CENTER);
 
-    _textoCharacter1 = bna::TextManager(
-        _indicadores[1].x() + OFFSET_HORIZONTAL_TEXTO,
-        _indicadores[1].y(),
-        "Character 1"
-    );
-    _textoCharacter2 = bna::TextManager(
-        _indicadores[2].x() + OFFSET_HORIZONTAL_TEXTO,
-        _indicadores[2].y(),
-        "Character 2"
-    );
-    _textoCharacter3 = bna::TextManager(
-        _indicadores[3].x() + OFFSET_HORIZONTAL_TEXTO,
-        _indicadores[3].y(),
-        "Character 3"
-    );
-    _textoCharacter4 = bna::TextManager(
-        _indicadores[4].x() + OFFSET_HORIZONTAL_TEXTO,
-        _indicadores[4].y(),
-        "Character 4"
-    );
+    _iconosCharacters.push_back(bn::sprite_items::icons_selection.create_sprite(_indicadores[1], 0));
+    _iconosCharacters.push_back(bn::sprite_items::icons_selection.create_sprite(_indicadores[2], 1));
+    _iconosCharacters.push_back(bn::sprite_items::icons_selection.create_sprite(_indicadores[3], 2));
+    _iconosCharacters.push_back(bn::sprite_items::icons_selection.create_sprite(_indicadores[4], 3));
+
     _textoNext = bna::TextManager(
         _indicadores[5].x() + OFFSET_HORIZONTAL_TEXTO,
         _indicadores[5].y(),
@@ -81,16 +68,7 @@ bna::CharacterSelection::CharacterSelection(Characters& character) {
 bn::optional<bna::scene_type> bna::CharacterSelection::update() {
     bn::fixed brillo;
     while (!_continuar) {
-        if (bn::keypad::down_pressed()) {
-            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) + 1, 0, int(opcionesCharacter::VOLVER)));
-            _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
-            _updateCharacterSelected();
-        }
-        else if (bn::keypad::up_pressed()) {
-            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) - 1, 0, int(opcionesCharacter::VOLVER)));
-            _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
-            _updateCharacterSelected();
-        }
+        _updateArrowPress();
 
         if (bn::keypad::a_pressed()) {
             if (_idOpcion == opcionesCharacter::VOLVER) {
@@ -129,6 +107,55 @@ bn::optional<bna::scene_type> bna::CharacterSelection::update() {
     return bna::scene_type::TEST_MAP;
 }
 
+void bna::CharacterSelection::_updateArrowPress() {
+    if (bn::keypad::down_pressed()) {
+        if (int(_idOpcion) == 0 or int(_idOpcion) == 1) {
+            _idOpcion = opcionesCharacter(int(_idOpcion) + 2);
+        }
+        else if (int(_idOpcion) == 2 or int(_idOpcion) == 3) {
+            _idOpcion = opcionesCharacter::NEXT;
+        }
+        else {
+            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) + 1, 0, int(opcionesCharacter::VOLVER)));
+        }
+        _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
+        _updateCharacterSelected();
+    }
+    else if (bn::keypad::up_pressed()) {
+        if (int(_idOpcion) == 0 or int(_idOpcion) == 1) {
+            _idOpcion = opcionesCharacter::VOLVER;
+        }
+        else if (int(_idOpcion) == 2 or int(_idOpcion) == 3) {
+            _idOpcion = opcionesCharacter(int(_idOpcion) - 2);
+        }
+        else {
+            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) - 1, 0, int(opcionesCharacter::VOLVER)));
+        }
+        _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
+        _updateCharacterSelected();
+    }
+    else if (bn::keypad::right_pressed()) {
+        if (int(_idOpcion) == 0 or int(_idOpcion) == 1) {
+            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) + 1, 0, 1));
+        }
+        else if (int(_idOpcion) == 2 or int(_idOpcion) == 3) {
+            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) + 1, 2, 3));
+        }
+        _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
+        _updateCharacterSelected();
+    }
+    else if (bn::keypad::left_pressed()) {
+        if (int(_idOpcion) == 0 or int(_idOpcion) == 1) {
+            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) - 1, 0, 1));
+        }
+        else if (int(_idOpcion) == 2 or int(_idOpcion) == 3) {
+            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) - 1, 2, 3));
+        }
+        _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
+        _updateCharacterSelected();
+    }
+}
+
 void bna::CharacterSelection::_updateCharacterPointer() {
     if (opcionesCharacter::CAT_1 == _idOpcionSeleccionada) {
         *_character = Characters::CAT_1;
@@ -148,6 +175,7 @@ void bna::CharacterSelection::_updateCharacterSelected() {
     if (_seleccionado == true) {
         if (opcionesCharacter::CAT_1 == _idOpcionSeleccionada) {
             _textoCharacterSeleccionado.updateText("Cat 1");
+            _character_image = bn::regular_bg_items::cat_gray.create_bg(80, 0);
         }
         if (opcionesCharacter::CAT_2 == _idOpcionSeleccionada) {
             _textoCharacterSeleccionado.updateText("Cat 2");
