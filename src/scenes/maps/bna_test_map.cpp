@@ -176,6 +176,11 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
             return bna::scene_type::SCENE_WIN;
         }
 
+        if (!_checkPlayerAlive()) {
+            bn::music::stop();
+            return bna::scene_type::SCENE_LOOSE;
+        }
+
         // _enemiesManager.update();
         bn::core::update();
     }
@@ -205,5 +210,9 @@ bool bna::TestMap::_checkEnemiesAlive() {
         }
     }
     return false;
+}
+
+bool bna::TestMap::_checkPlayerAlive() {
+    return _cars[0].isAlive();
 }
 
