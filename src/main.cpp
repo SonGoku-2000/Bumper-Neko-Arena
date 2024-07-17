@@ -13,6 +13,8 @@
 #include "bna_car_selection_multiplayer.hpp"
 #include "bna_test_map.hpp"
 #include "bna_test_map_link.hpp"
+#include "bna_scene_win.hpp"
+#include "bna_scene_loose.hpp"
 #include "bna_brightness_manager.hpp"
 #include "bna_car_builder.hpp"
 #include "bna_characters.hpp"
@@ -74,6 +76,14 @@ int main() {
 
             case bna::scene_type::TEST_MAP_LINK:
                 scene.reset(new bna::TestMapLink(playerCar, id_propia));
+                break;
+
+            case bna::scene_type::SCENE_WIN:
+                scene.reset(new bna::SceneWin());
+                break;
+
+                case bna::scene_type::SCENE_LOOSE:
+                scene.reset(new bna::SceneLoose());
                 break;
 
             default:
