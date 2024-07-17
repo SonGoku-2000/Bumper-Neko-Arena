@@ -62,6 +62,7 @@ namespace bna {
         void _generateWalls();
         void _generatePlayer(CarBuilder& playerCarBuilder, Characters& playerCharacter);
         void _generateEnemies();
+        bool _checkEnemiesAlive();
     };
 } // namespace bna
 

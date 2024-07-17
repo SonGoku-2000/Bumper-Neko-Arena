@@ -26,6 +26,7 @@ constexpr int CPU_CICLES = 64;
 
 #include "bn_music_items.h"
 #include "bn_sound_items.h"
+#include "bn_music.h"
 
 bna::TestMap::TestMap(CarBuilder& playerCarBuilder, Characters& playerCharacter) :
     _fondo(bn::regular_bg_items::mapa_prueba.create_bg(0, 0)),
@@ -160,6 +161,7 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
             for (int id_other = id_car + 1; id_other < _cars.size(); id_other++) {
                 _cars[id_car].checkCollision(_cars.at(id_other));
             }
+
             if (_cars[id_car].isCrash()) {
                 bn::sound_items::crash.play();
             }
@@ -168,6 +170,12 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
         _player.update();
         _uiLife.update();
         _positionIconManager.update();
+
+        if (!_checkEnemiesAlive()) {
+            bn::music::stop();
+            return bna::scene_type::SCENE_WIN;
+        }
+
         // _enemiesManager.update();
         bn::core::update();
     }
@@ -185,3 +193,17 @@ bn::size bna::TestMap::getSize() {
 bn::vector<bna::Hitbox, 4>& bna::TestMap::getWalls() {
     return _walls;
 }
+
+bool bna::TestMap::_checkEnemiesAlive() {
+    for (int id_car = 0; id_car < _cars.size(); id_car++) {
+        if (id_car == 0) {
+            continue;
+        }
+
+        if (_cars[id_car].isAlive()) {
+            return true;
+        }
+    }
+    return false;
+}
+
