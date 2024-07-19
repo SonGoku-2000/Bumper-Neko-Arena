@@ -67,7 +67,7 @@ def generar_lista_idiomas(datos_csv: Iterable | list[list[str]], remove_invalid_
             idiomas[id] = eliminar_caracteres_invalidos_funciones(idioma)
         else:
             comprobar_caracteres_invalidos_funciones(
-                idioma, "Invalid language name"
+                idioma, f'Invalid language name "{idioma}" at column "{id+1}" of csv file'
             )
 
     return idiomas
@@ -78,7 +78,7 @@ def comprobar_caracteres_invalidos_funciones(texto: str, error_mesage: str = "In
         if character not in get_caracteres_validos():
             try:
                 raise ValueError(
-                    f'\n{error_mesage} "{texto}" (invalid character: "{character}")'
+                    f'\n{error_mesage} - Error:(invalid character: "{character}")'
                 )
             except ValueError as ex:
                 sys.stderr.write(str(ex) + '\n\n')
@@ -150,12 +150,12 @@ def get_languages_string(languages: list[str]) -> str:
 
 def get_traduction_string(languages: list[str], filas: Iterable | list[list[str]], remove_invalid_characters: bool) -> str:
     respuesta: str = ""
-    for fila in filas:
+    for id, fila in enumerate(filas):
         if (remove_invalid_characters):
             fila[0] = eliminar_caracteres_invalidos_funciones(fila[0])
         else:
             comprobar_caracteres_invalidos_funciones(
-                fila[0], "Invalid value name"
+                fila[0], f'Invalid value name "{fila[0]}" at row "{id + 2}" of csv file'
             )
 
         respuesta += f'bn::string<{get_max_lenght_string(fila[1:])}> {fila[0]}(languages language) {"{"}\n'
@@ -239,7 +239,7 @@ if __name__ == "__main__":
     #     '-o', 'external_tool',
     #     '-d', 'traduction',
     #     "-v",
-    #     # "-rm",
+    #     "-rm",
     #     "-de", ','
     # ])
 
