@@ -179,10 +179,15 @@ def get_traduction_implementation(languages: list[str], traduccion: list[str]) -
     respuesta += "    switch (language) {\n"
     for id, language in enumerate(languages):
         respuesta += f"        case languages::{language}:\n"
-        respuesta += f'            return "{traduccion[id+1]}";\n'
+        respuesta += f'            return "{get_formato_correcto(traduccion[id+1])}";\n'
     respuesta += "        default:\n"
     respuesta += '            return "";\n'
     respuesta += "    }\n"
+    return respuesta
+
+def get_formato_correcto(text:str)->str:
+    respuesta:str
+    respuesta= text.replace('"','\\"')
     return respuesta
 
 
