@@ -66,26 +66,24 @@ def generar_lista_idiomas(datos_csv: Iterable | list[list[str]], remove_invalid_
         if (remove_invalid_characters):
             idiomas[id] = eliminar_caracteres_invalidos_funciones(idioma)
         else:
-            caracter_invalido: str = comprobar_caracteres_invalidos_funciones(
-                idioma)
-            if (caracter_invalido != ""):
-                try:
-                    raise ValueError(
-                        f'\nInvalid language name "{idioma}" (invalid character: "{caracter_invalido}")'
-                    )
-                except ValueError as ex:
-                    sys.stderr.write(str(ex) + '\n\n')
-                    traceback.print_exc()
-                    exit(-1)
+            comprobar_caracteres_invalidos_funciones(
+                idioma, "Invalid language name"
+            )
 
     return idiomas
 
 
-def comprobar_caracteres_invalidos_funciones(texto: str) -> str:
+def comprobar_caracteres_invalidos_funciones(texto: str, error_mesage: str = "Invalid value") -> None:
     for character in texto:
         if character not in get_caracteres_validos():
-            return character
-    return ""
+            try:
+                raise ValueError(
+                    f'\n{error_mesage} "{texto}" (invalid character: "{character}")'
+                )
+            except ValueError as ex:
+                sys.stderr.write(str(ex) + '\n\n')
+                traceback.print_exc()
+                exit(-1)
 
 
 def get_caracteres_validos():
@@ -153,19 +151,12 @@ def get_languages_string(languages: list[str]) -> str:
 def get_traduction_string(languages: list[str], filas: Iterable | list[list[str]], remove_invalid_characters: bool) -> str:
     respuesta: str = ""
     for fila in filas:
-        if(remove_invalid_characters):
-            fila[0]=eliminar_caracteres_invalidos_funciones(fila[0])
+        if (remove_invalid_characters):
+            fila[0] = eliminar_caracteres_invalidos_funciones(fila[0])
         else:
-            caracter_invalido: str = comprobar_caracteres_invalidos_funciones(fila[0])
-            if (caracter_invalido != ""):
-                try:
-                    raise ValueError(
-                        f'\nInvalid value name "{fila[0]}" (invalid character: "{caracter_invalido}")'
-                    )
-                except ValueError as ex:
-                    sys.stderr.write(str(ex) + '\n\n')
-                    traceback.print_exc()
-                    exit(-1)
+            comprobar_caracteres_invalidos_funciones(
+                fila[0], "Invalid value name"
+            )
 
         respuesta += f'bn::string<{get_max_lenght_string(fila[1:])}> {fila[0]}(languages language) {"{"}\n'
         respuesta += get_traduction_implementation(languages, fila)
