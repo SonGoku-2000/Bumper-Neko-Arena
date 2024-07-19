@@ -49,7 +49,8 @@ def procesar_archivo(file_path: str, output_folder: str, remove_invalid_characte
         output_path: Path = Path(output_folder).joinpath("include")
         output_path.mkdir(exist_ok=True, parents=True)
         output_path = output_path.joinpath(Path(file_output_path).stem)
-        crear_archivo(output_path.__str__(), idiomas, data)
+        crear_archivo(output_path.__str__(), idiomas,
+                      data, remove_invalid_characters)
 
     new_text_file_info.write(text_file_info_path.__str__())
 
@@ -70,7 +71,7 @@ def generar_lista_idiomas(datos_csv: Iterable | list[list[str]], remove_invalid_
             if (caracter_invalido != ""):
                 try:
                     raise ValueError(
-                        f'\nIncalid language name "{idioma}" (invalid character: "{caracter_invalido}")'
+                        f'\nInvalid language name "{idioma}" (invalid character: "{caracter_invalido}")'
                     )
                 except ValueError as ex:
                     sys.stderr.write(str(ex) + '\n\n')
@@ -118,7 +119,7 @@ def eliminar_caracteres_invalidos_nombre_archivo(texto: str):
     return texto+extencion
 
 
-def crear_archivo(path: str, idiomas: list, filas: Iterable | list[list[str]]):
+def crear_archivo(path: str, idiomas: list, filas: Iterable | list[list[str]], remove_invalid_characters: bool):
     with open(path + '.hpp', 'w') as archivo:
         archivo.write('#pragma once\n')
         archivo.write('\n')
@@ -132,7 +133,8 @@ def crear_archivo(path: str, idiomas: list, filas: Iterable | list[list[str]]):
 
         archivo.write('\n')
 
-        archivo.write(get_traduction_string(idiomas, filas))
+        archivo.write(get_traduction_string(
+            idiomas, filas, remove_invalid_characters))
         archivo.write("}")
 
 
@@ -148,9 +150,23 @@ def get_languages_string(languages: list[str]) -> str:
     return "\n".join(respuesta)
 
 
-def get_traduction_string(languages: list[str], filas: Iterable | list[list[str]]) -> str:
+def get_traduction_string(languages: list[str], filas: Iterable | list[list[str]], remove_invalid_characters: bool) -> str:
     respuesta: str = ""
     for fila in filas:
+        if(remove_invalid_characters):
+            fila[0]=eliminar_caracteres_invalidos_funciones(fila[0])
+        else:
+            caracter_invalido: str = comprobar_caracteres_invalidos_funciones(fila[0])
+            if (caracter_invalido != ""):
+                try:
+                    raise ValueError(
+                        f'\nInvalid value name "{fila[0]}" (invalid character: "{caracter_invalido}")'
+                    )
+                except ValueError as ex:
+                    sys.stderr.write(str(ex) + '\n\n')
+                    traceback.print_exc()
+                    exit(-1)
+
         respuesta += f'bn::string<{get_max_lenght_string(fila[1:])}> {fila[0]}(languages language) {"{"}\n'
         respuesta += get_traduction_implementation(languages, fila)
         respuesta += "}\n"
@@ -232,7 +248,7 @@ if __name__ == "__main__":
     #     '-o', 'external_tool',
     #     '-d', 'traduction',
     #     "-v",
-    #     "-rm",
+    #     # "-rm",
     #     "-de", ','
     # ])
 
