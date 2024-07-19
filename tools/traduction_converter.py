@@ -22,7 +22,8 @@ def procesar_carpeta(folder_path: str, output_folder: str, recursive: bool, remo
 def procesar_archivo(file_path: str, output_folder: str, remove_invalid_characters: bool, verbose: bool, delimiter: str):
     file_output_path: str = file_path
     if (remove_invalid_characters):
-        file_output_path = eliminar_caracteres_invalidos(file_output_path)
+        file_output_path = eliminar_caracteres_invalidos_nombre_archivo(
+            file_output_path)
 
     if (not FileInfo.validate(file_output_path)):
         return
@@ -41,9 +42,10 @@ def procesar_archivo(file_path: str, output_folder: str, remove_invalid_characte
 
     with open(file_path) as file:
         data = csv.reader(file, delimiter=delimiter)
-        
-        idiomas: list[str] = generar_lista_idiomas(data)
-        
+
+        idiomas: list[str] = generar_lista_idiomas(
+            data, remove_invalid_characters)
+
         output_path: Path = Path(output_folder).joinpath("include")
         output_path.mkdir(exist_ok=True, parents=True)
         output_path = output_path.joinpath(Path(file_output_path).stem)
@@ -52,16 +54,55 @@ def procesar_archivo(file_path: str, output_folder: str, remove_invalid_characte
     new_text_file_info.write(text_file_info_path.__str__())
 
 
-def generar_lista_idiomas(datos_csv: Iterable | list[list[str]]) -> list[str]:
+def generar_lista_idiomas(datos_csv: Iterable | list[list[str]], remove_invalid_characters: bool) -> list[str]:
     idiomas: list[str] = []
     for fila in datos_csv:
         idiomas = fila
         idiomas.pop(0)
         break
+
+    for id, idioma in enumerate(idiomas):
+        if (remove_invalid_characters):
+            idiomas[id] = eliminar_caracteres_invalidos_funciones(idioma)
+        else:
+            caracter_invalido: str = comprobar_caracteres_invalidos_funciones(
+                idioma)
+            if (caracter_invalido != ""):
+                try:
+                    raise ValueError(
+                        f'\nIncalid language name "{idioma}" (invalid character: "{caracter_invalido}")'
+                    )
+                except ValueError as ex:
+                    sys.stderr.write(str(ex) + '\n\n')
+                    traceback.print_exc()
+                    exit(-1)
+
     return idiomas
 
 
-def eliminar_caracteres_invalidos(texto: str):
+def comprobar_caracteres_invalidos_funciones(texto: str) -> str:
+    for character in texto:
+        if character not in get_caracteres_validos():
+            return character
+    return ""
+
+
+def get_caracteres_validos():
+    return '_%s%s' % (string.ascii_letters, string.digits)
+
+
+def eliminar_caracteres_invalidos_funciones(texto: str):
+    texto = texto.replace(" ", "_")
+
+    valid_characters = get_caracteres_validos()
+    for character in texto:
+        if character not in valid_characters:
+            texto = texto.replace(character, "")
+
+    return texto
+
+
+def eliminar_caracteres_invalidos_nombre_archivo(texto: str):
     texto = texto.lower()
     texto = texto.replace(" ", "_")
 
