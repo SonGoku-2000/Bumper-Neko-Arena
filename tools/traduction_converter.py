@@ -41,17 +41,24 @@ def procesar_archivo(file_path: str, output_folder: str, remove_invalid_characte
 
     with open(file_path) as file:
         data = csv.reader(file, delimiter=delimiter)
-        idiomas: list
-        for fila in data:
-            idiomas = fila
-            idiomas.pop(0)
-            break
+        
+        idiomas: list[str] = generar_lista_idiomas(data)
+        
         output_path: Path = Path(output_folder).joinpath("include")
         output_path.mkdir(exist_ok=True, parents=True)
         output_path = output_path.joinpath(Path(file_output_path).stem)
         crear_archivo(output_path.__str__(), idiomas, data)
 
     new_text_file_info.write(text_file_info_path.__str__())
+
+
+def generar_lista_idiomas(datos_csv: Iterable | list[list[str]]) -> list[str]:
+    idiomas: list[str] = []
+    for fila in datos_csv:
+        idiomas = fila
+        idiomas.pop(0)
+        break
+    return idiomas
 
 
 def eliminar_caracteres_invalidos(texto: str):
@@ -179,14 +186,14 @@ if __name__ == "__main__":
 
     parser.add_argument('--verbose', '-v', action='store_true')
 
-    # args = parser.parse_args()
-    args = parser.parse_args([
-        '-o', 'external_tool',
-        '-d', 'traduction',
-        "-v",
-        "-rm",
-        "-de", ';'
-    ])
+    args = parser.parse_args()
+    # args = parser.parse_args([
+    #     '-o', 'external_tool',
+    #     '-d', 'traduction',
+    #     "-v",
+    #     "-rm",
+    #     "-de", ','
+    # ])
 
     process(args.output, args.dirs, args.recursive,
             args.remove_invalid_characters, args.verbose, args.delimiter)
