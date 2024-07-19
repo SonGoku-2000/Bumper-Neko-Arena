@@ -151,6 +151,9 @@ def get_languages_string(languages: list[str]) -> str:
 def get_traduction_string(languages: list[str], filas: Iterable | list[list[str]], remove_invalid_characters: bool) -> str:
     respuesta: str = ""
     for id, fila in enumerate(filas):
+        if (len(fila[0]) == 0):
+            continue
+
         if (remove_invalid_characters):
             fila[0] = eliminar_caracteres_invalidos_funciones(fila[0])
         else:
@@ -185,9 +188,10 @@ def get_traduction_implementation(languages: list[str], traduccion: list[str]) -
     respuesta += "    }\n"
     return respuesta
 
-def get_formato_correcto(text:str)->str:
-    respuesta:str
-    respuesta= text.replace('"','\\"')
+
+def get_formato_correcto(text: str) -> str:
+    respuesta: str
+    respuesta = text.replace('"', '\\"')
     return respuesta
 
 
