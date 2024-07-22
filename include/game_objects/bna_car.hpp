@@ -13,6 +13,7 @@
 namespace bna {
     struct CollisionPoint;
     struct Stats;
+    enum class car_powers_id :int;
     class Car {
         public:
         Car(Hitbox hitbox, bn::fixed_point position, bn::fixed weight);
@@ -60,6 +61,8 @@ namespace bna {
 
         bool isCrash();
 
+        void usePower(car_powers_id car_power);
+
         private:
         bn::fixed_point _pos;
         bn::fixed _rotation; // en grados
@@ -92,8 +95,12 @@ namespace bna {
 
         bool _crash;
 
+        car_powers_id _active_power;
+        int _elapsedTimeActivePower;
+
         void _checkBorders();
         void _hurt(Car& other);
+        void _checkTimePower();
     };
 } // namespace bna
 

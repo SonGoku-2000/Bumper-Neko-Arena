@@ -5,7 +5,10 @@
 #include "bna_colissions.hpp"
 
 #include "bna_parts.hpp"
+#include "bna_car_powers_id.hpp"
 #include "bna_test_values.hpp"
+
+
 
 #define DEBUG
 #ifdef  DEBUG
@@ -53,6 +56,9 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats) :
     _state = state::LIFE;
 
     _crash = false;
+
+    _active_power = bna::car_powers_id::NONE;
+    _elapsedTimeActivePower = 0;
 }
 
 
@@ -83,6 +89,10 @@ void bna::Car::update(bna::Vector2 eje) {
             }
 
             bna::Vector2 movimiento(0, _speed);
+            if (bna::car_powers_id::TURBO == _active_power) {
+                bn::fixed TURBO_POWER = 2;
+                movimiento = movimiento * TURBO_POWER;
+            }
             movimiento = movimiento.rotate(_rotation);
             _dx = movimiento.x();
             // _dx += _externalForce.x();
@@ -111,6 +121,8 @@ void bna::Car::update(bna::Vector2 eje) {
                 _sprite.set_visible(false);
                 _state = state::DEATH;
             }
+
+            _checkTimePower();
             break;
         }
 
@@ -185,7 +197,7 @@ bool bna::Car::isAlive() {
     return _life > 0;
 }
 
-bn::fixed bna::Car::getLife(){
+bn::fixed bna::Car::getLife() {
     return _life;
 }
 
@@ -353,6 +365,21 @@ void bna::Car::setRotation(bn::fixed rotation) {
 
 bool bna::Car::isCrash() {
     return _crash;
+}
+
+void bna::Car::usePower(bna::car_powers_id car_power) {
+    _active_power = car_power;
+    _elapsedTimeActivePower = 0;
+}
+
+void bna::Car::_checkTimePower() {
+    if (_elapsedTimeActivePower == 180) {
+        _elapsedTimeActivePower = 0;
+        _active_power = bna::car_powers_id::NONE;
+    }
+    else{
+        _elapsedTimeActivePower ++;
+    }
 }
 
 
