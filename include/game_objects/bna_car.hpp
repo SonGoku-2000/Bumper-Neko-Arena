@@ -63,6 +63,8 @@ namespace bna {
 
         void usePower(car_powers_id car_power);
 
+        bool hasSpikes();
+
         private:
         bn::fixed_point _pos;
         bn::fixed _rotation; // en grados

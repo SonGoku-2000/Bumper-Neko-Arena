@@ -52,7 +52,7 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats) :
     _dy = 0;
     _rotation = 0;
 
-    _life = bna::limit_values::MAX_LIFE*10;
+    _life = bna::limit_values::MAX_LIFE * 10;
     _state = state::LIFE;
 
     _crash = false;
@@ -151,8 +151,19 @@ void bna::Car::_hurt(bna::Car& other) {
     bn::fixed damageToB = speedA * relativeSpeed;
     bn::fixed damageToA = speedB * relativeSpeed;
 
-    applyDamage(damageToA);
-    other.applyDamage(damageToB);
+    if (other.hasSpikes()) {
+        applyDamage(damageToA + damageToB);
+    }
+    else {
+        applyDamage(damageToA);
+    }
+
+    if (hasSpikes()) {
+        other.applyDamage(damageToB + damageToA);
+    }
+    else {
+        other.applyDamage(damageToB);
+    }
 }
 
 void bna::Car::applyDamage(bn::fixed damage) {
@@ -160,11 +171,13 @@ void bna::Car::applyDamage(bn::fixed damage) {
         constexpr bn::fixed ARMOR = 0.5;
         damage = damage * ARMOR;
     }
-    BN_LOG("Dano:",damage);
+    BN_LOG("Dano:", damage);
     _life -= bn::abs(damage);
 }
 
-
+bool bna::Car::hasSpikes() {
+    return bna::car_powers_id::SPIKE == _active_power;
+}
 
 void bna::Car::checkCollision(bna::Car& otherCar) {
     if (!isAlive() or !otherCar.isAlive()) {
