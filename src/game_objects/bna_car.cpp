@@ -52,7 +52,7 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats) :
     _dy = 0;
     _rotation = 0;
 
-    _life = bna::limit_values::MAX_LIFE;
+    _life = bna::limit_values::MAX_LIFE*10;
     _state = state::LIFE;
 
     _crash = false;
@@ -156,6 +156,11 @@ void bna::Car::_hurt(bna::Car& other) {
 }
 
 void bna::Car::applyDamage(bn::fixed damage) {
+    if (bna::car_powers_id::ARMOR == _active_power) {
+        constexpr bn::fixed ARMOR = 0.5;
+        damage = damage * ARMOR;
+    }
+    BN_LOG("Dano:",damage);
     _life -= bn::abs(damage);
 }
 
@@ -377,8 +382,8 @@ void bna::Car::_checkTimePower() {
         _elapsedTimeActivePower = 0;
         _active_power = bna::car_powers_id::NONE;
     }
-    else{
-        _elapsedTimeActivePower ++;
+    else {
+        _elapsedTimeActivePower++;
     }
 }
 
