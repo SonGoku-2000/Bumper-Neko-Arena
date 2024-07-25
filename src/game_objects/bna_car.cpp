@@ -211,6 +211,10 @@ bna::CollisionPoint bna::Car::isColliding(bna::Hitbox& other) {
     return other.checkCollisionPoint(getHitbox());
 }
 
+bool bna::Car::isCollidingFast(bna::Hitbox& other){
+    return other.checkCollision(getHitbox());
+}
+
 bool bna::Car::isAlive() {
     return _life > 0;
 }

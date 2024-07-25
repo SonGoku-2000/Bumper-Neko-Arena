@@ -13,6 +13,7 @@
 
 #define MOVE_ENEMIES
 
+#define IGNORE_WIN
 #define DEBUG_CPU
 #ifdef DEBUG_CPU
 constexpr int CPU_CICLES = 64;
@@ -27,6 +28,7 @@ constexpr int CPU_CICLES = 64;
 #include "bn_music_items.h"
 #include "bn_sound_items.h"
 #include "bn_music.h"
+#include "bna_car_powers_id.hpp"
 
 bna::TestMap::TestMap(CarBuilder& playerCarBuilder, Characters& playerCharacter) :
     _fondo(bn::regular_bg_items::mapa_prueba.create_bg(0, 0)),
@@ -45,6 +47,8 @@ bna::TestMap::TestMap(CarBuilder& playerCarBuilder, Characters& playerCharacter)
     _setCamera(_camera);
 
     _generateEnemies();
+
+    _generatePowerObjectsSpawns();
 
     _positionIconManager.generateIcons();
 }
@@ -115,6 +119,13 @@ void bna::TestMap::_generateEnemies() {
     _enemiesManager.spawn(_cars, getWalls(), _camera, getSize());
 }
 
+void bna::TestMap::_generatePowerObjectsSpawns() {
+    _powerObjectsSpawns.push_back(PowerObject(bn::fixed_point(30, 30), bna::car_powers_id::ARMOR, _camera));
+    _powerObjectsSpawns.push_back(PowerObject(bn::fixed_point(30, 50), bna::car_powers_id::SPIKE, _camera));
+    _powerObjectsSpawns.push_back(PowerObject(bn::fixed_point(30, 70), bna::car_powers_id::TURBO, _camera));
+}
+
+
 
 
 bn::optional<bna::scene_type> bna::TestMap::update() {
@@ -162,6 +173,15 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
                 _cars[id_car].checkCollision(_cars.at(id_other));
             }
 
+            for (int id_power_object_spawn = 0; id_power_object_spawn < _powerObjectsSpawns.size(); id_power_object_spawn++) {
+                if (_cars[id_car].isCollidingFast(_powerObjectsSpawns[id_power_object_spawn].get_hitbox())) {
+                    if (id_car == 0) {
+                        _player.givePower(_powerObjectsSpawns[id_power_object_spawn].getCarPowerId());
+                    }
+                }
+            }
+
+
             if (_cars[id_car].isCrash()) {
                 bn::sound_items::crash.play();
             }
@@ -171,6 +191,7 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
         _uiLife.update();
         _positionIconManager.update();
 
+#ifndef IGNORE_WIN
         if (!_checkEnemiesAlive()) {
             bn::music::stop();
             return bna::scene_type::SCENE_WIN;
@@ -180,6 +201,7 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
             bn::music::stop();
             return bna::scene_type::SCENE_LOOSE;
         }
+#endif
 
         // _enemiesManager.update();
         bn::core::update();

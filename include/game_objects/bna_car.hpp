@@ -27,9 +27,11 @@ namespace bna {
 
         void checkCollision(Car& otherCar);
         void checkCollision(Hitbox& otherCar);
+        void checkFastCollision(Hitbox& otherCar);
 
         bool isColliding(Car& other);
         CollisionPoint isColliding(Hitbox& other);
+        bool isCollidingFast(Hitbox& other);
 
         void resolveCollision(Car& other);
         void resolveCollision(CollisionPoint collisionPoint);

@@ -19,6 +19,7 @@
 #include "bna_position_icon_manager.hpp"
 
 #include "bna_test_values.hpp"
+#include "bna_power_object.hpp"
 
 
 namespace bna {
@@ -48,6 +49,7 @@ namespace bna {
         bn::vector<bna::Car, limit_values::MAX_ENEMIES + 1> _cars;
         bn::vector<bna::Indicator, limit_values::MAX_ENEMIES + 1> _spawnPoints;
         bn::array<bn::fixed_point, limit_values::MAX_ENEMIES + 1> _ejes;
+        bn::vector<bna::PowerObject, 4> _powerObjectsSpawns;
 
         bna::EnemiesManager _enemiesManager;
         bna::PositionIconManager _positionIconManager;
@@ -62,6 +64,8 @@ namespace bna {
         void _generateWalls();
         void _generatePlayer(CarBuilder& playerCarBuilder, Characters& playerCharacter);
         void _generateEnemies();
+        void _generatePowerObjectsSpawns();
+
         bool _checkEnemiesAlive();
         bool _checkPlayerAlive();
     };
