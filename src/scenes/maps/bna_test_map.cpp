@@ -13,7 +13,7 @@
 
 #define MOVE_ENEMIES
 
-#define IGNORE_WIN
+// #define IGNORE_WIN
 #define DEBUG_CPU
 #ifdef DEBUG_CPU
 constexpr int CPU_CICLES = 64;
@@ -120,9 +120,9 @@ void bna::TestMap::_generateEnemies() {
 }
 
 void bna::TestMap::_generatePowerObjectsSpawns() {
-    _powerObjectsSpawns.push_back(PowerObject(bn::fixed_point(30, 30), bna::car_powers_id::ARMOR, _camera));
-    _powerObjectsSpawns.push_back(PowerObject(bn::fixed_point(30, 50), bna::car_powers_id::SPIKE, _camera));
-    _powerObjectsSpawns.push_back(PowerObject(bn::fixed_point(30, 70), bna::car_powers_id::TURBO, _camera));
+    _powerObjectsSpawns.push_back(PowerObjectSpawn(bn::fixed_point(30, 30), _camera));
+    _powerObjectsSpawns.push_back(PowerObjectSpawn(bn::fixed_point(30, 50), _camera));
+    _powerObjectsSpawns.push_back(PowerObjectSpawn(bn::fixed_point(30, 70), _camera));
 }
 
 
@@ -174,10 +174,11 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
             }
 
             for (int id_power_object_spawn = 0; id_power_object_spawn < _powerObjectsSpawns.size(); id_power_object_spawn++) {
-                if (_cars[id_car].isCollidingFast(_powerObjectsSpawns[id_power_object_spawn].get_hitbox())) {
+                if (_powerObjectsSpawns[id_power_object_spawn].checkColission(_cars[id_car].getHitbox())) {
                     if (id_car == 0) {
-                        _player.givePower(_powerObjectsSpawns[id_power_object_spawn].getCarPowerId());
+                        _player.givePower(_powerObjectsSpawns[id_power_object_spawn].takePower());
                     }
+                    break;
                 }
             }
 
@@ -186,6 +187,11 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
                 bn::sound_items::crash.play();
             }
         }
+
+        for (int id_power_spawn = 0; id_power_spawn < _powerObjectsSpawns.size(); id_power_spawn++) {
+            _powerObjectsSpawns[id_power_spawn].update();
+        }
+
 
         _player.update();
         _uiLife.update();
