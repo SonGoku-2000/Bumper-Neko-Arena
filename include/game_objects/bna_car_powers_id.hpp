@@ -5,6 +5,7 @@ namespace bna {
         NONE,
         TURBO,
         ARMOR,
-        SPIKE
+        SPIKE,
+        MAX_VALUE
     };
 } // namespace bna
