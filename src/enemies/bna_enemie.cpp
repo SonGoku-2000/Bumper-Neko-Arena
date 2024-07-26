@@ -14,7 +14,7 @@
 
 // #define IGNORE_PLAYER
 
-
+ 
 bna::Enemie::Enemie(Car& body) :
     _cuerpo(&body),
 
@@ -226,4 +226,8 @@ bna::Characters bna::Enemie::getCharacter() {
 
 bool bna::Enemie::isAlive(){
     return _cuerpo->isAlive();
+}
+
+void bna::Enemie::givePower(bna::car_powers_id carPower) {
+    _carPower = carPower;
 }

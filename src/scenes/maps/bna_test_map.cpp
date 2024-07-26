@@ -178,6 +178,9 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
                     if (id_car == 0) {
                         _player.givePower(_powerObjectsSpawns[id_power_object_spawn].takePower());
                     }
+                    else{
+                        _enemiesManager.givePower(_powerObjectsSpawns[id_power_object_spawn].takePower(),id_car);
+                    }
                     break;
                 }
             }

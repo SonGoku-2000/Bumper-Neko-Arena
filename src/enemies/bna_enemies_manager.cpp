@@ -31,3 +31,7 @@ void bna::EnemiesManager::spawn(bn::vector<bna::Car, limit_values::MAX_ENEMIES +
 
     _walls = &walls;
 }
+
+void bna::EnemiesManager::givePower(bna::car_powers_id carPower, int id) {
+    _enemies->at(id - 1).givePower(carPower);
+}
