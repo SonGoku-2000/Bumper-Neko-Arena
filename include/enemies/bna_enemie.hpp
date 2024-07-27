@@ -63,5 +63,6 @@ namespace bna {
         void _comprobarTiempoQuieto();
         void _comprobarObjetivoIdle();
         void _nuevoObjetivoIdle();
+        void _comprobarUsarPoder();
     };
 } // namespace bna

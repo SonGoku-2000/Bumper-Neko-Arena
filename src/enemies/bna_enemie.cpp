@@ -8,13 +8,17 @@
 #include "bn_display.h"
 #include "bna_characters.hpp"
 
-#include "bn_log.h"
-
 #include "bn_sprite_items_indicator.h"
+#include "bna_car_powers_id.hpp"
+
+#define DEBUG
+#ifdef DEBUG
+#include "bn_log.h"
+#endif
 
 // #define IGNORE_PLAYER
 
- 
+
 bna::Enemie::Enemie(Car& body) :
     _cuerpo(&body),
 
@@ -26,30 +30,31 @@ bna::Enemie::Enemie(Car& body) :
 }
 
 void bna::Enemie::update() {
-    bn::fixed_point eje(0, 0);
-
-    if (not _goingBack) {
-        int id_distancia_menor;
-
-        _comprobarIdDistanciaMenor(id_distancia_menor);
-
-        _comprobarAnguloObjetivo(eje, id_distancia_menor);
-
-        // _comprobarTiempoQuieto();
-    }
-    else {
-        if (_elapsedFrames == 96) {
-            _goingBack = false;
-            _elapsedFrames = 0;
-        }
-        else {
-            _elapsedFrames++;
-        }
-        eje.set_y(1);
-    }
-
-    _cuerpo->update(eje);
+    _comprobarUsarPoder();
 }
+
+void bna::Enemie::_comprobarUsarPoder() {
+    if (bna::car_powers_id::NONE == _carPower) {
+        return;
+    }
+
+    for (int id_car = 0; id_car < _carros->size(); id_car++) {
+        if (!_carros->at(id_car).isAlive()) {
+            continue;
+        }
+        if (_cuerpo->getPosition() == _carros->at(id_car).getPosition()) {
+            continue;
+        }
+        if (!_vision.contains(_carros->at(id_car).getPosition())) {
+            continue;
+        }
+        BN_LOG("Poder enemigo: ", int(_carPower));
+        _cuerpo->usePower(_carPower);
+        _carPower = bna::car_powers_id::NONE;
+        return;
+    }
+}
+
 
 bn::fixed_point bna::Enemie::getEje() {
     bn::fixed_point eje(0, 0);
@@ -76,7 +81,7 @@ void bna::Enemie::_comprobarIdDistanciaMenor(int& id_distancia_menor) {
     _vision.set_position(_cuerpo->getPosition());
 
     for (int i = 0; i < _carros->size(); i++) {
-        if(!_carros->at(i).isAlive()){
+        if (!_carros->at(i).isAlive()) {
             continue;
         }
         if (_cuerpo->getPosition() == _carros->at(i).getPosition()) {
@@ -89,7 +94,7 @@ void bna::Enemie::_comprobarIdDistanciaMenor(int& id_distancia_menor) {
 #ifdef IGNORE_PLAYER
         if (i == 0) {
             continue;
-        }
+    }
 #endif
 
         vectorDistancia = bna::Vector2(_cuerpo->getPosition(), _carros->at(i).getPosition());
@@ -103,7 +108,7 @@ void bna::Enemie::_comprobarIdDistanciaMenor(int& id_distancia_menor) {
             distancia_menor = vectorDistancia.squaredLength();
             id_distancia_menor = i;
         }
-    }
+}
 }
 
 void bna::Enemie::_comprobarAnguloObjetivo(bn::fixed_point& eje, int& id_distancia_menor) {
@@ -156,7 +161,10 @@ void bna::Enemie::_comprobarTiempoQuieto() {
     constexpr int framesEspera = 32;
     constexpr bn::fixed velocidadReversa = framesEspera * 0.4;
     if (_elapsedFrames == framesEspera) {
+#ifdef DEBUG
         BN_LOG(bn::abs(_averageSpeed.x()), " ", bn::abs(_averageSpeed.y()), " ", velocidadReversa);
+#endif
+
         if (bn::abs(_averageSpeed.x()) < velocidadReversa and bn::abs(_averageSpeed.y()) < velocidadReversa) {
             _goingBack = true;
         }
@@ -224,7 +232,7 @@ bna::Characters bna::Enemie::getCharacter() {
     return _character;
 }
 
-bool bna::Enemie::isAlive(){
+bool bna::Enemie::isAlive() {
     return _cuerpo->isAlive();
 }
 
