@@ -13,11 +13,15 @@
 #include "bna_car_selection_multiplayer.hpp"
 #include "bna_test_map.hpp"
 #include "bna_test_map_link.hpp"
+#include "bna_scene_win.hpp"
+#include "bna_scene_loose.hpp"
 #include "bna_brightness_manager.hpp"
 #include "bna_car_builder.hpp"
 #include "bna_characters.hpp"
 #include "bna_preparing_connection.hpp"
 #include "bna_character_selection.hpp"
+
+#include "bna_memory.hpp"
 #define DEBUG
 #ifdef DEBUG
 #include "bn_log.h"
@@ -29,6 +33,7 @@
 int main() {
     bn::core::init();
     bn::bg_palettes::set_transparent_color(bn::colors::gray);
+    bna::Memory memoria;
 
     bn::unique_ptr<bna::scene> scene;
 
@@ -62,7 +67,7 @@ int main() {
                 break;
 
             case bna::scene_type::OPTION_MENU:
-                scene.reset(new bna::OptionsMenu());
+                scene.reset(new bna::OptionsMenu(memoria.brillo));
                 break;
 
             case bna::scene_type::TEST_MAP:
@@ -73,12 +78,22 @@ int main() {
                 scene.reset(new bna::TestMapLink(playerCar, id_propia));
                 break;
 
+            case bna::scene_type::SCENE_WIN:
+                scene.reset(new bna::SceneWin());
+                break;
+
+                case bna::scene_type::SCENE_LOOSE:
+                scene.reset(new bna::SceneLoose());
+                break;
+
             default:
                 BN_ERROR("Invalid next scene: ", int(*next_scene));
                 break;
         }
 
         next_scene = scene->update();
+
+        memoria.write();
 
         bn::core::update();
     }

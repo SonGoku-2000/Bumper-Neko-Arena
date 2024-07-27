@@ -5,7 +5,10 @@
 #include "bna_colissions.hpp"
 
 #include "bna_parts.hpp"
+#include "bna_car_powers_id.hpp"
 #include "bna_test_values.hpp"
+
+
 
 #define DEBUG
 #ifdef  DEBUG
@@ -49,10 +52,13 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats) :
     _dy = 0;
     _rotation = 0;
 
-    _life = bna::limit_values::MAX_LIFE;
+    _life = bna::limit_values::MAX_LIFE * 10;
     _state = state::LIFE;
 
     _crash = false;
+
+    _active_power = bna::car_powers_id::NONE;
+    _elapsedTimeActivePower = 0;
 }
 
 
@@ -83,6 +89,10 @@ void bna::Car::update(bna::Vector2 eje) {
             }
 
             bna::Vector2 movimiento(0, _speed);
+            if (bna::car_powers_id::TURBO == _active_power) {
+                bn::fixed TURBO_POWER = 2;
+                movimiento = movimiento * TURBO_POWER;
+            }
             movimiento = movimiento.rotate(_rotation);
             _dx = movimiento.x();
             // _dx += _externalForce.x();
@@ -111,6 +121,8 @@ void bna::Car::update(bna::Vector2 eje) {
                 _sprite.set_visible(false);
                 _state = state::DEATH;
             }
+
+            _checkTimePower();
             break;
         }
 
@@ -139,15 +151,33 @@ void bna::Car::_hurt(bna::Car& other) {
     bn::fixed damageToB = speedA * relativeSpeed;
     bn::fixed damageToA = speedB * relativeSpeed;
 
-    applyDamage(damageToA);
-    other.applyDamage(damageToB);
+    if (other.hasSpikes()) {
+        applyDamage(damageToA + damageToB);
+    }
+    else {
+        applyDamage(damageToA);
+    }
+
+    if (hasSpikes()) {
+        other.applyDamage(damageToB + damageToA);
+    }
+    else {
+        other.applyDamage(damageToB);
+    }
 }
 
 void bna::Car::applyDamage(bn::fixed damage) {
+    if (bna::car_powers_id::ARMOR == _active_power) {
+        constexpr bn::fixed ARMOR = 0.5;
+        damage = damage * ARMOR;
+    }
+    BN_LOG("Dano:", damage);
     _life -= bn::abs(damage);
 }
 
-
+bool bna::Car::hasSpikes() {
+    return bna::car_powers_id::SPIKE == _active_power;
+}
 
 void bna::Car::checkCollision(bna::Car& otherCar) {
     if (!isAlive() or !otherCar.isAlive()) {
@@ -181,11 +211,15 @@ bna::CollisionPoint bna::Car::isColliding(bna::Hitbox& other) {
     return other.checkCollisionPoint(getHitbox());
 }
 
+bool bna::Car::isCollidingFast(bna::Hitbox& other){
+    return other.checkCollision(getHitbox());
+}
+
 bool bna::Car::isAlive() {
     return _life > 0;
 }
 
-bn::fixed bna::Car::getLife(){
+bn::fixed bna::Car::getLife() {
     return _life;
 }
 
@@ -353,6 +387,21 @@ void bna::Car::setRotation(bn::fixed rotation) {
 
 bool bna::Car::isCrash() {
     return _crash;
+}
+
+void bna::Car::usePower(bna::car_powers_id car_power) {
+    _active_power = car_power;
+    _elapsedTimeActivePower = 0;
+}
+
+void bna::Car::_checkTimePower() {
+    if (_elapsedTimeActivePower == 180) {
+        _elapsedTimeActivePower = 0;
+        _active_power = bna::car_powers_id::NONE;
+    }
+    else {
+        _elapsedTimeActivePower++;
+    }
 }
 
 

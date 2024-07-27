@@ -138,7 +138,8 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
         }
         else if (_idOpcion == opcionesPartes::WHEEL) {
             if (cambio_opcion) {
-                _idWheel = bna::parts::wheels(bna::loop(int(_idWheel) + cambio_opcion, 0, int(bna::parts::wheels::MAX) - 1));
+                _wheelsRoulette.changeOption(cambio_opcion);
+                _idWheel = bna::parts::wheels(_wheelsRoulette.getSelection());
                 _updateWheelText();
                 _updateStatsText();
             }
@@ -226,7 +227,7 @@ void bna::CarSelection::_updateWheelText() {
     bn::string<111> texto = "Wheel: ";
 
     if (bna::parts::wheels::OLD == _idWheel) {
-        texto.append("Normal");
+        texto.append("Old");
     }
     if (bna::parts::wheels::NORMAL == _idWheel) {
         texto.append("Normal");

@@ -14,6 +14,7 @@ namespace bna {
     class Player;
     class CarBuilder;
     enum class Characters :int;
+    enum class car_powers_id :int;
     class Enemie {
         public:
         Enemie(Car& body);
@@ -34,6 +35,8 @@ namespace bna {
 
         bool isAlive();
 
+        void givePower(car_powers_id carPower);
+
         private:
         bna::Car* _cuerpo;
         bna::Characters _character;
@@ -52,11 +55,14 @@ namespace bna {
         bn::sprite_ptr _objetivoSprite;
         bool _objetivoIdleActualizado;
 
+        car_powers_id _carPower;
+
         void _comprobarIdDistanciaMenor(int& id_distancia_menor);
         void _comprobarAnguloObjetivo(bn::fixed_point& eje, int& id_distancia_menor);
         bn::fixed_point _direccionGiro(bn::fixed angulo_objetivo);
         void _comprobarTiempoQuieto();
         void _comprobarObjetivoIdle();
         void _nuevoObjetivoIdle();
+        void _comprobarUsarPoder();
     };
 } // namespace bna

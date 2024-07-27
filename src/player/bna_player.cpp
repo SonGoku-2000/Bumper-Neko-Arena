@@ -4,6 +4,8 @@
 
 #include "bna_car_builder.hpp"
 
+#include "bna_car_powers_id.hpp"
+
 #define DEBUG
 #ifdef DEBUG
 #include "bn_log.h"
@@ -41,6 +43,12 @@ void bna::Player::full_update() {
 
 void bna::Player::update() {
     _cameraManager->update(_cuerpo->getPosition());
+    if (bn::keypad::b_pressed()) {
+        if (bna::car_powers_id::NONE != _carPower) {
+            _cuerpo->usePower(_carPower);
+            _carPower = bna::car_powers_id::NONE;
+        }
+    }
 }
 
 bna::Vector2 bna::Player::getEje() {
@@ -72,5 +80,9 @@ void bna::Player::setCharacter(const Characters& character) {
 
 bn::fixed_point bna::Player::getPosition() {
     return _cuerpo->getPosition();
+}
+
+void bna::Player::givePower(bna::car_powers_id carPower) {
+    _carPower = carPower;
 }
 

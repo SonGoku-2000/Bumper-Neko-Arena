@@ -18,6 +18,7 @@
 namespace bna {
     class CarBuilder;
     enum class Characters :int;
+    enum class car_powers_id :int;
     class Player {
         public:
         Player();
@@ -34,6 +35,8 @@ namespace bna {
         bna::Vector2 getEje();
         void update();
 
+        void givePower(car_powers_id carPower);
+
         private:
         bna::Vector2 _eje;
 
@@ -47,6 +50,7 @@ namespace bna {
         bn::vector<bna::Hitbox, 4>* _walls;
 
         int _idPropia;
+        car_powers_id _carPower;
     };
 } // namespace bna
 

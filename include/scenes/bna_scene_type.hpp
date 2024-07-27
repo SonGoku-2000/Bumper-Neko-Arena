@@ -8,5 +8,7 @@ namespace bna {
         PREPARING_CONNECTION,
         TEST_MAP,
         TEST_MAP_LINK,
+        SCENE_WIN,
+        SCENE_LOOSE,
     };
 }

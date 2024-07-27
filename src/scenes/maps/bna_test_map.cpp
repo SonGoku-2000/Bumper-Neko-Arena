@@ -13,6 +13,7 @@
 
 #define MOVE_ENEMIES
 
+// #define IGNORE_WIN
 #define DEBUG_CPU
 #ifdef DEBUG_CPU
 constexpr int CPU_CICLES = 64;
@@ -26,6 +27,8 @@ constexpr int CPU_CICLES = 64;
 
 #include "bn_music_items.h"
 #include "bn_sound_items.h"
+#include "bn_music.h"
+#include "bna_car_powers_id.hpp"
 
 bna::TestMap::TestMap(CarBuilder& playerCarBuilder, Characters& playerCharacter) :
     _fondo(bn::regular_bg_items::mapa_prueba.create_bg(0, 0)),
@@ -44,6 +47,8 @@ bna::TestMap::TestMap(CarBuilder& playerCarBuilder, Characters& playerCharacter)
     _setCamera(_camera);
 
     _generateEnemies();
+
+    _generatePowerObjectsSpawns();
 
     _positionIconManager.generateIcons();
 }
@@ -114,6 +119,13 @@ void bna::TestMap::_generateEnemies() {
     _enemiesManager.spawn(_cars, getWalls(), _camera, getSize());
 }
 
+void bna::TestMap::_generatePowerObjectsSpawns() {
+    _powerObjectsSpawns.push_back(PowerObjectSpawn(bn::fixed_point(30, 30), _camera));
+    _powerObjectsSpawns.push_back(PowerObjectSpawn(bn::fixed_point(30, 50), _camera));
+    _powerObjectsSpawns.push_back(PowerObjectSpawn(bn::fixed_point(30, 70), _camera));
+}
+
+
 
 
 bn::optional<bna::scene_type> bna::TestMap::update() {
@@ -160,14 +172,47 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
             for (int id_other = id_car + 1; id_other < _cars.size(); id_other++) {
                 _cars[id_car].checkCollision(_cars.at(id_other));
             }
+
+            for (int id_power_object_spawn = 0; id_power_object_spawn < _powerObjectsSpawns.size(); id_power_object_spawn++) {
+                if (_powerObjectsSpawns[id_power_object_spawn].checkColission(_cars[id_car].getHitbox())) {
+                    if (id_car == 0) {
+                        _player.givePower(_powerObjectsSpawns[id_power_object_spawn].takePower());
+                    }
+                    else{
+                        _enemiesManager.givePower(_powerObjectsSpawns[id_power_object_spawn].takePower(),id_car);
+                    }
+                    break;
+                }
+            }
+
+
             if (_cars[id_car].isCrash()) {
                 bn::sound_items::crash.play();
             }
         }
 
+        for (int id_power_spawn = 0; id_power_spawn < _powerObjectsSpawns.size(); id_power_spawn++) {
+            _powerObjectsSpawns[id_power_spawn].update();
+        }
+
+
         _player.update();
         _uiLife.update();
         _positionIconManager.update();
+        _enemiesManager.update();
+
+#ifndef IGNORE_WIN
+        if (!_checkEnemiesAlive()) {
+            bn::music::stop();
+            return bna::scene_type::SCENE_WIN;
+        }
+
+        if (!_checkPlayerAlive()) {
+            bn::music::stop();
+            return bna::scene_type::SCENE_LOOSE;
+        }
+#endif
+
         // _enemiesManager.update();
         bn::core::update();
     }
@@ -185,3 +230,21 @@ bn::size bna::TestMap::getSize() {
 bn::vector<bna::Hitbox, 4>& bna::TestMap::getWalls() {
     return _walls;
 }
+
+bool bna::TestMap::_checkEnemiesAlive() {
+    for (int id_car = 0; id_car < _cars.size(); id_car++) {
+        if (id_car == 0) {
+            continue;
+        }
+
+        if (_cars[id_car].isAlive()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool bna::TestMap::_checkPlayerAlive() {
+    return _cars[0].isAlive();
+}
+
