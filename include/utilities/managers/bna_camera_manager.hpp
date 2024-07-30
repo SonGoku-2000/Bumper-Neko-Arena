@@ -25,5 +25,7 @@ namespace bna {
         int _limitRight;
         int _limitUp;
         int _limitDown;
+        
+        bn::fixed_point _previousPosition;
     };
 } // namespace rs
