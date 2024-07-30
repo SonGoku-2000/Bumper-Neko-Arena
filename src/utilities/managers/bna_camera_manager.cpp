@@ -22,11 +22,15 @@ bna::CameraManager::CameraManager(bn::camera_ptr& camera, bn::size size) :
 }
 
 void bna::CameraManager::update(bn::fixed_point pos) {
-
-    bn::fixed aheadDistance = 60;
     bn::fixed_point diferencia = pos - _previousPosition;
     _previousPosition = pos;
-    bna::Vector2 aheadPosition = pos + diferencia * aheadDistance;
+
+
+    bn::fixed aheadDistanceX = 90;
+    bn::fixed aheadDistanceY = 55;
+    bna::Vector2 aheadPosition;
+    aheadPosition.set_x(pos.x() + diferencia.x() * aheadDistanceX);
+    aheadPosition.set_y(pos.y() + diferencia.y() * aheadDistanceY);
 
     if (aheadPosition.x() < _limitLeft) {
         aheadPosition.set_x(_limitLeft);
@@ -43,7 +47,7 @@ void bna::CameraManager::update(bn::fixed_point pos) {
         aheadPosition.set_y(_limitDown);
     }
 
-    _camera.set_position(bna::math::lerp(_camera.position(), aheadPosition, bn::fixed(0.1)));
+    _camera.set_position(bna::math::lerp(_camera.position(), aheadPosition, bn::fixed(0.05)));
 }
 
 void bna::CameraManager::setLimitLeft(int limiteIzquierda) {
