@@ -8,6 +8,14 @@ import traceback
 
 class FileInfo:
     @staticmethod
+    def check_extencion(file_name) -> str:
+        path = Path(file_name)
+        if (path.suffix == ".csv" or path.suffix == ".CSV"):
+            return "csv"
+        else:
+            return "invalid"
+
+    @staticmethod
     def validate(file_name):
         path = Path(file_name)
         if (path.suffix == ".csv" or path.suffix == ".CSV"):
