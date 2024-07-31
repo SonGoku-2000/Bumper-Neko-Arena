@@ -22,7 +22,8 @@ bna::CameraManager::CameraManager(bn::camera_ptr& camera, bn::size size) :
 }
 
 void bna::CameraManager::update(bn::fixed_point pos) {
-    bn::fixed_point diferencia = pos - _previousPosition;
+    bna::Vector2 diferencia = pos - _previousPosition;
+    diferencia = diferencia.normalize();
     _previousPosition = pos;
 
 
@@ -48,6 +49,11 @@ void bna::CameraManager::update(bn::fixed_point pos) {
     }
 
     _camera.set_position(bna::math::lerp(_camera.position(), aheadPosition, bn::fixed(0.05)));
+}
+
+void bna::CameraManager::setPosition(bn::fixed_point position){
+    _camera.set_position(position);
+    _previousPosition = position;
 }
 
 void bna::CameraManager::setLimitLeft(int limiteIzquierda) {

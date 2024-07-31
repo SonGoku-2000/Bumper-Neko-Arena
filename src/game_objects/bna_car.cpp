@@ -171,7 +171,7 @@ void bna::Car::applyDamage(bn::fixed damage) {
         constexpr bn::fixed ARMOR = 0.5;
         damage = damage * ARMOR;
     }
-    BN_LOG("Dano:", damage);
+    // BN_LOG("Dano:", damage);
     _life -= bn::abs(damage);
 }
 
