@@ -24,7 +24,7 @@ def procesar_carpeta(folder_path: str, output_folder: str, recursive: bool, remo
 def procesar_archivo(file_path: str, output_folder: str, remove_invalid_name_characters: bool, remove_invalid_csv_value_characters: bool, verbose: bool, delimiter: str):
     file_output_path: str = file_path
     if (remove_invalid_name_characters):
-        file_output_path = eliminar_caracteres_invalidos_nombre_archivo(
+        file_output_path = FileInfo.remove_invalid_name_characters(
             file_output_path)
 
     if (not FileInfo.validate(file_output_path)):
@@ -101,22 +101,6 @@ def eliminar_caracteres_invalidos_funciones(texto: str):
             texto = texto.replace(character, "")
 
     return texto
-
-
-def eliminar_caracteres_invalidos_nombre_archivo(texto: str):
-    texto = texto.lower()
-    texto = texto.replace(" ", "_")
-
-    extencion: str = Path(texto).suffix
-    texto = Path(texto).stem
-
-    aux: str = ""
-    valid_characters = '_%s%s' % (string.ascii_lowercase, string.digits)
-    for character in texto:
-        if character not in valid_characters:
-            texto = texto.replace(character, "")
-
-    return texto+extencion
 
 
 def crear_archivo(path: str, idiomas: list, filas: Iterable | list[list[str]], remove_invalid_characters: bool):
@@ -261,5 +245,5 @@ if __name__ == "__main__":
     # ])
 
     process(args.output, args.dirs, args.recursive,
-            args.remove_invalid_name_characters,args.remove_invalid_csv_characters, 
+            args.remove_invalid_name_characters, args.remove_invalid_csv_characters,
             args.verbose, args.delimiter)

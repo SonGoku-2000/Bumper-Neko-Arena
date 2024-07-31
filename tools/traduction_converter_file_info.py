@@ -17,6 +17,22 @@ class FileInfo:
         return False
 
     @staticmethod
+    def remove_invalid_name_characters(text: str) -> str:
+        text = text.lower()
+        text = text.replace(" ", "_")
+
+        extencion: str = Path(text).suffix
+        text = Path(text).stem
+
+        aux: str = ""
+        valid_characters = '_%s%s' % (string.ascii_lowercase, string.digits)
+        for character in text:
+            if character not in valid_characters:
+                text = text.replace(character, "")
+
+        return text+extencion
+
+    @staticmethod
     def __comprobar_caracteres_validos(file_name: str):
         valid_characters = '_%s%s' % (string.ascii_lowercase, string.digits)
         for character in Path(file_name).stem:
