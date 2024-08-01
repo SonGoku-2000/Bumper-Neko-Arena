@@ -10,17 +10,26 @@ class FileInfo:
     @staticmethod
     def check_extencion(file_name) -> str:
         path = Path(file_name)
+        invalid:str = "invalid"
         if (path.suffix == ".csv" or path.suffix == ".CSV"):
             return "csv"
+        elif(path.suffix == ".json" or path.suffix == ".JSON"):
+            if(len(path.suffixes) != 2):
+                return invalid
+            
+            if(path.suffixes[0]==".trad"):
+                return "json"
+            
+            return invalid
         else:
-            return "invalid"
+            return invalid
 
     @staticmethod
     def validate(file_name):
         path = Path(file_name)
-        if (path.suffix == ".csv" or path.suffix == ".CSV"):
-            FileInfo.__comprobar_caracteres_validos(path.name)
-            return True
+        # if (path.suffix == ".csv" or path.suffix == ".CSV"):
+        FileInfo.__comprobar_caracteres_validos(path.name)
+        return True
 
         return False
 

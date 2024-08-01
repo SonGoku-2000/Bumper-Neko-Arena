@@ -6,6 +6,7 @@ from pathlib import Path
 
 from traduction_converter_file_info import FileInfo
 from process_csv import ProcessCSV
+from process_json import ProcessJSON
 
 
 def procesar_carpeta(folder_path: str, output_folder: str, recursive: bool, remove_invalid_name_characters: bool, remove_invalid_csv_value_characters: bool, verbose: bool, delimiter: str):
@@ -13,19 +14,28 @@ def procesar_carpeta(folder_path: str, output_folder: str, recursive: bool, remo
         if path.is_file():
             procesar_archivo(path.__str__(), output_folder,
                              remove_invalid_name_characters, remove_invalid_csv_value_characters,
-                             verbose, delimiter)
+                             verbose, delimiter
+                             )
 
         elif recursive and path.is_dir():
             procesar_carpeta(path.__str__(), output_folder, recursive,
                              remove_invalid_name_characters, remove_invalid_csv_value_characters,
-                             verbose, delimiter)
+                             verbose, delimiter
+                             )
 
 
 def procesar_archivo(file_path: str, output_folder: str, remove_invalid_name_characters: bool, remove_invalid_csv_value_characters: bool, verbose: bool, delimiter: str):
     if (FileInfo.check_extencion(file_path) == "csv"):
         ProcessCSV.process(file_path, output_folder,
                            remove_invalid_name_characters, remove_invalid_csv_value_characters,
-                           verbose, delimiter)
+                           verbose, delimiter
+                           )
+
+    elif (FileInfo.check_extencion(file_path) == "json"):
+        ProcessJSON.process(file_path, output_folder,
+                            remove_invalid_name_characters,
+                            verbose
+                            )
 
 
 def process(output_folder: str, input_dirs: str | list[str], recursive: bool, remove_invalid_name_characters: bool, remove_invalid_csv_value_characters: bool, verbose: bool, delimiter: str):
