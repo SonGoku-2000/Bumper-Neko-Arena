@@ -93,4 +93,68 @@ class ProcessJSON:
     @staticmethod
     def _create_file(path: str, json_data: dict[str, str]):
         with open(path + '.hpp', 'w') as archivo:
-            archivo.write("test")
+            archivo.write('#pragma once\n')
+            archivo.write('\n')
+
+            archivo.write(ProcessJSON._get_inlcudes_string(json_data))
+
+            archivo.write('\n')
+            archivo.write('\n')
+
+            archivo.write("namespace tranlations {\n")
+
+            archivo.write("\n")
+            archivo.write(ProcessJSON._get_languages_string(json_data))
+            archivo.write("\n")
+            archivo.write(ProcessJSON._get_traduction_string(json_data,Path(path).name))
+
+            archivo.write("}\n")
+
+
+    @staticmethod
+    def _get_inlcudes_string(json_data: dict[str, str]) -> str:
+        respuesta: str = ""
+        for file_name in json_data.values():
+            respuesta += f'#include "bn_sprite_items_{file_name}.h"\n'
+        return respuesta
+    
+    @staticmethod
+    def _get_languages_string(json_data: dict[str, str])->str:
+        respuesta: list[str] = []
+        respuesta.append("enum languages {")
+        for language in json_data.keys():
+            respuesta.append(f"    {language},")
+        respuesta.append("};")
+        respuesta.append("")
+        return "\n".join(respuesta)
+    
+    @staticmethod
+    def _get_traduction_string(json_data: dict[str, str],name:str)->str:
+        respuesta: str = ""
+
+        respuesta += f'bn::sprite_item {name}(languages language) {"{"}\n'
+
+        respuesta += ProcessJSON._get_traduction_implementation(json_data)
+
+        respuesta += "}\n"
+        respuesta += "\n"
+
+        return respuesta
+
+    @staticmethod
+    def _get_traduction_implementation(json_data: dict[str, str]) -> str:
+        respuesta: str = ""
+        default_sprite:str = ""
+
+        respuesta += "    switch (language) {\n"
+        for language,sprite in json_data.items():
+            if(default_sprite == ""):
+                default_sprite = sprite
+            respuesta += f"        case languages::{language}:\n"
+            respuesta += f'            return bn::sprite_items::{sprite};\n'
+
+        respuesta += "        default:\n"
+        respuesta += f'            return bn::sprite_items::{default_sprite};\n'
+        respuesta += "    }\n"
+        return respuesta
+
