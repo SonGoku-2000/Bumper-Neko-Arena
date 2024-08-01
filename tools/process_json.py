@@ -74,6 +74,8 @@ class ProcessJSON:
 
     @staticmethod
     def _process_traduction_file(json_data: dict[str, str], file_path: str, output_folder: str):
+        ProcessJSON._add_language_to_list(json_data)
+
         text_file_info_path = Path(output_folder).joinpath(
             f"_{Path(file_path).name}_text_file_info.txt"
         )
@@ -89,7 +91,16 @@ class ProcessJSON:
             Path(file_path).with_suffix("").stem
         )
         ProcessJSON._create_file(output_path.__str__(), json_data)
-        print(file_path)
+        new_text_file_info.write(text_file_info_path.__str__())
+
+    @staticmethod
+    def _add_language_to_list(json_data: dict[str, str]):
+        for language in ProcessJSON._get_languages_list(json_data):
+            ProcessLanguages.add_language(language)
+
+    @staticmethod
+    def _get_languages_list(json_data: dict[str, str]) -> list[str]:
+        return list(json_data.keys())
 
     @staticmethod
     def _create_file(path: str, json_data: dict[str, str]):
@@ -107,10 +118,11 @@ class ProcessJSON:
             archivo.write("\n")
             archivo.write(ProcessJSON._get_languages_string(json_data))
             archivo.write("\n")
-            archivo.write(ProcessJSON._get_traduction_string(json_data,Path(path).name))
+            archivo.write(ProcessJSON._get_traduction_string(
+                json_data, Path(path).name)
+            )
 
             archivo.write("}\n")
-
 
     @staticmethod
     def _get_inlcudes_string(json_data: dict[str, str]) -> str:
@@ -118,19 +130,19 @@ class ProcessJSON:
         for file_name in json_data.values():
             respuesta += f'#include "bn_sprite_items_{file_name}.h"\n'
         return respuesta
-    
+
     @staticmethod
-    def _get_languages_string(json_data: dict[str, str])->str:
+    def _get_languages_string(json_data: dict[str, str]) -> str:
         respuesta: list[str] = []
         respuesta.append("enum languages {")
-        for language in json_data.keys():
+        for language in ProcessJSON._get_languages_list(json_data):
             respuesta.append(f"    {language},")
         respuesta.append("};")
         respuesta.append("")
         return "\n".join(respuesta)
-    
+
     @staticmethod
-    def _get_traduction_string(json_data: dict[str, str],name:str)->str:
+    def _get_traduction_string(json_data: dict[str, str], name: str) -> str:
         respuesta: str = ""
 
         respuesta += f'bn::sprite_item {name}(languages language) {"{"}\n'
@@ -145,12 +157,11 @@ class ProcessJSON:
     @staticmethod
     def _get_traduction_implementation(json_data: dict[str, str]) -> str:
         respuesta: str = ""
-        default_sprite:str = ""
+        default_sprite: str = ""
 
         respuesta += "    switch (language) {\n"
-        for language,sprite in json_data.items():
-            ProcessLanguages.add_language(language)
-            if(default_sprite == ""):
+        for language, sprite in json_data.items():
+            if (default_sprite == ""):
                 default_sprite = sprite
             respuesta += f"        case languages::{language}:\n"
             respuesta += f'            return bn::sprite_items::{sprite};\n'
@@ -159,4 +170,3 @@ class ProcessJSON:
         respuesta += f'            return bn::sprite_items::{default_sprite};\n'
         respuesta += "    }\n"
         return respuesta
-

@@ -21,6 +21,8 @@ class ProcessCSV:
 
         if (not FileInfo.validate(file_output_path)):
             return
+        
+        # ProcessCSV._add_language_to_list(file_path,remove_invalid_csv_value_characters,delimiter)
 
         text_file_info_path = Path(output_folder).joinpath(
             f"_{Path(file_path).name}_text_file_info.txt"
@@ -49,6 +51,16 @@ class ProcessCSV:
         new_text_file_info.write(text_file_info_path.__str__())
 
     @staticmethod
+    def _add_language_to_list(file_path: str, remove_invalid_characters: bool, delimiter: str):
+        with open(file_path) as file:
+            data = csv.reader(file, delimiter=delimiter)
+
+            idiomas: list[str] = ProcessCSV.generar_lista_idiomas(
+                data, remove_invalid_characters)
+        for idioma in idiomas:
+            ProcessLanguages.add_language(idioma)
+
+    @staticmethod
     def generar_lista_idiomas(datos_csv: Iterable | list[list[str]], remove_invalid_characters: bool) -> list[str]:
         idiomas: list[str] = []
         for fila in datos_csv:
@@ -64,7 +76,6 @@ class ProcessCSV:
                 ProcessCSV.comprobar_caracteres_invalidos_funciones(
                     idioma, f'Invalid language name "{idioma}" at column "{id+1}" of csv file'
                 )
-            ProcessLanguages.add_language(idiomas[id])
 
         return idiomas
 
