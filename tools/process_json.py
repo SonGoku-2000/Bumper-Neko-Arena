@@ -12,16 +12,12 @@ class ProcessJSON:
         with open(file_path, "r")as file:
             json_data = json.load(file)
 
-        file_output_path: str = file_path
         ProcessJSON._process_items(
             json_data, Path(file_path).parent.__str__(), output_folder
         )
 
-        text_file_info_path = Path(output_folder).joinpath(
-            f"_{Path(file_path).name}_text_file_info.txt"
-        )
-        old_text_file_info: FileInfo = FileInfo.read(text_file_info_path)
-        new_text_file_info: FileInfo = FileInfo.build_from_files(file_path)
+        ProcessJSON._process_traduction_file(
+            json_data, file_path, output_folder)
 
     @staticmethod
     def _process_items(json_data: dict[str, str], base_path: str, output_folder: str):
@@ -74,3 +70,27 @@ class ProcessJSON:
         )
 
         new_json_file_info.write(json_file_info_path.__str__())
+
+    @staticmethod
+    def _process_traduction_file(json_data: dict[str, str], file_path: str, output_folder: str):
+        text_file_info_path = Path(output_folder).joinpath(
+            f"_{Path(file_path).name}_text_file_info.txt"
+        )
+        old_text_file_info: FileInfo = FileInfo.read(text_file_info_path)
+        new_text_file_info: FileInfo = FileInfo.build_from_files(file_path)
+
+        if old_text_file_info == new_text_file_info:
+            return
+
+        output_path: Path = Path(output_folder).joinpath("include")
+        output_path.mkdir(exist_ok=True, parents=True)
+        output_path = output_path.joinpath(
+            Path(file_path).with_suffix("").stem
+        )
+        ProcessJSON._create_file(output_path.__str__(), json_data)
+        print(file_path)
+
+    @staticmethod
+    def _create_file(path: str, json_data: dict[str, str]):
+        with open(path + '.hpp', 'w') as archivo:
+            archivo.write("test")
