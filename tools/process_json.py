@@ -2,6 +2,11 @@ import json
 from pathlib import Path
 import shutil
 
+
+import sys
+import traceback
+
+
 from traduction_converter_file_info import FileInfo
 from process_languages import ProcessLanguages
 
@@ -23,6 +28,7 @@ class ProcessJSON:
 
     @staticmethod
     def _process_items(json_data: dict[str, str], base_path: str, output_folder: str):
+        ProcessJSON._check_same_grafic_type(json_data, base_path)
         for sprite_name in json_data.values():
             ProcessJSON._process_sprite(base_path, sprite_name, output_folder)
             ProcessJSON._process_sprite_json(
@@ -72,6 +78,27 @@ class ProcessJSON:
         )
 
         new_json_file_info.write(json_file_info_path.__str__())
+
+    @staticmethod
+    def _check_same_grafic_type(json_data: dict[str, str], base_path: str):
+        graphic_type: str = ''
+        first_graphic: str = ''
+        for graphic in json_data.values():
+            with open(Path(base_path).joinpath(graphic).with_suffix(".json"), "r")as file:
+                json_data_graphic = json.load(file)
+                if (graphic_type == ''):
+                    graphic_type = json_data_graphic["type"]
+                    first_graphic = graphic
+
+                if (graphic_type != json_data_graphic["type"]):
+                    try:
+                        raise ValueError(
+                            f'\nDifferent graphic types: "{first_graphic}.bmp" is a "{graphic_type}", and "{graphic}.bmp" is a "{json_data_graphic["type"]}"'
+                        )
+                    except ValueError as ex:
+                        sys.stderr.write(str(ex) + '\n\n')
+                        traceback.print_exc()
+                        exit(-1)
 
     @staticmethod
     def _process_traduction_file(json_data: dict[str, str], file_path: str, output_folder: str, verbose: bool):
