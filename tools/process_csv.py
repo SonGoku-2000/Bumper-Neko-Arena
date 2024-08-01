@@ -8,6 +8,7 @@ from pathlib import Path
 import csv
 
 from traduction_converter_file_info import FileInfo
+from process_languages import ProcessLanguages
 
 
 class ProcessCSV:
@@ -63,6 +64,7 @@ class ProcessCSV:
                 ProcessCSV.comprobar_caracteres_invalidos_funciones(
                     idioma, f'Invalid language name "{idioma}" at column "{id+1}" of csv file'
                 )
+            ProcessLanguages.add_language(idiomas[id])
 
         return idiomas
 

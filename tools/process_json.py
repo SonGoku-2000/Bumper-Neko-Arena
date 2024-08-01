@@ -3,6 +3,7 @@ from pathlib import Path
 import shutil
 
 from traduction_converter_file_info import FileInfo
+from process_languages import ProcessLanguages
 
 
 class ProcessJSON:
@@ -148,6 +149,7 @@ class ProcessJSON:
 
         respuesta += "    switch (language) {\n"
         for language,sprite in json_data.items():
+            ProcessLanguages.add_language(language)
             if(default_sprite == ""):
                 default_sprite = sprite
             respuesta += f"        case languages::{language}:\n"
