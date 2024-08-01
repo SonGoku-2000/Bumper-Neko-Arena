@@ -18,7 +18,8 @@ class ProcessJSON:
         )
 
         ProcessJSON._process_traduction_file(
-            json_data, file_path, output_folder)
+            json_data, file_path, output_folder, verbose
+        )
 
     @staticmethod
     def _process_items(json_data: dict[str, str], base_path: str, output_folder: str):
@@ -73,7 +74,7 @@ class ProcessJSON:
         new_json_file_info.write(json_file_info_path.__str__())
 
     @staticmethod
-    def _process_traduction_file(json_data: dict[str, str], file_path: str, output_folder: str):
+    def _process_traduction_file(json_data: dict[str, str], file_path: str, output_folder: str, verbose: bool):
         ProcessJSON._add_language_to_list(json_data)
 
         text_file_info_path = Path(output_folder).joinpath(
@@ -84,6 +85,9 @@ class ProcessJSON:
 
         if old_text_file_info == new_text_file_info:
             return
+
+        if (verbose):
+            print("    ", Path(file_path).name)
 
         output_path: Path = Path(output_folder).joinpath("include")
         output_path.mkdir(exist_ok=True, parents=True)
