@@ -10,16 +10,16 @@ class FileInfo:
     @staticmethod
     def check_extencion(file_name) -> str:
         path = Path(file_name)
-        invalid:str = "invalid"
+        invalid: str = "invalid"
         if (path.suffix == ".csv" or path.suffix == ".CSV"):
             return "csv"
-        elif(path.suffix == ".json" or path.suffix == ".JSON"):
-            if(len(path.suffixes) != 2):
+        elif (path.suffix == ".json" or path.suffix == ".JSON"):
+            if (len(path.suffixes) != 2):
                 return invalid
-            
-            if(path.suffixes[0]==".trad"):
+
+            if (path.suffixes[0] == ".trad"):
                 return "json"
-            
+
             return invalid
         else:
             return invalid
@@ -84,6 +84,12 @@ class FileInfo:
 
         return FileInfo('\n'.join(info), False)
 
+    @staticmethod
+    def build_from_data(data: set):
+        if (type(data) == set):
+            return FileInfo(data.__str__(), False)
+        return FileInfo("", True)
+
     def __init__(self, info, read_failed):
         self.__info = info
         self.__read_failed = read_failed
@@ -91,6 +97,9 @@ class FileInfo:
     def write(self, file_path):
         with open(file_path, 'w', encoding='utf-8') as file:
             file.write(self.__info)
+    
+    def get_info(self):
+        return self.__info
 
     def __eq__(self, other):
         return self.__info == other.__info and self.__read_failed == other.__read_failed

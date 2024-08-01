@@ -116,7 +116,7 @@ class ProcessJSON:
             archivo.write("namespace tranlations {\n")
 
             archivo.write("\n")
-            archivo.write(ProcessJSON._get_languages_string(json_data))
+            # archivo.write(ProcessJSON._get_languages_string(json_data))
             archivo.write("\n")
             archivo.write(ProcessJSON._get_traduction_string(
                 json_data, Path(path).name)
@@ -127,6 +127,7 @@ class ProcessJSON:
     @staticmethod
     def _get_inlcudes_string(json_data: dict[str, str]) -> str:
         respuesta: str = ""
+        respuesta += '#include "traduction_languages.hpp"\n'
         for file_name in json_data.values():
             respuesta += f'#include "bn_sprite_items_{file_name}.h"\n'
         return respuesta

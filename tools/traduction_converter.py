@@ -7,6 +7,7 @@ from pathlib import Path
 from traduction_converter_file_info import FileInfo
 from process_csv import ProcessCSV
 from process_json import ProcessJSON
+from process_json import ProcessLanguages
 
 
 def procesar_carpeta(folder_path: str, output_folder: str, recursive: bool, remove_invalid_name_characters: bool, remove_invalid_csv_value_characters: bool, verbose: bool, delimiter: str):
@@ -67,6 +68,9 @@ def process(output_folder: str, input_dirs: str | list[str], recursive: bool, re
         procesar_carpeta(traduction_folder_path, output_folder, recursive,
                          remove_invalid_name_characters, remove_invalid_csv_value_characters,
                          verbose, delimiter)
+    
+
+    ProcessLanguages.process(output_folder)
 
 
 if __name__ == "__main__":

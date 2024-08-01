@@ -22,7 +22,7 @@ class ProcessCSV:
         if (not FileInfo.validate(file_output_path)):
             return
         
-        # ProcessCSV._add_language_to_list(file_path,remove_invalid_csv_value_characters,delimiter)
+        ProcessCSV._add_language_to_list(file_path,remove_invalid_csv_value_characters,delimiter)
 
         text_file_info_path = Path(output_folder).joinpath(
             f"_{Path(file_path).name}_text_file_info.txt"
@@ -84,14 +84,15 @@ class ProcessCSV:
         with open(path + '.hpp', 'w') as archivo:
             archivo.write('#pragma once\n')
             archivo.write('\n')
+
+            archivo.write('#include "traduction_languages.hpp"\n')
+            archivo.write('\n')
+
             archivo.write('#include "bn_string.h"\n')
             archivo.write('\n')
             archivo.write('\n')
 
             archivo.write("namespace tranlations {\n")
-            archivo.write('\n')
-            archivo.write(ProcessCSV.get_languages_string(idiomas))
-
             archivo.write('\n')
 
             archivo.write(ProcessCSV.get_traduction_string(
