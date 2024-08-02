@@ -12,6 +12,8 @@ from process_languages import ProcessLanguages
 
 
 class ProcessJSON:
+    graphic_type: str = ""
+
     @staticmethod
     def process(file_path: str, output_folder: str, remove_invalid_name_characters: bool, verbose: bool):
         json_data: dict[str, str]
@@ -99,6 +101,7 @@ class ProcessJSON:
                         sys.stderr.write(str(ex) + '\n\n')
                         traceback.print_exc()
                         exit(-1)
+        ProcessJSON.graphic_type = graphic_type
 
     @staticmethod
     def _process_traduction_file(json_data: dict[str, str], file_path: str, output_folder: str, verbose: bool):
@@ -159,8 +162,9 @@ class ProcessJSON:
     def _get_inlcudes_string(json_data: dict[str, str]) -> str:
         respuesta: str = ""
         respuesta += '#include "traduction_languages.hpp"\n'
+
         for file_name in json_data.values():
-            respuesta += f'#include "bn_sprite_items_{file_name}.h"\n'
+            respuesta += f'#include "bn_{ProcessJSON.graphic_type}_items_{file_name}.h"\n'
         return respuesta
 
     @staticmethod
@@ -177,7 +181,7 @@ class ProcessJSON:
     def _get_traduction_string(json_data: dict[str, str], name: str) -> str:
         respuesta: str = ""
 
-        respuesta += f'bn::sprite_item {name}(languages language) {"{"}\n'
+        respuesta += f'bn::{ProcessJSON.graphic_type}_item {name}(languages language) {"{"}\n'
 
         respuesta += ProcessJSON._get_traduction_implementation(json_data)
 
@@ -196,9 +200,9 @@ class ProcessJSON:
             if (default_sprite == ""):
                 default_sprite = sprite
             respuesta += f"        case languages::{language}:\n"
-            respuesta += f'            return bn::sprite_items::{sprite};\n'
+            respuesta += f'            return bn::{ProcessJSON.graphic_type}_items::{sprite};\n'
 
         respuesta += "        default:\n"
-        respuesta += f'            return bn::sprite_items::{default_sprite};\n'
+        respuesta += f'            return bn::{ProcessJSON.graphic_type}_items::{default_sprite};\n'
         respuesta += "    }\n"
         return respuesta
