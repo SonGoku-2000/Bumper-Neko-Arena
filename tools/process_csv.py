@@ -21,8 +21,9 @@ class ProcessCSV:
 
         if (not FileInfo.validate(file_output_path)):
             return
-        
-        ProcessCSV._add_language_to_list(file_path,remove_invalid_csv_value_characters,delimiter)
+
+        ProcessCSV._add_language_to_list(
+            file_path, remove_invalid_csv_value_characters, delimiter)
 
         text_file_info_path = Path(output_folder).joinpath(
             "files_info",
@@ -45,7 +46,9 @@ class ProcessCSV:
 
             output_path: Path = Path(output_folder).joinpath("include")
             output_path.mkdir(exist_ok=True, parents=True)
-            output_path = output_path.joinpath(Path(file_output_path).stem)
+            output_path = output_path.joinpath(
+                "traduction_string_"+Path(file_output_path).stem
+            )
             ProcessCSV.crear_archivo(output_path.__str__(), idiomas,
                                      data, remove_invalid_csv_value_characters)
 
@@ -94,12 +97,14 @@ class ProcessCSV:
             archivo.write('\n')
             archivo.write('\n')
 
-            archivo.write("namespace tranlations {\n")
+            archivo.write("namespace traduction {\n")
+            archivo.write("namespace string {\n")
             archivo.write('\n')
 
             archivo.write(ProcessCSV.get_traduction_string(
                 idiomas, filas, remove_invalid_characters))
-            archivo.write("}")
+            archivo.write("}\n")
+            archivo.write("}\n")
 
     @staticmethod
     def get_languages_string(languages: list[str]) -> str:

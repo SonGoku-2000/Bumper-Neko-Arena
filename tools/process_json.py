@@ -43,7 +43,7 @@ class ProcessJSON:
         sprite_file_info_path = Path(output_folder).joinpath(
             "files_info",
             f"_{sprite_name}_sprite_file_info.txt"
-            )
+        )
 
         old_sprite_file_info = FileInfo.read(sprite_file_info_path)
         new_sprite_file_info = FileInfo.build_from_files(
@@ -129,6 +129,7 @@ class ProcessJSON:
         output_path: Path = Path(output_folder).joinpath("include")
         output_path.mkdir(exist_ok=True, parents=True)
         output_path = output_path.joinpath(
+            f"traduction_{ProcessJSON.graphic_type}_" +
             Path(file_path).with_suffix("").stem
         )
         ProcessJSON._create_file(output_path.__str__(), json_data)
@@ -156,7 +157,8 @@ class ProcessJSON:
             archivo.write('\n')
             archivo.write('\n')
 
-            archivo.write("namespace tranlations {\n")
+            archivo.write("namespace traduction {\n")
+            archivo.write(f"namespace {ProcessJSON.graphic_type}_items {{ \n")
 
             archivo.write("\n")
             # archivo.write(ProcessJSON._get_languages_string(json_data))
@@ -165,6 +167,7 @@ class ProcessJSON:
                 json_data, Path(path).name)
             )
 
+            archivo.write("}\n")
             archivo.write("}\n")
 
     @staticmethod
@@ -190,7 +193,7 @@ class ProcessJSON:
     def _get_traduction_string(json_data: dict[str, str], name: str) -> str:
         respuesta: str = ""
 
-        respuesta += f'bn::{ProcessJSON.graphic_type}_item {name}(languages language) {"{"}\n'
+        respuesta += f'bn::{ProcessJSON.graphic_type}_item {name[12+len(ProcessJSON.graphic_type):]}(languages language) {"{"}\n'
 
         respuesta += ProcessJSON._get_traduction_implementation(json_data)
 

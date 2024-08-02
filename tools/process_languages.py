@@ -42,7 +42,7 @@ class ProcessLanguages:
             archivo.write('\n')
             archivo.write('\n')
 
-            archivo.write("namespace tranlations {\n")
+            archivo.write("namespace traduction {\n")
             archivo.write(ProcessLanguages._get_languages_string())
 
             archivo.write("}")
