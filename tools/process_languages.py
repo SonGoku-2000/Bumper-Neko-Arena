@@ -13,6 +13,7 @@ class ProcessLanguages:
     @staticmethod
     def process(output_folder: str):
         text_file_info_path = Path(output_folder).joinpath(
+            "files_info",
             f"_traduction_languages_text_file_info.txt"
         )
         old_text_file_info: FileInfo = FileInfo.read(text_file_info_path)
@@ -30,6 +31,7 @@ class ProcessLanguages:
 
         ProcessLanguages._create_file(output_path.__str__())
 
+        text_file_info_path.parent.mkdir(exist_ok=True, parents=True)
         new_text_file_info.write(text_file_info_path)
 
     @staticmethod

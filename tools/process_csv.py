@@ -25,6 +25,7 @@ class ProcessCSV:
         ProcessCSV._add_language_to_list(file_path,remove_invalid_csv_value_characters,delimiter)
 
         text_file_info_path = Path(output_folder).joinpath(
+            "files_info",
             f"_{Path(file_path).name}_text_file_info.txt"
         )
 
@@ -48,6 +49,7 @@ class ProcessCSV:
             ProcessCSV.crear_archivo(output_path.__str__(), idiomas,
                                      data, remove_invalid_csv_value_characters)
 
+        text_file_info_path.parent.mkdir(exist_ok=True, parents=True)
         new_text_file_info.write(text_file_info_path.__str__())
 
     @staticmethod
