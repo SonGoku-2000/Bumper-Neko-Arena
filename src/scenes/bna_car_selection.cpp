@@ -3,8 +3,11 @@
 
 #include "bn_sprite_items_pointer.h"
 #include "bn_sprite_items_cuerpos.h"
+#include "bn_sprite_items_cuerpos_hide.h"
 #include "bn_sprite_items_motores.h"
+#include "bn_sprite_items_motores_hide.h"
 #include "bn_sprite_items_ruedas.h"
+#include "bn_sprite_items_ruedas_hide.h"
 
 #include "bna_scene_type.hpp"
 
@@ -21,10 +24,16 @@
 
 
 
-bna::CarSelection::CarSelection(CarBuilder& carBuilder) {
+bna::CarSelection::CarSelection(CarBuilder& carBuilder,
+    bn::array<parts::motors, 3>& motores, bn::array<parts::bodys, 3>& cuerpos, bn::array<parts::wheels, 3>& ruedas
+) {
     _carBuilder = &carBuilder;
     _continuar = false;
     _idOpcion = opcionesPartes(0);
+
+    _motores = motores;
+    _cuerpos = cuerpos;
+    _ruedas = ruedas;
 
     constexpr int ALINEACION_HORIZONTAL = -40;
     constexpr bool MOSTRAR_INDICADORES = false;
@@ -45,36 +54,21 @@ bna::CarSelection::CarSelection(CarBuilder& carBuilder) {
     );
     _textoStats.set_aligment(bn::sprite_text_generator::alignment_type::CENTER);
 
-    _bodysRoulette.setPosition(_indicadores[1], 20);
-    _bodysRoulette.setIcons({
-            bn::sprite_items::cuerpos.create_sprite(0,0,0),
-            bn::sprite_items::cuerpos.create_sprite(0,0,1),
-            bn::sprite_items::cuerpos.create_sprite(0,0,2)
-        });
+    _generateBodyRoulette();
     _textoCuerpo = bna::TextManager(
         _indicadores[1].x() + OFFSET_HORIZONTAL_TEXTO,
         _indicadores[1].y(),
         ""
     );
 
-    _motorsRoulette.setPosition(_indicadores[2], 20);
-    _motorsRoulette.setIcons({
-        bn::sprite_items::motores.create_sprite(0,0,0),
-        bn::sprite_items::motores.create_sprite(0,0,1),
-        bn::sprite_items::motores.create_sprite(0,0,2)
-        });
+    _generateMotorRoulette();
     _textoMotor = bna::TextManager(
         _indicadores[2].x() + OFFSET_HORIZONTAL_TEXTO,
         _indicadores[2].y(),
         ""
     );
 
-    _wheelsRoulette.setPosition(_indicadores[3], 20);
-    _wheelsRoulette.setIcons({
-            bn::sprite_items::ruedas.create_sprite(0,0,0),
-            bn::sprite_items::ruedas.create_sprite(0,0,1),
-            bn::sprite_items::ruedas.create_sprite(0,0,2)
-        });
+    _generateWheelRoulette();
     _textoRueda = bna::TextManager(
         _indicadores[3].x() + OFFSET_HORIZONTAL_TEXTO,
         _indicadores[3].y(),
@@ -123,7 +117,7 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
         if (_idOpcion == opcionesPartes::CUERPO) {
             if (cambio_opcion) {
                 _bodysRoulette.changeOption(cambio_opcion);
-                _idBody = bna::parts::bodys(_bodysRoulette.getSelection());
+                _idBody = _cuerpos[_bodysRoulette.getSelection()];
                 _updateBodyText();
                 _updateStatsText();
             }
@@ -131,7 +125,7 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
         else if (_idOpcion == opcionesPartes::MOTOR) {
             if (cambio_opcion) {
                 _motorsRoulette.changeOption(cambio_opcion);
-                _idMotor = bna::parts::motors(_motorsRoulette.getSelection());
+                _idMotor = _motores[_motorsRoulette.getSelection()];
                 _updateMotorText();
                 _updateStatsText();
             }
@@ -139,7 +133,7 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
         else if (_idOpcion == opcionesPartes::WHEEL) {
             if (cambio_opcion) {
                 _wheelsRoulette.changeOption(cambio_opcion);
-                _idWheel = bna::parts::wheels(_wheelsRoulette.getSelection());
+                _idWheel = _ruedas[_wheelsRoulette.getSelection()];
                 _updateWheelText();
                 _updateStatsText();
             }
@@ -151,20 +145,24 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
                 return bna::scene_type::CHARACTER_SELECTION;
             }
             if (_idOpcion == opcionesPartes::PLAY) {
-                _carBuilder->body = _idBody;
-                _carBuilder->motor = _idMotor;
-                _carBuilder->wheel = _idWheel;
-                return bna::scene_type::TEST_MAP;
+                if (_checkValidCombination()) {
+                    _carBuilder->body = _idBody;
+                    _carBuilder->motor = _idMotor;
+                    _carBuilder->wheel = _idWheel;
+                    return bna::scene_type::TEST_MAP;
+                }
             }
         }
         if (bn::keypad::b_pressed()) {
             return bna::scene_type::CHARACTER_SELECTION;
         }
         if (bn::keypad::start_pressed()) {
-            _carBuilder->body = _idBody;
-            _carBuilder->motor = _idMotor;
-            _carBuilder->wheel = _idWheel;
-            return bna::scene_type::TEST_MAP;
+            if (_checkValidCombination()) {
+                _carBuilder->body = _idBody;
+                _carBuilder->motor = _idMotor;
+                _carBuilder->wheel = _idWheel;
+                return bna::scene_type::TEST_MAP;
+            }
         }
 
         bn::core::update();
@@ -239,3 +237,42 @@ void bna::CarSelection::_updateWheelText() {
     _textoRueda.updateText(texto);
 }
 
+bool bna::CarSelection::_checkValidCombination() {
+    if (_idBody != parts::bodys::EMPTY &&
+        _idMotor != parts::motors::EMPTY &&
+        _idWheel != parts::wheels::EMPTY
+        ) {
+        return true;
+    }
+    return false;
+}
+
+void bna::CarSelection::_generateBodyRoulette() {
+    _bodysRoulette.setPosition(_indicadores[1], 20);
+    _bodysRoulette.setIcons({
+        (_cuerpos[0] != bna::parts::bodys::EMPTY ? bn::sprite_items::cuerpos : bn::sprite_items::cuerpos_hide).create_sprite(0,0,0),
+        (_cuerpos[1] != bna::parts::bodys::EMPTY ? bn::sprite_items::cuerpos : bn::sprite_items::cuerpos_hide).create_sprite(0,0,1),
+        (_cuerpos[2] != bna::parts::bodys::EMPTY ? bn::sprite_items::cuerpos : bn::sprite_items::cuerpos_hide).create_sprite(0,0,2)
+        }
+    );
+}
+
+void bna::CarSelection::_generateMotorRoulette() {
+    _motorsRoulette.setPosition(_indicadores[2], 20);
+    _motorsRoulette.setIcons({
+        (_motores[0] != bna::parts::motors::EMPTY ? bn::sprite_items::motores : bn::sprite_items::motores_hide).create_sprite(0,0,0),
+        (_motores[1] != bna::parts::motors::EMPTY ? bn::sprite_items::motores : bn::sprite_items::motores_hide).create_sprite(0,0,1),
+        (_motores[2] != bna::parts::motors::EMPTY ? bn::sprite_items::motores : bn::sprite_items::motores_hide).create_sprite(0,0,2)
+        }
+    );
+}
+
+void bna::CarSelection::_generateWheelRoulette() {
+    _wheelsRoulette.setPosition(_indicadores[3], 20);
+    _wheelsRoulette.setIcons({
+        (_ruedas[0] != bna::parts::wheels::EMPTY ? bn::sprite_items::ruedas : bn::sprite_items::ruedas_hide).create_sprite(0,0,0),
+        (_ruedas[1] != bna::parts::wheels::EMPTY ? bn::sprite_items::ruedas : bn::sprite_items::ruedas_hide).create_sprite(0,0,1),
+        (_ruedas[2] != bna::parts::wheels::EMPTY ? bn::sprite_items::ruedas : bn::sprite_items::ruedas_hide).create_sprite(0,0,2)
+        }
+    );
+}

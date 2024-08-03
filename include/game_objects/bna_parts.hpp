@@ -33,21 +33,24 @@ namespace bna {
             SLOW,
             MEDIUM,
             FAST,
-            MAX
+            MAX,
+            EMPTY
         };
 
         enum class bodys : int {
             LIGHT,
             MEDIUM,
             HEAVY,
-            MAX
+            MAX,
+            EMPTY
         };
 
         enum class wheels :int {
             OLD,
             NORMAL,
             SPIKES,
-            MAX
+            MAX,
+            EMPTY
         };
 
         Stats getMotor(motors id);

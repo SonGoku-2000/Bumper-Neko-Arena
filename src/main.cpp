@@ -59,7 +59,7 @@ int main() {
                 break;
 
             case bna::scene_type::CAR_SELECTION:
-                scene.reset(new bna::CarSelection(playerCar));
+                scene.reset(new bna::CarSelection(playerCar,memoria.motores,memoria.cuerpos,memoria.ruedas));
                 break;
 
             case bna::scene_type::CAR_SELECTION_MULTIPLAYER:
