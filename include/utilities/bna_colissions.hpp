@@ -8,9 +8,9 @@ namespace bna {
         bn::vector<bna::Vector2, 4> getAxes(const bn::vector<bna::Vector2, 4>& vertices);
         bn::vector<bna::Vector2, 4> getAxesNormalized(const bn::vector<bna::Vector2, 4>& vertices);
 
-        std::pair<bn::fixed, bn::fixed> project(const bn::vector<bna::Vector2, 4>& vertices, const bna::Vector2& axis);
+        bn::pair<bn::fixed, bn::fixed> project(const bn::vector<bna::Vector2, 4>& vertices, const bna::Vector2& axis);
 
-        auto overlap(const std::pair<bn::fixed, bn::fixed>& proj1, const std::pair<bn::fixed, bn::fixed>& proj2);
+        auto overlap(const bn::pair<bn::fixed, bn::fixed>& proj1, const bn::pair<bn::fixed, bn::fixed>& proj2);
 
         auto getCollisionVertex(const bn::vector<bna::Vector2, 4>& vertices, const bna::Vector2& axis);
     }
@@ -18,7 +18,7 @@ namespace bna {
     bool checkCollision(bna::Hitbox& hb1, bna::Hitbox& hb2);
 
     struct CollisionPoint {
-        bool collided;
+        bool collided = false;
         Vector2 collisionPoint;
         Vector2 correctionVector;
     };

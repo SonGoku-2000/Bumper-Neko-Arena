@@ -1,8 +1,10 @@
 #include "bna_colissions.hpp"
-#include "bn_log.h"
 #include "bn_math.h"
 #include "bn_memory.h"
 
+#ifdef DEBUG
+#include "bn_log.h"
+#endif
 // #define PROFILE
 #ifdef PROFILE
 #include "bn_profiler.h"
@@ -39,7 +41,7 @@ namespace bna {
             return axes;
         };
 
-        std::pair<bn::fixed, bn::fixed> project(const bn::vector<bna::Vector2, 4>& vertices, const bna::Vector2& axis) {
+        bn::pair<bn::fixed, bn::fixed> project(const bn::vector<bna::Vector2, 4>& vertices, const bna::Vector2& axis) {
             bn::fixed min = vertices[0].dot(axis);
             bn::fixed max = min;
             for (const bna::Vector2& vertex : vertices) {
@@ -54,7 +56,7 @@ namespace bna {
             return std::make_pair(min, max);
         };
 
-        auto overlap(const std::pair<bn::fixed, bn::fixed>& proj1, const std::pair<bn::fixed, bn::fixed>& proj2) {
+        auto overlap(const bn::pair<bn::fixed, bn::fixed>& proj1, const bn::pair<bn::fixed, bn::fixed>& proj2) {
             return !(proj1.second < proj2.first || proj2.second < proj1.first);
         };
 

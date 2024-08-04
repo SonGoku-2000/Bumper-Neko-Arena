@@ -12,10 +12,13 @@
 
 namespace bna {
     struct CollisionPoint;
+    struct Stats;
+    enum class car_powers_id :int;
     class Car {
         public:
         Car(Hitbox hitbox, bn::fixed_point position, bn::fixed weight);
         Car(Hitbox hitbox, bn::fixed_point position, bn::fixed maxSpeed, bn::fixed aceleration, bn::fixed turn, bn::fixed weight);
+        Car(Hitbox hitbox, bn::fixed_point position, Stats stats);
         ~Car() = default;
 
         void update(bna::Vector2 eje);
@@ -24,9 +27,11 @@ namespace bna {
 
         void checkCollision(Car& otherCar);
         void checkCollision(Hitbox& otherCar);
+        void checkFastCollision(Hitbox& otherCar);
 
         bool isColliding(Car& other);
         CollisionPoint isColliding(Hitbox& other);
+        bool isCollidingFast(Hitbox& other);
 
         void resolveCollision(Car& other);
         void resolveCollision(CollisionPoint collisionPoint);
@@ -35,14 +40,32 @@ namespace bna {
 
         bn::fixed_point getPosition();
         void setPosition(bn::fixed_point position);
+        void setPositionX(bn::fixed rotaion);
+        void setPositionY(bn::fixed rotaion);
 
         bn::fixed getRotation() const;
+        void setRotation(bn::fixed rotaion);
 
-        bna::Vector2 getSpeed();
+        bna::Vector2 getVelocity();
+        bn::fixed getSpeed();
+        bn::fixed_point getExternalForce();
+        void setSpeed(bn::fixed speed);
+        void setExternalForce(bn::fixed_point external_force);
 
         bn::fixed getMass();
 
         void applyExternalForce(bn::fixed_point force);
+
+        void applyDamage(bn::fixed damage);
+
+        bool isAlive();
+        bn::fixed getLife();
+
+        bool isCrash();
+
+        void usePower(car_powers_id car_power);
+
+        bool hasSpikes();
 
         private:
         bn::fixed_point _pos;
@@ -59,13 +82,29 @@ namespace bna {
         bn::fixed _turn;
         bn::fixed _weight;
 
+        bn::fixed _life;
+
         Hitbox _hitbox;
 
         bn::sprite_ptr _sprite;
 
         bn::size _mapBorders;
 
+        enum state {
+            LIFE,
+            DEATH
+        };
+
+        state _state;
+
+        bool _crash;
+
+        car_powers_id _active_power;
+        int _elapsedTimeActivePower;
+
         void _checkBorders();
+        void _hurt(Car& other);
+        void _checkTimePower();
     };
 } // namespace bna
 

@@ -2,6 +2,11 @@
     "C_Cpp.errorSquiggles": "enabled",
     "files.exclude": {
         "*.sav": true,
+        "*.sa1": true,
+        "*.sa2": true,
+        "*.sa3": true,
+        "*.sa4": true,
+        "*.elf": true,
         "**/*.o":true,
         "**/*.s":true,
         "**/*.d":true,
@@ -31,5 +36,6 @@
         "**/*.s":true,
         "**/*.d":true,
         "**/*.bin":true
-     }
+    },
+    "python.analysis.typeCheckingMode": "basic"
 }

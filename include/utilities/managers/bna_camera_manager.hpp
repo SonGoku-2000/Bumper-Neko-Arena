@@ -14,6 +14,8 @@ namespace bna {
 
         void update(bn::fixed_point pos);
 
+        void setPosition(bn::fixed_point position);
+
         void setLimitLeft(int limitLeft);
         void setLimitRight(int limitRight);
         void setLimitUp(int limitUp);
@@ -25,5 +27,7 @@ namespace bna {
         int _limitRight;
         int _limitUp;
         int _limitDown;
+        
+        bn::fixed_point _previousPosition;
     };
 } // namespace rs

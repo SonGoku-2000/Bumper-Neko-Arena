@@ -38,7 +38,9 @@ SOURCES     	:=  src ../../common/src \
 					src/player \
 					src/scenes \
 					src/scenes/maps \
-					src/utilities
+					src/utilities \
+					src/utilities/managers \
+					src/utilities/math
 
 INCLUDES    	:=  include ../../common/include \
 					include/enemies \
@@ -46,8 +48,10 @@ INCLUDES    	:=  include ../../common/include \
 					include/player \
 					include/scenes \
 					include/scenes/maps \
-					include/utilities
-					
+					include/utilities \
+					include/utilities/managers \
+					include/utilities/math
+
 DATA        	:=
 GRAPHICS    	:=	graphics ../../common/graphics\
 					graphics/utilities
