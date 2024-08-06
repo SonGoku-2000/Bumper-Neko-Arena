@@ -43,6 +43,7 @@ SOURCES     	:=  src ../../common/src \
 					src/utilities/math
 
 INCLUDES    	:=  include ../../common/include \
+					external_tool/include\
 					include/enemies \
 					include/game_objects \
 					include/player \
@@ -54,7 +55,8 @@ INCLUDES    	:=  include ../../common/include \
 
 DATA        	:=
 GRAPHICS    	:=	graphics ../../common/graphics\
-					graphics/utilities
+					graphics/utilities\
+					external_tool/graphics
 
 AUDIO       	:=  audio
 DMGAUDIO    	:=  dmg_audio
