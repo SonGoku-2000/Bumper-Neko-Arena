@@ -8,10 +8,11 @@ namespace bna {
 
 
 bna::IconRoulette::IconRoulette(bn::fixed_point position, bn::fixed separation, bn::array<bn::sprite_ptr, 3> icons, int initial_option) {
+    _selection = initial_option;
+
     setIcons(icons);
     _generateIconsPosition(position, separation);
 
-    _selection = initial_option;
     _updateIconsPosition();
 }
 
@@ -25,6 +26,7 @@ bna::IconRoulette::IconRoulette(bn::fixed_point position, bn::fixed separation) 
 }
 
 bna::IconRoulette::IconRoulette() {
+    _selection = 0;
 }
 
 
