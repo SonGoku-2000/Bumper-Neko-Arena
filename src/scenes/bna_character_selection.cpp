@@ -13,6 +13,11 @@
 #include "bn_regular_bg_items_cat_gray.h"
 #include "bn_sprite_items_icons_selection.h"
 
+#include "bn_sprite_items_cat_black_selection_iconn.h"
+#include "bn_sprite_items_cat_persian_selection_icon.h"
+#include "bn_sprite_items_cat_siamese_selection_icon.h"
+#include "bn_sprite_items_cat_tricolour_selection_icon.h"
+
 #ifdef DEBUG
 #include "bn_log.h"
 #endif
@@ -43,10 +48,10 @@ bna::CharacterSelection::CharacterSelection(Characters& character) {
     );
     _textoCharacterSeleccionado.set_aligment(bn::sprite_text_generator::alignment_type::CENTER);
 
-    _iconosCharacters.push_back(bn::sprite_items::icons_selection.create_sprite(_indicadores[1], 0));
-    _iconosCharacters.push_back(bn::sprite_items::icons_selection.create_sprite(_indicadores[2], 1));
-    _iconosCharacters.push_back(bn::sprite_items::icons_selection.create_sprite(_indicadores[3], 2));
-    _iconosCharacters.push_back(bn::sprite_items::icons_selection.create_sprite(_indicadores[4], 3));
+    _iconosCharacters.push_back(bn::sprite_items::cat_black_selection_iconn.create_sprite(_indicadores[1]));
+    _iconosCharacters.push_back(bn::sprite_items::cat_persian_selection_icon.create_sprite(_indicadores[2]));
+    _iconosCharacters.push_back(bn::sprite_items::cat_siamese_selection_icon.create_sprite(_indicadores[3]));
+    _iconosCharacters.push_back(bn::sprite_items::cat_tricolour_selection_icon.create_sprite(_indicadores[4]));
 
     _textoNext = bna::TextManager(
         _indicadores[5].x() + OFFSET_HORIZONTAL_TEXTO,

@@ -8,6 +8,11 @@
 #include "bna_car_powers_id.hpp"
 #include "bna_test_values.hpp"
 
+#include "bn_sprite_items_cat_black_driving.h"
+#include "bn_sprite_items_cat_persian_drivin.h"
+#include "bn_sprite_items_cat_siamese_drivin.h"
+#include "bn_sprite_items_cat_tricolour_driving.h"
+
 
 
 #define DEBUG
@@ -39,7 +44,7 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed maxSpeed, bn::fixed 
 
 bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats) :
     _hitbox(hitbox),
-    _sprite(bn::sprite_items::carro_base.create_sprite(pos)) {
+    _sprite(bn::sprite_items::cat_tricolour_driving.create_sprite(pos)) {
 
     _maxSpeed = stats.maxSpeed;
     _aceleration = stats.aceleration;
@@ -52,7 +57,7 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats) :
     _dy = 0;
     _rotation = 0;
 
-    _life = bna::limit_values::MAX_LIFE * 10;
+    _life = bna::limit_values::MAX_LIFE;
     _state = state::LIFE;
 
     _crash = false;
