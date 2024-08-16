@@ -55,6 +55,10 @@ INCLUDES    	:=  include ../../common/include \
 
 DATA        	:=
 GRAPHICS    	:=	graphics ../../common/graphics\
+					graphics/cats\
+					graphics/menus\
+					graphics/parts\
+					graphics/placeholders\
 					graphics/utilities\
 					external_tool/graphics
 
