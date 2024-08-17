@@ -21,8 +21,8 @@ namespace bna {
     class Car {
         public:
         Car(Hitbox hitbox, bn::fixed_point position, bn::fixed weight);
-        Car(Hitbox hitbox, bn::fixed_point position, bn::fixed maxSpeed, bn::fixed aceleration, bn::fixed turn, bn::fixed weight);
-        Car(Hitbox hitbox, bn::fixed_point position, Stats stats);
+        Car(Hitbox hitbox, bn::fixed_point position, bn::fixed maxSpeed, bn::fixed aceleration, bn::fixed turn, bn::fixed weight, CharactersId charactersId);
+        Car(Hitbox hitbox, bn::fixed_point position, Stats stats, CharactersId charactersId);
         ~Car() = default;
 
         void update(bna::Vector2 eje);

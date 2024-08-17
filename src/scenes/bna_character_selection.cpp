@@ -103,6 +103,7 @@ bn::optional<bna::scene_type> bna::CharacterSelection::update() {
         }
         if (bn::keypad::start_pressed()) {
             if (_seleccionado) {
+                _updateCharacterPointer();
                 return bna::scene_type::CAR_SELECTION;
             }
         }

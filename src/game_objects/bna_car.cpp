@@ -37,17 +37,17 @@ namespace bna {
 } // namespace bna
 
 bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed weight) :
-    Car(hitbox, pos, bna::Stats(bna::default_values::MAX_SPEED, bna::default_values::ACELERATION, bna::default_values::TURN, weight)) {
+    Car(hitbox, pos, bna::Stats(bna::default_values::MAX_SPEED, bna::default_values::ACELERATION, bna::default_values::TURN, weight), bna::CharactersId::TRICOLOUR) {
 }
 
-bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed maxSpeed, bn::fixed aceleration, bn::fixed turn, bn::fixed weight) :
-    Car(hitbox, pos, bna::Stats(maxSpeed, aceleration, turn, weight)) {
+bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed maxSpeed, bn::fixed aceleration, bn::fixed turn, bn::fixed weight, CharactersId charactersId) :
+    Car(hitbox, pos, bna::Stats(maxSpeed, aceleration, turn, weight), charactersId) {
 }
 
-bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats) :
+bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats, CharactersId charactersId) :
     _hitbox(hitbox) {
 
-    _catId = bna::CharactersId::TRICOLOUR;
+    _catId = charactersId;
     _setSprite();
     _setAnimation();
 

@@ -11,5 +11,5 @@ bna::Car bna::CarBuilder::build() {
     stats = stats + bna::parts::getBody(body);
     stats = stats + bna::parts::getMotor(motor);
     stats = stats + bna::parts::getWheels(wheel);
-    return bna::Car(bna::Hitbox(bna::Vector2(position), bna::Vector2(10, 20), true), position, stats);
+    return bna::Car(bna::Hitbox(bna::Vector2(position), bna::Vector2(10, 20), true), position, stats, cat_id);
 }
