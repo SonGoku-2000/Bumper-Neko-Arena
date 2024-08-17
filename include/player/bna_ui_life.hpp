@@ -30,5 +30,6 @@ namespace bna {
 
         void _resetAnimation();
         void _setSprite();
+        void _shakeBar();
     };
 } // namespace bna

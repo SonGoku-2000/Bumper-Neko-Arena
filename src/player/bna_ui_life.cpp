@@ -44,6 +44,8 @@ void bna::UILife::update() {
         _previousLife = _car->getLife();
     }
 
+    _shakeBar();
+
     if (_car->getLife() > (bna::limit_values::MAX_LIFE / 7) * 6) {
         _healthBar.set_item(bn::sprite_items::health_bar, 0);
     }
@@ -64,6 +66,27 @@ void bna::UILife::update() {
     }
     else {
         _healthBar.set_item(bn::sprite_items::health_bar, 6);
+    }
+}
+
+void bna::UILife::_shakeBar() {
+    if (!_catAnimation.has_value()) {
+        return;
+    }
+    if (_catAnimation->done()) {
+        return;
+    }
+
+    int offset = 1;
+
+    if (bna::CharactersId::SIAMESE == _catId) {
+        offset = -1;
+    }
+    if (_catAnimation->current_index() == 0 || _catAnimation->current_index() == 1|| _catAnimation->current_index() == 2) {
+        _healthBar.set_x(_catFace->x() + offset);
+    }
+    else {
+        _healthBar.set_x(_catFace->x());
     }
 }
 
