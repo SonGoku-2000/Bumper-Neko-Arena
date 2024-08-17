@@ -18,15 +18,15 @@ namespace bna {
 
         private:
         bn::optional<bn::sprite_ptr> _catFace;
-        bn::optional<bn::sprite_animate_action<7>> _catAnimation;
+        bn::optional<bn::sprite_animate_action<8>> _catAnimation;
         bn::optional<bn::sprite_ptr> _catFace2;
-        bn::optional<bn::sprite_animate_action<7>> _catAnimation2;
+        bn::optional<bn::sprite_animate_action<8>> _catAnimation2;
 
         bn::sprite_ptr _healthBar;
         bna::Car* _car;
 
         CharactersId _catId;
-        int _previousLife;
+        bn::fixed _previousLife;
 
         void _resetAnimation();
         void _setSprite();

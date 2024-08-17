@@ -25,10 +25,25 @@ void bna::UILife::setCar(bna::Car& car) {
     _car = &car;
     _catId = _car->getCharacterId();
     _setSprite();
-    _resetAnimation();
+    // _resetAnimation();
+    _previousLife = bna::limit_values::MAX_LIFE;
 }
 
 void bna::UILife::update() {
+    if (_catAnimation.has_value()) {
+        if (!_catAnimation->done()) {
+            _catAnimation->update();
+            if (_catAnimation2.has_value()) {
+                _catAnimation2->update();
+            }
+        }
+    }
+
+    if (_car->getLife() < _previousLife) {
+        _resetAnimation();
+        _previousLife = _car->getLife();
+    }
+
     if (_car->getLife() > (bna::limit_values::MAX_LIFE / 7) * 6) {
         _healthBar.set_item(bn::sprite_items::health_bar, 0);
     }
@@ -80,5 +95,17 @@ void bna::UILife::_setSprite() {
 }
 
 void bna::UILife::_resetAnimation() {
-
+    if (bna::CharactersId::BLACK == _catId) {
+        _catAnimation = bn::create_sprite_animate_action_once(_catFace.value(), 8, bn::sprite_items::health_bar_cat_black.tiles_item(), 1, 1, 2, 2, 0);
+    }
+    if (bna::CharactersId::PERSIAN == _catId) {
+        _catAnimation = bn::create_sprite_animate_action_once(_catFace.value(), 8, bn::sprite_items::health_bar_cat_persian.tiles_item(), 1, 1, 2, 3, 4, 5, 0);
+    }
+    if (bna::CharactersId::SIAMESE == _catId) {
+        _catAnimation = bn::create_sprite_animate_action_once(_catFace.value(), 8, bn::sprite_items::health_bar_cat_siamese.tiles_item(), 1, 1, 2, 3, 4, 5, 0);
+    }
+    if (bna::CharactersId::TRICOLOUR == _catId) {
+        _catAnimation = bn::create_sprite_animate_action_once(_catFace.value(), 8, bn::sprite_items::health_bar_cat_tricolour_face.tiles_item(), 1, 1, 2, 3, 0);
+        _catAnimation2 = bn::create_sprite_animate_action_once(_catFace2.value(), 8, bn::sprite_items::health_bar_cat_tricolour_hat.tiles_item(), 1, 1, 2, 3, 0);
+    }
 }
