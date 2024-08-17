@@ -24,12 +24,12 @@
 
 namespace bna {
     class CarBuilder;
-    enum class Characters :int;
+    enum class CharactersId :int;
     class Car;
     class TestMap : public scene {
 
         public:
-        TestMap(CarBuilder& playerCarBuilder, Characters& playerCharacter);
+        TestMap(CarBuilder& playerCarBuilder, CharactersId& playerCharacter);
         ~TestMap() = default;
 
         [[nodiscard]] bn::optional<scene_type> update() final;
@@ -62,7 +62,7 @@ namespace bna {
         void _setCamera(bn::camera_ptr& camera);
         void _generateSpawnPoints();
         void _generateWalls();
-        void _generatePlayer(CarBuilder& playerCarBuilder, Characters& playerCharacter);
+        void _generatePlayer(CarBuilder& playerCarBuilder, CharactersId& playerCharacter);
         void _generateEnemies();
         void _generatePowerObjectsSpawns();
 

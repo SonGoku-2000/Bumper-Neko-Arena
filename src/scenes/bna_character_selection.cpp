@@ -9,7 +9,7 @@
 #include "bna_loop_value.hpp"
 
 #include "bn_string.h"
-#include "bna_characters.hpp"
+#include "bna_characters_id.hpp"
 #include "bn_regular_bg_items_cat_gray.h"
 #include "bn_sprite_items_icons_selection.h"
 
@@ -23,7 +23,7 @@
 #endif
 
 
-bna::CharacterSelection::CharacterSelection(Characters& character) {
+bna::CharacterSelection::CharacterSelection(CharactersId& character) {
     _character = &character;
     _continuar = false;
     _idOpcion = opcionesCharacter(0);
@@ -162,48 +162,48 @@ void bna::CharacterSelection::_updateArrowPress() {
 }
 
 void bna::CharacterSelection::_updateCharacterPointer() {
-    if (opcionesCharacter::CAT_1 == _idOpcionSeleccionada) {
-        *_character = Characters::CAT_1;
+    if (opcionesCharacter::BLACK == _idOpcionSeleccionada) {
+        *_character = CharactersId::BLACK;
     }
-    if (opcionesCharacter::CAT_2 == _idOpcionSeleccionada) {
-        *_character = Characters::CAT_2;
+    if (opcionesCharacter::PERSIAN == _idOpcionSeleccionada) {
+        *_character = CharactersId::PERSIAN;
     }
-    if (opcionesCharacter::CAT_3 == _idOpcionSeleccionada) {
-        *_character = Characters::CAT_3;
+    if (opcionesCharacter::SIAMESE == _idOpcionSeleccionada) {
+        *_character = CharactersId::SIAMESE;
     }
-    if (opcionesCharacter::BIRD == _idOpcionSeleccionada) {
-        *_character = Characters::BIRD;
+    if (opcionesCharacter::TRICOLOUR == _idOpcionSeleccionada) {
+        *_character = CharactersId::TRICOLOUR;
     }
 }
 
 void bna::CharacterSelection::_updateCharacterSelected() {
     if (_seleccionado == true) {
-        if (opcionesCharacter::CAT_1 == _idOpcionSeleccionada) {
+        if (opcionesCharacter::BLACK == _idOpcionSeleccionada) {
             _textoCharacterSeleccionado.updateText("Cat 1");
             _character_image = bn::regular_bg_items::cat_gray.create_bg(80, 0);
         }
-        if (opcionesCharacter::CAT_2 == _idOpcionSeleccionada) {
+        if (opcionesCharacter::PERSIAN == _idOpcionSeleccionada) {
             _textoCharacterSeleccionado.updateText("Cat 2");
         }
-        if (opcionesCharacter::CAT_3 == _idOpcionSeleccionada) {
+        if (opcionesCharacter::SIAMESE == _idOpcionSeleccionada) {
             _textoCharacterSeleccionado.updateText("Cat 3");
         }
-        if (opcionesCharacter::BIRD == _idOpcionSeleccionada) {
+        if (opcionesCharacter::VOLVER == _idOpcionSeleccionada) {
             _textoCharacterSeleccionado.updateText("Cat Bird");
         }
         return;
     }
 
-    if (opcionesCharacter::CAT_1 == _idOpcion) {
+    if (opcionesCharacter::BLACK == _idOpcion) {
         _textoCharacterSeleccionado.updateText("Cat 1");
     }
-    if (opcionesCharacter::CAT_2 == _idOpcion) {
+    if (opcionesCharacter::PERSIAN == _idOpcion) {
         _textoCharacterSeleccionado.updateText("Cat 2");
     }
-    if (opcionesCharacter::CAT_3 == _idOpcion) {
+    if (opcionesCharacter::SIAMESE == _idOpcion) {
         _textoCharacterSeleccionado.updateText("Cat 3");
     }
-    if (opcionesCharacter::BIRD == _idOpcion) {
+    if (opcionesCharacter::TRICOLOUR == _idOpcion) {
         _textoCharacterSeleccionado.updateText("Cat Bird");
     }
     if (opcionesCharacter::NEXT == _idOpcion) {

@@ -74,7 +74,7 @@ void bna::Player::setBody(Car& body) {
     _cuerpo = &body;
 }
 
-void bna::Player::setCharacter(const Characters& character) {
+void bna::Player::setCharacter(const CharactersId& character) {
     _character = character;
 }
 

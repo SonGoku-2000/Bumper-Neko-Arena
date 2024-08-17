@@ -17,7 +17,7 @@ namespace bna {
     struct CollisionPoint;
     struct Stats;
     enum class car_powers_id :int;
-    enum class cats_id :int;
+    enum class CharactersId :int;
     class Car {
         public:
         Car(Hitbox hitbox, bn::fixed_point position, bn::fixed weight);
@@ -93,7 +93,7 @@ namespace bna {
         bn::optional<bn::sprite_ptr> _sprite;
         bn::optional<bn::sprite_animate_action<10>> _animation;
 
-        cats_id _catId;
+        CharactersId _catId;
 
         bn::size _mapBorders;
 

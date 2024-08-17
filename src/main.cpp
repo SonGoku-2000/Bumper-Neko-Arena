@@ -17,7 +17,7 @@
 #include "bna_scene_loose.hpp"
 #include "bna_brightness_manager.hpp"
 #include "bna_car_builder.hpp"
-#include "bna_characters.hpp"
+#include "bna_characters_id.hpp"
 #include "bna_preparing_connection.hpp"
 #include "bna_character_selection.hpp"
 
@@ -40,7 +40,7 @@ int main() {
     bn::optional<bna::scene_type> next_scene = bna::scene_type::MAIN_MENU;
 
     bna::CarBuilder playerCar;
-    bna::Characters playerCharacter;
+    bna::CharactersId& playerCharacter = playerCar.cat_id;
 
     int id_propia;
 

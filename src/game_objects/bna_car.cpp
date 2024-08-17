@@ -13,7 +13,7 @@
 #include "bn_sprite_items_cat_siamese_drivin.h"
 #include "bn_sprite_items_cat_tricolour_driving.h"
 
-#include "bna_cats_id.hpp"
+#include "bna_characters_id.hpp"
 
 
 
@@ -47,7 +47,7 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed maxSpeed, bn::fixed 
 bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats) :
     _hitbox(hitbox) {
 
-    _catId = bna::cats_id::TRICOLOUR;
+    _catId = bna::CharactersId::TRICOLOUR;
     _setSprite();
     _setAnimation();
 
@@ -423,43 +423,43 @@ void bna::Car::_checkTimePower() {
 
 
 void bna::Car::_setSprite() {
-    if (bna::cats_id::BLACK == _catId) {
+    if (bna::CharactersId::BLACK == _catId) {
         _sprite = bn::sprite_items::cat_black_driving.create_sprite(_pos);
     }
-    if (bna::cats_id::PERSIAN == _catId) {
+    if (bna::CharactersId::PERSIAN == _catId) {
         _sprite = bn::sprite_items::cat_persian_drivin.create_sprite(_pos);
     }
-    if (bna::cats_id::SIAMESE == _catId) {
+    if (bna::CharactersId::SIAMESE == _catId) {
         _sprite = bn::sprite_items::cat_siamese_drivin.create_sprite(_pos);
     }
-    if (bna::cats_id::TRICOLOUR == _catId) {
+    if (bna::CharactersId::TRICOLOUR == _catId) {
         _sprite = bn::sprite_items::cat_tricolour_driving.create_sprite(_pos);
     }
 }
 
 void bna::Car::_setAnimation() {
-    if (bna::cats_id::BLACK == _catId) {
+    if (bna::CharactersId::BLACK == _catId) {
         _animation = bn::create_sprite_animate_action_forever(_sprite.value(), 8, bn::sprite_items::cat_black_driving.tiles_item(), 0, 1, 2, 3);
     }
-    if (bna::cats_id::PERSIAN == _catId) {
+    if (bna::CharactersId::PERSIAN == _catId) {
         _animation = bn::create_sprite_animate_action_forever(_sprite.value(), 8, bn::sprite_items::cat_persian_drivin.tiles_item(), 0, 1, 2);
     }
-    if (bna::cats_id::SIAMESE == _catId) {
+    if (bna::CharactersId::SIAMESE == _catId) {
         _animation = bn::create_sprite_animate_action_forever(_sprite.value(), 8, bn::sprite_items::cat_siamese_drivin.tiles_item(), 0, 1, 2, 3);
     }
-    if (bna::cats_id::TRICOLOUR == _catId) {
+    if (bna::CharactersId::TRICOLOUR == _catId) {
         _animation = bn::create_sprite_animate_action_forever(_sprite.value(), 8, bn::sprite_items::cat_tricolour_driving.tiles_item(), 0, 1, 2, 1, 0, 3, 4, 3);
     }
 }
 
 void bna::Car::_resetSprite() {
-    if (bna::cats_id::BLACK == _catId) {
+    if (bna::CharactersId::BLACK == _catId) {
         _sprite->set_tiles(bn::sprite_items::cat_black_driving.tiles_item());
     }
-    if (bna::cats_id::PERSIAN == _catId) {
+    if (bna::CharactersId::PERSIAN == _catId) {
         _sprite->set_tiles(bn::sprite_items::cat_persian_drivin.tiles_item());
     }
-    if (bna::cats_id::TRICOLOUR == _catId) {
+    if (bna::CharactersId::TRICOLOUR == _catId) {
         _sprite->set_tiles(bn::sprite_items::cat_tricolour_driving.tiles_item());
     }
 }

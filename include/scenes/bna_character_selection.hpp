@@ -10,10 +10,10 @@
 
 
 namespace bna {
-    enum class Characters :int;
+    enum class CharactersId :int;
     class CharacterSelection : public scene {
         public:
-        CharacterSelection(Characters& character);
+        CharacterSelection(CharactersId& character);
         [[nodiscard]] bn::optional<scene_type> update() final;
 
         private:
@@ -26,16 +26,16 @@ namespace bna {
         TextManager _textoVolver;
 
         enum class opcionesCharacter :int {
-            CAT_1,
-            CAT_2,
-            CAT_3,
-            BIRD,
+            BLACK,
+            PERSIAN,
+            SIAMESE,
+            TRICOLOUR,
             NEXT,
             VOLVER
         };
         opcionesCharacter _idOpcion;
         opcionesCharacter _idOpcionSeleccionada;
-        Characters* _character;
+        CharactersId* _character;
 
         bool _continuar;
         bool _seleccionado;

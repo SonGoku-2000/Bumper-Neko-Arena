@@ -6,7 +6,7 @@
 #include "bn_math.h"
 #include "bna_math.hpp"
 #include "bn_display.h"
-#include "bna_characters.hpp"
+#include "bna_characters_id.hpp"
 
 #include "bn_sprite_items_indicator.h"
 #include "bna_car_powers_id.hpp"

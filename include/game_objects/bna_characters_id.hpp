@@ -1,10 +1,10 @@
 #pragma once
 
 namespace bna {
-    enum class cats_id :int {
+    enum class CharactersId :int {
         BLACK,
         PERSIAN,
         SIAMESE,
         TRICOLOUR
     };
-} // namespace bna
+}
