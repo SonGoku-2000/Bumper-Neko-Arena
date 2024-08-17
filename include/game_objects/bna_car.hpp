@@ -1,7 +1,10 @@
 #pragma once
 
 #include "bn_sprite_ptr.h"
+#include "bn_sprite_animate_actions.h"
 #include "bn_camera_ptr.h"
+
+#include "bn_optional.h"
 
 #include "bn_fixed_point.h"
 #include "bn_fixed.h"
@@ -14,6 +17,7 @@ namespace bna {
     struct CollisionPoint;
     struct Stats;
     enum class car_powers_id :int;
+    enum class cats_id :int;
     class Car {
         public:
         Car(Hitbox hitbox, bn::fixed_point position, bn::fixed weight);
@@ -86,7 +90,10 @@ namespace bna {
 
         Hitbox _hitbox;
 
-        bn::sprite_ptr _sprite;
+        bn::optional<bn::sprite_ptr> _sprite;
+        bn::optional<bn::sprite_animate_action<10>> _animation;
+
+        cats_id _catId;
 
         bn::size _mapBorders;
 
@@ -105,6 +112,10 @@ namespace bna {
         void _checkBorders();
         void _hurt(Car& other);
         void _checkTimePower();
+
+        void _setAnimation();
+        void _setSprite();
+        void _resetSprite();
     };
 } // namespace bna
 

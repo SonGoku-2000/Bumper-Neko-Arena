@@ -13,6 +13,8 @@
 #include "bn_sprite_items_cat_siamese_drivin.h"
 #include "bn_sprite_items_cat_tricolour_driving.h"
 
+#include "bna_cats_id.hpp"
+
 
 
 #define DEBUG
@@ -43,8 +45,11 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed maxSpeed, bn::fixed 
 }
 
 bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats) :
-    _hitbox(hitbox),
-    _sprite(bn::sprite_items::cat_tricolour_driving.create_sprite(pos)) {
+    _hitbox(hitbox) {
+
+    _catId = bna::cats_id::TRICOLOUR;
+    _setSprite();
+    _setAnimation();
 
     _maxSpeed = stats.maxSpeed;
     _aceleration = stats.aceleration;
@@ -68,7 +73,7 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats) :
 
 
 void bna::Car::spawn(bn::camera_ptr& camera, bn::size tamanoMapa) {
-    _sprite.set_camera(camera);
+    _sprite->set_camera(camera);
     _hitbox.setCamera(camera);
     _mapBorders = tamanoMapa;
 }
@@ -91,6 +96,13 @@ void bna::Car::update(bna::Vector2 eje) {
 
             if (_eje.y() == 0) {
                 _speed *= bna::FRICCION;
+            }
+
+            if (_speed == 0) {
+                _resetSprite();
+            }
+            else{
+                _animation->update();
             }
 
             bna::Vector2 movimiento(0, _speed);
@@ -119,11 +131,11 @@ void bna::Car::update(bna::Vector2 eje) {
             _pos = newPos;
             _checkBorders();
 
-            _sprite.set_position(_pos);
-            _sprite.set_rotation_angle(getRotation());
+            _sprite->set_position(_pos);
+            _sprite->set_rotation_angle(getRotation());
 
             if (_life <= 0) {
-                _sprite.set_visible(false);
+                _sprite->set_visible(false);
                 _state = state::DEATH;
             }
 
@@ -216,7 +228,7 @@ bna::CollisionPoint bna::Car::isColliding(bna::Hitbox& other) {
     return other.checkCollisionPoint(getHitbox());
 }
 
-bool bna::Car::isCollidingFast(bna::Hitbox& other){
+bool bna::Car::isCollidingFast(bna::Hitbox& other) {
     return other.checkCollision(getHitbox());
 }
 
@@ -362,7 +374,7 @@ bn::fixed_point bna::Car::getPosition() {
 void bna::Car::setPosition(bn::fixed_point position) {
     _pos = position;
     _hitbox.setPosition(position);
-    _sprite.set_position(position);
+    _sprite->set_position(position);
 }
 
 void bna::Car::setPositionX(bn::fixed x) {
@@ -409,4 +421,22 @@ void bna::Car::_checkTimePower() {
     }
 }
 
+
+void bna::Car::_setSprite() {
+    if (bna::cats_id::TRICOLOUR == _catId) {
+        _sprite = bn::sprite_items::cat_tricolour_driving.create_sprite(_pos);
+    }
+}
+
+void bna::Car::_setAnimation() {
+    if (bna::cats_id::TRICOLOUR == _catId) {
+        _animation = bn::create_sprite_animate_action_forever(_sprite.value(), 8, bn::sprite_items::cat_tricolour_driving.tiles_item(), 0, 1, 2, 1, 0, 3, 4, 3);
+    }
+}
+
+void bna::Car::_resetSprite(){
+    if(bna::cats_id::TRICOLOUR==_catId){
+        _sprite->set_tiles(bn::sprite_items::cat_tricolour_driving.tiles_item());
+    }
+}
 
