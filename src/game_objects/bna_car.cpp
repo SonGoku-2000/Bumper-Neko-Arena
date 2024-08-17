@@ -240,6 +240,9 @@ bn::fixed bna::Car::getLife() {
     return _life;
 }
 
+bna::CharactersId bna::Car::getCharacterId(){
+    return _catId;
+}
 
 void bna::Car::resolveCollision(Car& other) {
     bn::fixed dx = _pos.x() - other.getPosition().x();
