@@ -3,7 +3,7 @@
 #include "bn_sprite_items_indicator.h"
 #include "bna_colissions.hpp"
 #include "bn_size.h"
-
+#include "bna_planes.hpp"
 
 bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug, int color) :
     _center(center), _size(size), _rotation(rotation),
@@ -12,6 +12,7 @@ bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug
     _vertices = _generateVertices();
     _axesNormalidedUpdated = false;
     _axesUpdated = false;
+    _aabbUpdated = false;
 
     for (int i = 0; i < 4; i++) {
         _projectionsInfo[i].updated = false;
@@ -21,6 +22,7 @@ bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug
     if (debug) {
         for (int i = 0; i < _spritesVertices.max_size(); i++) {
             _spritesVertices.push_back(bn::sprite_items::indicator.create_sprite(_vertices[i], color));
+            _spritesVertices[i].set_bg_priority(bna::Planes::FIRST);
             _spritesVertices[i].put_above();
         }
     }
@@ -109,6 +111,7 @@ void bna::Hitbox::setRotation(bn::fixed angle) {
         _rotation = angle;
         _axesNormalidedUpdated = false;
         _axesUpdated = false;
+        _aabbUpdated = false;
         _vertices = _generateVertices();
         _updateSpritesPos();
         for (int i = 0; i < 4; i++) {
@@ -206,6 +209,7 @@ void bna::Hitbox::setCenter(bna::Vector2 center) {
         bn::fixed_point offset = center - _center;
         _axesNormalidedUpdated = false;
         _axesUpdated = false;
+        _aabbUpdated = false;
         _center = center;
         for (int i = 0; i < _vertices.size(); i++) {
             _vertices[i] = _vertices[i] + offset;
@@ -246,11 +250,59 @@ bn::fixed bna::Hitbox::width() const {
 
 
 
-bool bna::Hitbox::checkCollision(bna::Hitbox hitbox) {
+bool bna::Hitbox::checkCollision(bna::Hitbox& hitbox) {
+    if (!checkAABB(hitbox.getAABB())) {
+        return false;
+    }
+
     return bna::checkCollision(*this, hitbox);
 }
 
+bna::AABB bna::Hitbox::getAABB() {
+    if (_aabbUpdated) {
+        return _aabb;
+    }
+    _aabb.max_x = _vertices[0].x();
+    _aabb.min_x = _vertices[0].x();
+    _aabb.max_y = _vertices[0].y();
+    _aabb.min_y = _vertices[0].y();
+
+    for (int i = 1; i < _vertices.size(); i++) {
+        const bna::Vector2 vertice = _vertices[i];
+        if (_aabb.max_x < vertice.x()) {
+            _aabb.max_x = vertice.x();
+        }
+        else if (_aabb.min_x > vertice.x()) {
+            _aabb.min_x = vertice.x();
+        }
+
+        if (_aabb.max_y < vertice.y()) {
+            _aabb.max_y = vertice.y();
+        }
+        else if (_aabb.min_y > vertice.y()) {
+            _aabb.min_y = vertice.y();
+        }
+    }
+
+    _aabbUpdated = true;
+    return _aabb;
+}
+
+bool bna::Hitbox::checkAABB(const AABB& other) {
+    bna::AABB aabb = getAABB();
+    return (
+        aabb.min_x <= other.max_x &&
+        aabb.max_x >= other.min_x &&
+        aabb.min_y <= other.max_y &&
+        aabb.max_y >= other.min_y
+        );
+}
+
 bna::CollisionPoint bna::Hitbox::checkCollisionPoint(Hitbox& hitbox) {
+    if (!checkAABB(hitbox.getAABB())) {
+        CollisionPoint collisionPoint;
+        collisionPoint.collided = false;
+    }
     return bna::checkCollisionPointV2(*this, hitbox);
 }
 

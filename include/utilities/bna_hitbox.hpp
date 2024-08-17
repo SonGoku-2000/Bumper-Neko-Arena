@@ -11,6 +11,12 @@
 namespace bna {
     struct CollisionPoint;
     struct ProjectionInfo;
+    struct AABB {
+        bn::fixed max_x;
+        bn::fixed min_x;
+        bn::fixed max_y;
+        bn::fixed min_y;
+    };
     class Hitbox {
         public:
         Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug, int color);
@@ -36,7 +42,7 @@ namespace bna {
         bn::fixed width() const;
         bn::fixed height() const;
 
-        bool checkCollision(Hitbox hitbox);
+        bool checkCollision(Hitbox& hitbox);
         CollisionPoint checkCollisionPoint(Hitbox& hitbox);
 
         void setCamera(bn::camera_ptr& camera);
@@ -49,6 +55,9 @@ namespace bna {
         std::pair<bn::fixed, bn::fixed> getProjection(int self_axis_id);
         std::pair<bn::fixed, bn::fixed> getProjection(const bna::Vector2& axis);
 
+        AABB getAABB();
+        bool checkAABB(const AABB& other);
+
         private:
         Vector2 _center;
         Vector2 _size;
@@ -58,6 +67,7 @@ namespace bna {
         bn::vector<Vector2, 4> _vertices;
         bn::vector<Vector2, 4> _axesNormalized;
         bn::vector<Vector2, 4> _axes;
+        bna::AABB _aabb;
 
         struct ProjectionInfo {
             bool updated = false;
@@ -67,9 +77,11 @@ namespace bna {
         bn::array<ProjectionInfo, 4> _projectionsNormalizedInfo;
         bool _axesNormalidedUpdated;
         bool _axesUpdated;
+        bool _aabbUpdated;
 
         bn::vector<Vector2, 4> _generateVertices() const;
         bn::vector<Vector2, 4> _generateVertices2() const;
+
 
         void _updateSpritesPos();
     };

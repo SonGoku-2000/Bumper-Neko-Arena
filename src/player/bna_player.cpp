@@ -66,6 +66,7 @@ void bna::Player::spawn(bn::vector<bna::Car, limit_values::MAX_ENEMIES + 1>& car
     _enemies = &cars;
     _walls = &walls;
     _cameraManager = bna::CameraManager(camera, size);
+    _cameraManager->setPosition(_cuerpo->getPosition());
     _cuerpo->spawn(camera, size);
 }
 
@@ -73,7 +74,7 @@ void bna::Player::setBody(Car& body) {
     _cuerpo = &body;
 }
 
-void bna::Player::setCharacter(const Characters& character) {
+void bna::Player::setCharacter(const CharactersId& character) {
     _character = character;
 }
 

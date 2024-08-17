@@ -17,7 +17,7 @@
 #include "bna_scene_loose.hpp"
 #include "bna_brightness_manager.hpp"
 #include "bna_car_builder.hpp"
-#include "bna_characters.hpp"
+#include "bna_characters_id.hpp"
 #include "bna_preparing_connection.hpp"
 #include "bna_character_selection.hpp"
 
@@ -40,7 +40,7 @@ int main() {
     bn::optional<bna::scene_type> next_scene = bna::scene_type::MAIN_MENU;
 
     bna::CarBuilder playerCar;
-    bna::Characters playerCharacter;
+    bna::CharactersId& playerCharacter = playerCar.cat_id;
 
     int id_propia;
 
@@ -59,7 +59,7 @@ int main() {
                 break;
 
             case bna::scene_type::CAR_SELECTION:
-                scene.reset(new bna::CarSelection(playerCar));
+                scene.reset(new bna::CarSelection(playerCar, memoria.motores, memoria.cuerpos, memoria.ruedas));
                 break;
 
             case bna::scene_type::CAR_SELECTION_MULTIPLAYER:
@@ -79,10 +79,10 @@ int main() {
                 break;
 
             case bna::scene_type::SCENE_WIN:
-                scene.reset(new bna::SceneWin());
+                scene.reset(new bna::SceneWin(memoria.motores, memoria.cuerpos, memoria.ruedas));
                 break;
 
-                case bna::scene_type::SCENE_LOOSE:
+            case bna::scene_type::SCENE_LOOSE:
                 scene.reset(new bna::SceneLoose());
                 break;
 

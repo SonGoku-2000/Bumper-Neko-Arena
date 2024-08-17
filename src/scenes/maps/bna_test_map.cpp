@@ -6,14 +6,14 @@
 
 #include "bn_core.h"
 #include "bn_random.h"
-#include "bna_characters.hpp"
+#include "bna_characters_id.hpp"
 #include "bna_car_builder.hpp"
 #include "bna_parts.hpp"
 #include "bna_car.hpp"
 
 #define MOVE_ENEMIES
 
-// #define IGNORE_WIN
+#define IGNORE_WIN
 #define DEBUG_CPU
 #ifdef DEBUG_CPU
 constexpr int CPU_CICLES = 64;
@@ -30,7 +30,7 @@ constexpr int CPU_CICLES = 64;
 #include "bn_music.h"
 #include "bna_car_powers_id.hpp"
 
-bna::TestMap::TestMap(CarBuilder& playerCarBuilder, Characters& playerCharacter) :
+bna::TestMap::TestMap(CarBuilder& playerCarBuilder, CharactersId& playerCharacter) :
     _fondo(bn::regular_bg_items::mapa_prueba.create_bg(0, 0)),
     _enemiesManager(_enemies),
     _positionIconManager(_camera, _enemies),
@@ -80,7 +80,7 @@ void bna::TestMap::_generateWalls() {
     }
 }
 
-void bna::TestMap::_generatePlayer(CarBuilder& playerCarBuilder, Characters& playerCharacter) {
+void bna::TestMap::_generatePlayer(CarBuilder& playerCarBuilder, CharactersId& playerCharacter) {
     playerCarBuilder.position = _spawnPoints[0];
     _cars.push_back(playerCarBuilder.build());
     _player.setBody(_cars[0]);

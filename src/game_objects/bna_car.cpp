@@ -8,6 +8,13 @@
 #include "bna_car_powers_id.hpp"
 #include "bna_test_values.hpp"
 
+#include "bn_sprite_items_cat_black_driving.h"
+#include "bn_sprite_items_cat_persian_drivin.h"
+#include "bn_sprite_items_cat_siamese_drivin.h"
+#include "bn_sprite_items_cat_tricolour_driving.h"
+
+#include "bna_characters_id.hpp"
+
 
 
 #define DEBUG
@@ -30,16 +37,19 @@ namespace bna {
 } // namespace bna
 
 bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed weight) :
-    Car(hitbox, pos, bna::Stats(bna::default_values::MAX_SPEED, bna::default_values::ACELERATION, bna::default_values::TURN, weight)) {
+    Car(hitbox, pos, bna::Stats(bna::default_values::MAX_SPEED, bna::default_values::ACELERATION, bna::default_values::TURN, weight), bna::CharactersId::TRICOLOUR) {
 }
 
-bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed maxSpeed, bn::fixed aceleration, bn::fixed turn, bn::fixed weight) :
-    Car(hitbox, pos, bna::Stats(maxSpeed, aceleration, turn, weight)) {
+bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed maxSpeed, bn::fixed aceleration, bn::fixed turn, bn::fixed weight, CharactersId charactersId) :
+    Car(hitbox, pos, bna::Stats(maxSpeed, aceleration, turn, weight), charactersId) {
 }
 
-bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats) :
-    _hitbox(hitbox),
-    _sprite(bn::sprite_items::carro_base.create_sprite(pos)) {
+bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats, CharactersId charactersId) :
+    _hitbox(hitbox) {
+
+    _catId = charactersId;
+    _setSprite();
+    _setAnimation();
 
     _maxSpeed = stats.maxSpeed;
     _aceleration = stats.aceleration;
@@ -52,7 +62,7 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats) :
     _dy = 0;
     _rotation = 0;
 
-    _life = bna::limit_values::MAX_LIFE * 10;
+    _life = bna::limit_values::MAX_LIFE;
     _state = state::LIFE;
 
     _crash = false;
@@ -63,7 +73,7 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats) :
 
 
 void bna::Car::spawn(bn::camera_ptr& camera, bn::size tamanoMapa) {
-    _sprite.set_camera(camera);
+    _sprite->set_camera(camera);
     _hitbox.setCamera(camera);
     _mapBorders = tamanoMapa;
 }
@@ -86,6 +96,13 @@ void bna::Car::update(bna::Vector2 eje) {
 
             if (_eje.y() == 0) {
                 _speed *= bna::FRICCION;
+            }
+
+            if (_speed == 0) {
+                _resetSprite();
+            }
+            else {
+                _animation->update();
             }
 
             bna::Vector2 movimiento(0, _speed);
@@ -114,11 +131,11 @@ void bna::Car::update(bna::Vector2 eje) {
             _pos = newPos;
             _checkBorders();
 
-            _sprite.set_position(_pos);
-            _sprite.set_rotation_angle(getRotation());
+            _sprite->set_position(_pos);
+            _sprite->set_rotation_angle(getRotation());
 
             if (_life <= 0) {
-                _sprite.set_visible(false);
+                _sprite->set_visible(false);
                 _state = state::DEATH;
             }
 
@@ -171,7 +188,7 @@ void bna::Car::applyDamage(bn::fixed damage) {
         constexpr bn::fixed ARMOR = 0.5;
         damage = damage * ARMOR;
     }
-    BN_LOG("Dano:", damage);
+    // BN_LOG("Dano:", damage);
     _life -= bn::abs(damage);
 }
 
@@ -211,7 +228,7 @@ bna::CollisionPoint bna::Car::isColliding(bna::Hitbox& other) {
     return other.checkCollisionPoint(getHitbox());
 }
 
-bool bna::Car::isCollidingFast(bna::Hitbox& other){
+bool bna::Car::isCollidingFast(bna::Hitbox& other) {
     return other.checkCollision(getHitbox());
 }
 
@@ -357,7 +374,7 @@ bn::fixed_point bna::Car::getPosition() {
 void bna::Car::setPosition(bn::fixed_point position) {
     _pos = position;
     _hitbox.setPosition(position);
-    _sprite.set_position(position);
+    _sprite->set_position(position);
 }
 
 void bna::Car::setPositionX(bn::fixed x) {
@@ -404,4 +421,46 @@ void bna::Car::_checkTimePower() {
     }
 }
 
+
+void bna::Car::_setSprite() {
+    if (bna::CharactersId::BLACK == _catId) {
+        _sprite = bn::sprite_items::cat_black_driving.create_sprite(_pos);
+    }
+    if (bna::CharactersId::PERSIAN == _catId) {
+        _sprite = bn::sprite_items::cat_persian_drivin.create_sprite(_pos);
+    }
+    if (bna::CharactersId::SIAMESE == _catId) {
+        _sprite = bn::sprite_items::cat_siamese_drivin.create_sprite(_pos);
+    }
+    if (bna::CharactersId::TRICOLOUR == _catId) {
+        _sprite = bn::sprite_items::cat_tricolour_driving.create_sprite(_pos);
+    }
+}
+
+void bna::Car::_setAnimation() {
+    if (bna::CharactersId::BLACK == _catId) {
+        _animation = bn::create_sprite_animate_action_forever(_sprite.value(), 8, bn::sprite_items::cat_black_driving.tiles_item(), 0, 1, 2, 3);
+    }
+    if (bna::CharactersId::PERSIAN == _catId) {
+        _animation = bn::create_sprite_animate_action_forever(_sprite.value(), 8, bn::sprite_items::cat_persian_drivin.tiles_item(), 0, 1, 2);
+    }
+    if (bna::CharactersId::SIAMESE == _catId) {
+        _animation = bn::create_sprite_animate_action_forever(_sprite.value(), 8, bn::sprite_items::cat_siamese_drivin.tiles_item(), 0, 1, 2, 3);
+    }
+    if (bna::CharactersId::TRICOLOUR == _catId) {
+        _animation = bn::create_sprite_animate_action_forever(_sprite.value(), 8, bn::sprite_items::cat_tricolour_driving.tiles_item(), 0, 1, 2, 1, 0, 3, 4, 3);
+    }
+}
+
+void bna::Car::_resetSprite() {
+    if (bna::CharactersId::BLACK == _catId) {
+        _sprite->set_tiles(bn::sprite_items::cat_black_driving.tiles_item());
+    }
+    if (bna::CharactersId::PERSIAN == _catId) {
+        _sprite->set_tiles(bn::sprite_items::cat_persian_drivin.tiles_item());
+    }
+    if (bna::CharactersId::TRICOLOUR == _catId) {
+        _sprite->set_tiles(bn::sprite_items::cat_tricolour_driving.tiles_item());
+    }
+}
 

@@ -8,6 +8,7 @@ namespace bna {
         enum class bodys : int;
         enum class wheels :int;
     } // namespace name
+    enum class CharactersId :int;
     class Car;
     class CarBuilder {
         public:
@@ -17,5 +18,6 @@ namespace bna {
         parts::bodys body;
         parts::wheels wheel;
         bn::fixed_point position;
+        CharactersId cat_id;
     };
 } // namespace bna

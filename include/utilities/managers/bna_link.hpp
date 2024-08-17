@@ -23,9 +23,9 @@ namespace bna {
 
         union car_builder {
             struct {
-                parts::motors motor : 2;
-                parts::bodys body : 2;
-                parts::wheels wheel : 2;
+                parts::motors motor : 3;
+                parts::bodys body : 3;
+                parts::wheels wheel : 3;
             } car_parts;
             int data = 0;
         };
