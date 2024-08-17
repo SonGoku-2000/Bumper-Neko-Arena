@@ -3,7 +3,7 @@
 #include "bn_sprite_items_indicator.h"
 #include "bna_colissions.hpp"
 #include "bn_size.h"
-
+#include "bna_planes.hpp"
 
 bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug, int color) :
     _center(center), _size(size), _rotation(rotation),
@@ -22,6 +22,7 @@ bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug
     if (debug) {
         for (int i = 0; i < _spritesVertices.max_size(); i++) {
             _spritesVertices.push_back(bn::sprite_items::indicator.create_sprite(_vertices[i], color));
+            _spritesVertices[i].set_bg_priority(bna::Planes::FIRST);
             _spritesVertices[i].put_above();
         }
     }
