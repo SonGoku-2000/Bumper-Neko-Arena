@@ -25,6 +25,7 @@ namespace bna {
         void updateText(bn::string<111> texto);
         void updateText(bn::string<111> texto, int split);
         void setVisible(bool visible);
+        bool visible();
         int length();
         bn::string<111> getText();
         void set_position(bn::fixed_point pos);

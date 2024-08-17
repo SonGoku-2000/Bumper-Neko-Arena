@@ -7,6 +7,7 @@
 
 #include "bna_scene.hpp"
 #include "bna_scene_type.hpp"
+#include "bna_title_screen.hpp"
 #include "bna_main_menu.hpp"
 #include "bna_options_menu.hpp"
 #include "bna_car_selection.hpp"
@@ -37,7 +38,7 @@ int main() {
 
     bn::unique_ptr<bna::scene> scene;
 
-    bn::optional<bna::scene_type> next_scene = bna::scene_type::MAIN_MENU;
+    bn::optional<bna::scene_type> next_scene = bna::scene_type::TITLE_SCREEN;
 
     bna::CarBuilder playerCar;
     bna::CharactersId& playerCharacter = playerCar.cat_id;
@@ -46,6 +47,10 @@ int main() {
 
     while (true) {
         switch (next_scene.value()) {
+            case bna::scene_type::TITLE_SCREEN:
+                scene.reset(new bna::TitleScreen());
+                break;
+
             case bna::scene_type::MAIN_MENU:
                 scene.reset(new bna::MainMenu());
                 break;
