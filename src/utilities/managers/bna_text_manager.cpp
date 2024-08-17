@@ -96,6 +96,10 @@ void bna::TextManager::setVisible(bool visible) {
     }
 }
 
+bool bna::TextManager::visible(){
+    return _text_sprites[0].visible();
+}
+
 int bna::TextManager::length() {
     return _text.length();
 }

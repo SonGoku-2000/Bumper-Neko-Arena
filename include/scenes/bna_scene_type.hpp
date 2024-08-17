@@ -1,5 +1,6 @@
 namespace bna {
     enum class scene_type {
+        TITLE_SCREEN,
         MAIN_MENU,
         CHARACTER_SELECTION,
         CAR_SELECTION,
