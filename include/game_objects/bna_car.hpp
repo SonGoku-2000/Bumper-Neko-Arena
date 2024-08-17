@@ -71,6 +71,8 @@ namespace bna {
 
         bool hasSpikes();
 
+        CharactersId getCharacterId();
+
         private:
         bn::fixed_point _pos;
         bn::fixed _rotation; // en grados
