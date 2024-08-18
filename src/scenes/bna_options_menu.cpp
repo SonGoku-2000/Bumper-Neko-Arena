@@ -11,10 +11,14 @@
 
 #include "bn_string.h"
 
+#include "bn_regular_bg_items_menu_options.h"
+#include "bn_sprite_items_menu_options_arrow.h"
+#include "bn_sprite_items_menu_options_active_point.h"
 
 
 bna::OptionsMenu::OptionsMenu(bn::fixed& brillo_memory) :
-    _brillo(brillo_memory) {
+    _brillo(brillo_memory),
+    _background(bn::regular_bg_items::menu_options.create_bg(0, 0)) {
     _continuar = false;
     _idOpcion = 0;
 
@@ -39,6 +43,24 @@ bna::OptionsMenu::OptionsMenu(bn::fixed& brillo_memory) :
     );
 
     _puntero = bn::sprite_items::pointer.create_sprite(_indicadores[_idOpcion]);
+
+    _brightnessArrows.push_back(bn::sprite_items::menu_options_arrow.create_sprite(-77, 7));
+    _brightnessArrows.push_back(bn::sprite_items::menu_options_arrow.create_sprite(52, 7, 1));
+
+    for (int i = 0; i < _brightnessPoints.max_size(); i++) {
+        _brightnessPoints.push_back(bn::sprite_items::menu_options_active_point.create_sprite(-60 + (16 * i), 6));
+    }
+
+    _updateBrightnessPoints();
+
+    _volumeArrows.push_back(bn::sprite_items::menu_options_arrow.create_sprite(-77, 44));
+    _volumeArrows.push_back(bn::sprite_items::menu_options_arrow.create_sprite(52, 44, 1));
+
+    for (int i = 0; i < _volumePoints.max_size(); i++) {
+        _volumePoints.push_back(bn::sprite_items::menu_options_active_point.create_sprite(-60 + (16 * i), 43));
+    }
+
+    _updateVolumePoints();
 }
 
 
@@ -61,9 +83,11 @@ bn::optional<bna::scene_type> bna::OptionsMenu::update() {
             if (bn::keypad::right_held()) {
                 bna::brightness_manager::set_brightness(brillo + CAMBIO_BRILLO);
                 _updateBrightnessText();
+                _updateBrightnessPoints();
             }
             else if (bn::keypad::left_held()) {
                 bna::brightness_manager::set_brightness(brillo - CAMBIO_BRILLO);
+                _updateBrightnessPoints();
                 _updateBrightnessText();
             }
         }
@@ -87,5 +111,21 @@ bn::optional<bna::scene_type> bna::OptionsMenu::update() {
 
 void bna::OptionsMenu::_updateBrightnessText() {
     _textoBrillo.updateText("Brightness: " + bn::to_string<30>(bna::brightness_manager::get_brightness_percent()));
+}
+
+void bna::OptionsMenu::_updateBrightnessPoints() {
+    int puntos_activos = bna::brightness_manager::get_brightness_percent() / 14;
+    for (int i = 0; i < _brightnessPoints.size(); i++) {
+        if (i < puntos_activos) {
+            _brightnessPoints[i].set_visible(true);
+        }
+        else {
+            _brightnessPoints[i].set_visible(false);
+        }
+    }
+}
+
+void bna::OptionsMenu::_updateVolumePoints() {
+
 }
 
