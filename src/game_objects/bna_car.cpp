@@ -240,7 +240,7 @@ bn::fixed bna::Car::getLife() {
     return _life;
 }
 
-bna::CharactersId bna::Car::getCharacterId(){
+bna::CharactersId bna::Car::getCharacterId() {
     return _catId;
 }
 
@@ -457,13 +457,16 @@ void bna::Car::_setAnimation() {
 
 void bna::Car::_resetSprite() {
     if (bna::CharactersId::BLACK == _catId) {
-        _sprite->set_tiles(bn::sprite_items::cat_black_driving.tiles_item());
+        _sprite->set_item(bn::sprite_items::cat_black_driving);
     }
     if (bna::CharactersId::PERSIAN == _catId) {
-        _sprite->set_tiles(bn::sprite_items::cat_persian_drivin.tiles_item());
+        _sprite->set_item(bn::sprite_items::cat_persian_drivin);
+    }
+    if (bna::CharactersId::SIAMESE == _catId) {
+        _sprite->set_item(bn::sprite_items::cat_siamese_drivin);
     }
     if (bna::CharactersId::TRICOLOUR == _catId) {
-        _sprite->set_tiles(bn::sprite_items::cat_tricolour_driving.tiles_item());
+        _sprite->set_item(bn::sprite_items::cat_tricolour_driving);
     }
 }
 

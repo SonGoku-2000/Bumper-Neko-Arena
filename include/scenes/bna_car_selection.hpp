@@ -5,9 +5,13 @@
 #include "bna_text_manager.hpp"
 #include "bna_indicator.hpp"
 
-#include "bn_vector.h"
 #include "bn_sprite_ptr.h"
-#include "bna_icon_roulette.hpp"
+#include "bn_sprite_animate_actions.h"
+#include "bn_regular_bg_ptr.h"
+
+#include "bn_vector.h"
+#include "bn_array.h"
+// #include "bna_icon_roulette.hpp"
 
 namespace bna {
     namespace parts {
@@ -16,11 +20,14 @@ namespace bna {
         enum class wheels :int;
     } // namespace name
     class CarBuilder;
+    enum class CharactersId :int;
     class CarSelection : public scene {
         public:
         CarSelection(CarBuilder& carBuilder,
-            bn::array<parts::motors, 3>& motores, bn::array<parts::bodys, 3>& cuerpos, bn::array<parts::wheels, 3>& ruedas
+            bn::array<parts::motors, 3>& motores, bn::array<parts::bodys, 3>& cuerpos, bn::array<parts::wheels, 3>& ruedas,
+            CharactersId& playerCharacter
         );
+        ~CarSelection() override =default;
         [[nodiscard]] bn::optional<scene_type> update() final;
 
         private:
@@ -39,13 +46,21 @@ namespace bna {
             VOLVER
         };
         opcionesPartes _idOpcion;
+        CharactersId _character;
 
         bn::vector<bna::Indicator, 6> _indicadores;
         bn::optional<bn::sprite_ptr> _puntero;
 
-        bna::IconRoulette _bodysRoulette;
-        bna::IconRoulette _motorsRoulette;
-        bna::IconRoulette _wheelsRoulette;
+        // bna::IconRoulette _bodysRoulette;
+        // bna::IconRoulette _motorsRoulette;
+        // bna::IconRoulette _wheelsRoulette;
+        bn::sprite_ptr _bodysIcon;
+        bn::sprite_ptr _motorsIcon;
+        bn::sprite_ptr _wheelsIcon;
+        bn::optional<bn::sprite_animate_action<12>> _animationSelectedBody;
+        bn::optional<bn::sprite_animate_action<12>> _animationSelectedMotor;
+        bn::optional<bn::sprite_animate_action<12>> _animationSelectedWheel;
+
 
         bna::parts::motors _idMotor;
         bna::parts::bodys _idBody;
@@ -59,6 +74,16 @@ namespace bna {
 
         CarBuilder* _carBuilder;
 
+        bn::regular_bg_ptr _background;
+        bn::optional<bn::regular_bg_ptr> _car;
+
+        void _updateBodyIcon();
+        void _updateMotorIcon();
+        void _updateWheelIcon();
+        void _updateBodyAnimation();
+        void _updateMotorAnimation();
+        void _updateWheelAnimation();
+
         void _updateStatsText();
         void _updateBodyText();
         void _updateMotorText();
@@ -66,8 +91,8 @@ namespace bna {
 
         bool _checkValidCombination();
 
-        void _generateMotorRoulette();
-        void _generateBodyRoulette();
-        void _generateWheelRoulette();
+        // void _generateMotorRoulette();
+        // void _generateBodyRoulette();
+        // void _generateWheelRoulette();
     };
 }

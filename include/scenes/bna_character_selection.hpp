@@ -7,6 +7,7 @@
 
 #include "bn_optional.h"
 #include "bn_regular_bg_ptr.h"
+#include "bn_sprite_animate_actions.h"
 
 
 namespace bna {
@@ -40,15 +41,18 @@ namespace bna {
         bool _continuar;
         bool _seleccionado;
 
+        bn::optional<bn::regular_bg_ptr> _background;
 
         bn::vector<bna::Indicator, 8> _indicadores;
         bn::vector<bn::sprite_ptr, 4> _iconosCharacters;
+        bn::optional<bn::sprite_animate_action<12>> _animationIcon;
         bn::optional<bn::sprite_ptr> _puntero;
 
-        bn::optional<bn::regular_bg_ptr > _character_image;
+        bn::optional<bn::sprite_ptr> _character_image;
 
         void _updateArrowPress();
         void _updateCharacterSelected();
         void _updateCharacterPointer();
+        void _animateSelectedIcon();
     };
 }

@@ -11,7 +11,8 @@
 #include "bna_loop_value.hpp"
 
 bna::MainMenu::MainMenu() :
-    _background(bn::regular_bg_items::main_menu.create_bg(0, 0)) {
+    _background(bn::regular_bg_items::main_menu.create_bg(0, 0)),
+    _animation(bn::create_regular_bg_animate_action_forever(_background, 25, bn::regular_bg_items::main_menu.map_item(), 0, 1, 2, 3, 4, 5)) {
     _textoTitulo = bna::TextManager(0, -60, "Bumper Neko Arena");
     _textoTitulo.set_aligment(bn::sprite_text_generator::alignment_type::CENTER);
     _continuar = false;
@@ -55,6 +56,7 @@ bna::MainMenu::MainMenu() :
 
 bn::optional<bna::scene_type> bna::MainMenu::update() {
     while (!_continuar) {
+        _animation.update();
         if (bn::keypad::down_pressed()) {
             _idOpcion = options(bna::loop(int(_idOpcion) + 1, 0, int(options::CREDITS)));
             _puntero->set_position(_indicadores[int(_idOpcion)]);
