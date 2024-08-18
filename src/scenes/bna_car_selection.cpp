@@ -146,7 +146,27 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
             break;
         }
     }
+
+    if (_idOpcion == opcionesPartes::CUERPO) {
+        _updateBodyAnimation();
+    }
+    else if (_idOpcion == opcionesPartes::MOTOR) {
+    }
+    else if (_idOpcion == opcionesPartes::WHEEL) {
+    }
+
     while (!_continuar) {
+        if (_animationSelectedBody.has_value()) {
+            if (!_animationSelectedBody->done()) {
+                _animationSelectedBody->update();
+            }
+        }
+        if (_animationSelectedMotor.has_value()) {
+            if (!_animationSelectedMotor->done()) {
+                _animationSelectedMotor->update();
+            }
+        }
+
         if (bn::keypad::down_pressed()) {
             _idOpcion = opcionesPartes(bna::loop(int(_idOpcion) + 1, 0, int(opcionesPartes::VOLVER)));
             _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
@@ -164,6 +184,7 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
                 _updateBodyText();
                 _updateStatsText();
                 _updateBodyIcon();
+                _updateBodyAnimation();
             }
         }
         else if (_idOpcion == opcionesPartes::MOTOR) {
@@ -172,6 +193,7 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
                 _updateMotorText();
                 _updateStatsText();
                 _updateMotorIcon();
+                _updateMotorAnimation();
             }
         }
         else if (_idOpcion == opcionesPartes::WHEEL) {
@@ -254,6 +276,47 @@ void bna::CarSelection::_updateWheelIcon() {
         _wheelsIcon.set_item(bn::sprite_items::selection_icons_wheel_spike);
     }
 }
+
+
+void bna::CarSelection::_updateBodyAnimation() {
+    if (bna::parts::bodys::LIGHT == _idBody) {
+        _animationSelectedBody = bn::create_sprite_animate_action_once(_bodysIcon, 7, bn::sprite_items::selection_icons_weight_light.tiles_item(), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+    }
+    if (bna::parts::bodys::MEDIUM == _idBody) {
+        _animationSelectedBody = bn::create_sprite_animate_action_once(_bodysIcon, 6, bn::sprite_items::selection_icons_weight_normal.tiles_item(), 0, 1, 2, 3, 4, 4);
+    }
+    if (bna::parts::bodys::HEAVY == _idBody) {
+        _animationSelectedBody = bn::create_sprite_animate_action_once(_bodysIcon, 5, bn::sprite_items::selection_icons_weight_heavy.tiles_item(), 0, 1, 2, 3, 4, 4);
+        _bodysIcon.set_item(bn::sprite_items::selection_icons_weight_heavy);
+    }
+}
+
+void bna::CarSelection::_updateWheelAnimation() {
+    // if (bna::parts::bodys::LIGHT == _idBody) {
+    //     _animationSelectedBody = bn::create_sprite_animate_action_once(_bodysIcon, 7, bn::sprite_items::selection_icons_weight_light.tiles_item(), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+    // }
+    // if (bna::parts::bodys::MEDIUM == _idBody) {
+    //     _animationSelectedBody = bn::create_sprite_animate_action_once(_bodysIcon, 6, bn::sprite_items::selection_icons_weight_normal.tiles_item(), 0, 1, 2, 3, 4, 4);
+    // }
+    // if (bna::parts::bodys::HEAVY == _idBody) {
+    //     _animationSelectedBody = bn::create_sprite_animate_action_once(_bodysIcon, 5, bn::sprite_items::selection_icons_weight_heavy.tiles_item(), 0, 1, 2, 3, 4, 4);
+    //     _bodysIcon.set_item(bn::sprite_items::selection_icons_weight_heavy);
+    // }
+}
+
+void bna::CarSelection::_updateMotorAnimation() {
+    if (bna::parts::motors::SLOW == _idMotor) {
+        _animationSelectedMotor = bn::create_sprite_animate_action_once(_motorsIcon, 7, bn::sprite_items::selection_icons_motor_weak.tiles_item(), 0, 1, 2, 0, 1, 2, 0, 0);
+    }
+    if (bna::parts::motors::MEDIUM == _idMotor) {
+        _animationSelectedMotor = bn::create_sprite_animate_action_once(_motorsIcon, 7, bn::sprite_items::selection_icons_motor_normal.tiles_item(), 0, 1, 2, 0, 1, 2, 0, 0);
+    }
+    if (bna::parts::motors::FAST == _idMotor) {
+        _animationSelectedMotor = bn::create_sprite_animate_action_once(_motorsIcon, 7, bn::sprite_items::selection_icons_motor_fast.tiles_item(), 0, 1, 2, 3, 0, 1, 2, 3, 0, 0);
+    }
+}
+
+
 
 void bna::CarSelection::_updateStatsText() {
     bna::Stats stats;

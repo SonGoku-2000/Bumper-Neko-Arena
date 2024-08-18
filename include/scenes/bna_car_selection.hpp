@@ -6,11 +6,12 @@
 #include "bna_indicator.hpp"
 
 #include "bn_sprite_ptr.h"
+#include "bn_sprite_animate_actions.h"
 #include "bn_regular_bg_ptr.h"
 
 #include "bn_vector.h"
 #include "bn_array.h"
-#include "bna_icon_roulette.hpp"
+// #include "bna_icon_roulette.hpp"
 
 namespace bna {
     namespace parts {
@@ -53,6 +54,10 @@ namespace bna {
         bn::sprite_ptr _bodysIcon;
         bn::sprite_ptr _motorsIcon;
         bn::sprite_ptr _wheelsIcon;
+        bn::optional<bn::sprite_animate_action<12>> _animationSelectedBody;
+        bn::optional<bn::sprite_animate_action<12>> _animationSelectedMotor;
+        bn::optional<bn::sprite_animate_action<12>> _animationSelectedWheel;
+
 
         bna::parts::motors _idMotor;
         bna::parts::bodys _idBody;
@@ -71,6 +76,10 @@ namespace bna {
         void _updateBodyIcon();
         void _updateMotorIcon();
         void _updateWheelIcon();
+        void _updateBodyAnimation();
+        void _updateMotorAnimation();
+        void _updateWheelAnimation();
+
         void _updateStatsText();
         void _updateBodyText();
         void _updateMotorText();
