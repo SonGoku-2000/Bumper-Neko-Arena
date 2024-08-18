@@ -17,6 +17,7 @@
 #include "bn_string.h"
 #include "bna_parts.hpp"
 #include "bna_car_builder.hpp"
+#include "bna_characters_id.hpp"
 
 
 #include "bn_regular_bg_items_menu_parts.h"
@@ -32,6 +33,11 @@
 #include "bn_sprite_items_selection_icons_weight_normal.h"
 #include "bn_sprite_items_selection_icons_weight_heavy.h"
 
+#include "bn_regular_bg_items_cat_black_car.h"
+#include "bn_regular_bg_items_cat_persian_car.h"
+#include "bn_regular_bg_items_cat_siamese_car.h"
+#include "bn_regular_bg_items_cat_tricolour_car.h"
+
 #define DEBUG
 #ifdef DEBUG
 #include "bn_log.h"
@@ -39,15 +45,31 @@
 
 
 bna::CarSelection::CarSelection(CarBuilder& carBuilder,
-    bn::array<parts::motors, 3>& motores, bn::array<parts::bodys, 3>& cuerpos, bn::array<parts::wheels, 3>& ruedas
+    bn::array<parts::motors, 3>& motores, bn::array<parts::bodys, 3>& cuerpos, bn::array<parts::wheels, 3>& ruedas,
+    CharactersId& playerCharacter
 ) :
     _bodysIcon(bn::sprite_items::selection_icons_weight_light.create_sprite(0, 0)),
     _motorsIcon(bn::sprite_items::selection_icons_motor_weak.create_sprite(0, 0)),
     _wheelsIcon(bn::sprite_items::selection_icons_wheel_old.create_sprite(0, 0)),
     _background(bn::regular_bg_items::menu_parts.create_bg(0, 0)) {
+    _character = playerCharacter;
     _carBuilder = &carBuilder;
     _continuar = false;
     _idOpcion = opcionesPartes(0);
+
+BN_LOG("char:",int(playerCharacter));
+    if (bna::CharactersId::BLACK == playerCharacter) {
+        _car = bn::regular_bg_items::cat_black_car.create_bg(-2, 37);
+    }
+    else if (bna::CharactersId::PERSIAN == playerCharacter) {
+        _car = bn::regular_bg_items::cat_persian_car.create_bg(-2, 37);
+    }
+    else if (bna::CharactersId::SIAMESE == playerCharacter) {
+        _car = bn::regular_bg_items::cat_siamese_car.create_bg(-2, 37);
+    }
+    else if (bna::CharactersId::TRICOLOUR == playerCharacter) {
+        _car = bn::regular_bg_items::cat_tricolour_car.create_bg(-2, 37);
+    }
 
     _motores = motores;
     _cuerpos = cuerpos;
@@ -180,7 +202,7 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
 
         int cambio_opcion = int(bn::keypad::right_pressed()) - int(bn::keypad::left_pressed());
         if (_idOpcion == opcionesPartes::CUERPO) {
-            if(opcionAnterior !=_idOpcion){
+            if (opcionAnterior != _idOpcion) {
                 _updateBodyAnimation();
             }
             if (cambio_opcion) {
@@ -192,8 +214,8 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
             }
         }
         else if (_idOpcion == opcionesPartes::MOTOR) {
-            if(opcionAnterior !=_idOpcion){
-                _updateMotorAnimationm();
+            if (opcionAnterior != _idOpcion) {
+                _updateMotorAnimation();
             }
             if (cambio_opcion) {
                 _idMotor = bna::parts::motors(bna::loop(int(_idMotor) + cambio_opcion, 0, max_motor));
@@ -345,6 +367,7 @@ void bna::CarSelection::_updateStatsText() {
         texto,
         35
     );
+    _textoStats.setVisible(false);
 }
 void bna::CarSelection::_updateBodyText() {
     bn::string<111> texto = "Body: ";
@@ -360,6 +383,7 @@ void bna::CarSelection::_updateBodyText() {
     }
 
     _textoCuerpo.updateText(texto);
+    _textoCuerpo.setVisible(false);
 }
 void bna::CarSelection::_updateMotorText() {
     bn::string<111> texto = "Motor: ";
@@ -375,6 +399,7 @@ void bna::CarSelection::_updateMotorText() {
     }
 
     _textoMotor.updateText(texto);
+    _textoMotor.setVisible(false);
 }
 void bna::CarSelection::_updateWheelText() {
     bn::string<111> texto = "Wheel: ";
@@ -390,6 +415,7 @@ void bna::CarSelection::_updateWheelText() {
     }
 
     _textoRueda.updateText(texto);
+    _textoRueda.setVisible(false);
 }
 
 bool bna::CarSelection::_checkValidCombination() {

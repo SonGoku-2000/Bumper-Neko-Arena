@@ -20,10 +20,12 @@ namespace bna {
         enum class wheels :int;
     } // namespace name
     class CarBuilder;
+    enum class CharactersId :int;
     class CarSelection : public scene {
         public:
         CarSelection(CarBuilder& carBuilder,
-            bn::array<parts::motors, 3>& motores, bn::array<parts::bodys, 3>& cuerpos, bn::array<parts::wheels, 3>& ruedas
+            bn::array<parts::motors, 3>& motores, bn::array<parts::bodys, 3>& cuerpos, bn::array<parts::wheels, 3>& ruedas,
+            CharactersId& playerCharacter
         );
         ~CarSelection() override =default;
         [[nodiscard]] bn::optional<scene_type> update() final;
@@ -44,6 +46,7 @@ namespace bna {
             VOLVER
         };
         opcionesPartes _idOpcion;
+        CharactersId _character;
 
         bn::vector<bna::Indicator, 6> _indicadores;
         bn::optional<bn::sprite_ptr> _puntero;
@@ -72,6 +75,7 @@ namespace bna {
         CarBuilder* _carBuilder;
 
         bn::regular_bg_ptr _background;
+        bn::optional<bn::regular_bg_ptr> _car;
 
         void _updateBodyIcon();
         void _updateMotorIcon();

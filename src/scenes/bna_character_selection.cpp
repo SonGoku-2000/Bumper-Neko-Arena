@@ -32,7 +32,7 @@
 
 
 bna::CharacterSelection::CharacterSelection(CharactersId& character) :
-_background(bn::regular_bg_items::character_selection.create_bg(0,0)){
+    _background(bn::regular_bg_items::character_selection.create_bg(0, 0)) {
     _character = &character;
     _continuar = false;
     _idOpcion = opcionesCharacter(0);
@@ -84,7 +84,7 @@ bn::optional<bna::scene_type> bna::CharacterSelection::update() {
     while (!_continuar) {
         if (_seleccionado) {
             if (_animationIcon->done()) {
-
+                _updateCharacterPointer();
                 return bna::scene_type::CAR_SELECTION;
             }
             _animationIcon->update();
