@@ -41,6 +41,7 @@ namespace bna {
         bool _continuar;
         bool _seleccionado;
 
+        bn::optional<bn::regular_bg_ptr> _background;
 
         bn::vector<bna::Indicator, 8> _indicadores;
         bn::vector<bn::sprite_ptr, 4> _iconosCharacters;

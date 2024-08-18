@@ -23,25 +23,28 @@
 #include "bn_sprite_items_cat_siamese_selection_body.h"
 #include "bn_sprite_items_cat_tricolour_selection_body.h"
 
+#include "bn_regular_bg_items_character_selection.h"
+
 
 #ifdef DEBUG
 #include "bn_log.h"
 #endif
 
 
-bna::CharacterSelection::CharacterSelection(CharactersId& character) {
+bna::CharacterSelection::CharacterSelection(CharactersId& character) :
+_background(bn::regular_bg_items::character_selection.create_bg(0,0)){
     _character = &character;
     _continuar = false;
     _idOpcion = opcionesCharacter(0);
 
-    constexpr int ALINEACION_HORIZONTAL = -90;
+    constexpr int ALINEACION_HORIZONTAL = -84;
     constexpr bool MOSTRAR_INDICADORES = false;
 
     _indicadores.push_back(bna::Indicator(bn::fixed_point(0, -70), MOSTRAR_INDICADORES));
-    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, -40), MOSTRAR_INDICADORES));
-    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL + 64, -40), MOSTRAR_INDICADORES));
-    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 10), MOSTRAR_INDICADORES));
-    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL + 64, 10), MOSTRAR_INDICADORES));
+    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, -28), MOSTRAR_INDICADORES));
+    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL + 64, -28), MOSTRAR_INDICADORES));
+    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 22), MOSTRAR_INDICADORES));
+    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL + 64, 22), MOSTRAR_INDICADORES));
     _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 40), MOSTRAR_INDICADORES));
     _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 60), MOSTRAR_INDICADORES));
 
@@ -211,7 +214,7 @@ void bna::CharacterSelection::_updateCharacterSelected() {
         return;
     }
 
-    bn::fixed_point position(50, 0);
+    bn::fixed_point position(65, 0);
 
     if (opcionesCharacter::BLACK == _idOpcion) {
         _character_image = bn::sprite_items::cat_black_selection_body.create_sprite(position);
