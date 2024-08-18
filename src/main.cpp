@@ -98,6 +98,8 @@ int main() {
 
         next_scene = scene->update();
 
+        scene.reset();
+
         memoria.write();
 
         bn::core::update();
