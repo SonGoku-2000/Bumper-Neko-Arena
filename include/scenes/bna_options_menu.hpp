@@ -14,7 +14,7 @@
 namespace bna {
     class OptionsMenu : public scene {
         public:
-        OptionsMenu(bn::fixed& brillo_memory);
+        OptionsMenu(bn::fixed& brillo_memory, bn::fixed& volume);
         [[nodiscard]] bn::optional<scene_type> update() final;
 
         private:
@@ -22,6 +22,7 @@ namespace bna {
         TextManager _textoVolver;
 
         bn::fixed& _brillo;
+        bn::fixed& _volumen;
         int _idOpcion;
 
         bn::regular_bg_ptr _background;

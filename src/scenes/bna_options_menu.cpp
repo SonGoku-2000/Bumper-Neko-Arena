@@ -15,32 +15,35 @@
 #include "bn_sprite_items_menu_options_arrow.h"
 #include "bn_sprite_items_menu_options_active_point.h"
 
+#include "bn_sound.h"
 
-bna::OptionsMenu::OptionsMenu(bn::fixed& brillo_memory) :
+
+bna::OptionsMenu::OptionsMenu(bn::fixed& brillo_memory, bn::fixed& volume) :
     _brillo(brillo_memory),
+    _volumen(volume),
     _background(bn::regular_bg_items::menu_options.create_bg(0, 0)) {
     _continuar = false;
     _idOpcion = 0;
 
-    constexpr int ALINEACION_HORIZONTAL = -40;
-    constexpr bool MOSTRAR_INDICADORES = false;
-    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 0), MOSTRAR_INDICADORES));
-    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 20), MOSTRAR_INDICADORES));
+    // constexpr int ALINEACION_HORIZONTAL = -40;
+    // constexpr bool MOSTRAR_INDICADORES = false;
+    // _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 0), MOSTRAR_INDICADORES));
+    // _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 20), MOSTRAR_INDICADORES));
 
-    constexpr int OFFSET_HORIZONTAL_TEXTO = 10;
-    _textoBrillo = bna::TextManager(
-        _indicadores[0].x() + OFFSET_HORIZONTAL_TEXTO,
-        _indicadores[0].y(),
-        "Brightness: "
-    );
+    // constexpr int OFFSET_HORIZONTAL_TEXTO = 10;
+    // // _textoBrillo = bna::TextManager(
+    // //     _indicadores[0].x() + OFFSET_HORIZONTAL_TEXTO,
+    // //     _indicadores[0].y(),
+    // //     "Brightness: "
+    // // );
 
-    _updateBrightnessText();
+    // _updateBrightnessText();
 
-    _textoVolver = bna::TextManager(
-        _indicadores[1].x() + OFFSET_HORIZONTAL_TEXTO,
-        _indicadores[1].y(),
-        "Back"
-    );
+    // _textoVolver = bna::TextManager(
+    //     _indicadores[1].x() + OFFSET_HORIZONTAL_TEXTO,
+    //     _indicadores[1].y(),
+    //     "Back"
+    // );
 
     _puntero = bn::sprite_items::pointer.create_sprite(_indicadores[_idOpcion]);
 
@@ -57,7 +60,7 @@ bna::OptionsMenu::OptionsMenu(bn::fixed& brillo_memory) :
     _volumeArrows.push_back(bn::sprite_items::menu_options_arrow.create_sprite(52, 44, 1));
 
     for (int i = 0; i < _volumePoints.max_size(); i++) {
-        _volumePoints.push_back(bn::sprite_items::menu_options_active_point.create_sprite(-60 + (16 * i), 43));
+        _volumePoints.push_back(bn::sprite_items::menu_options_active_point.create_sprite(-60 + (16 * i), 44));
     }
 
     _updateVolumePoints();
@@ -91,12 +94,18 @@ bn::optional<bna::scene_type> bna::OptionsMenu::update() {
                 _updateBrightnessText();
             }
         }
-
-
-        if (bn::keypad::a_pressed()) {
-            if (_idOpcion == 1) {
-                _brillo = brillo;
-                return bna::scene_type::MAIN_MENU;
+        else if (_idOpcion == 1) {
+            constexpr bn::fixed CAMBIO_VOLUMEN = bn::fixed(0.01);
+            if (bn::keypad::right_held()) {
+                _volumen = bn::min(_volumen + CAMBIO_VOLUMEN, bn::fixed(1));
+                bn::sound::set_master_volume((_volumen) * (_volumen));
+                _updateVolumePoints();
+            }
+            else if (bn::keypad::left_held()) {
+                bna::brightness_manager::set_brightness(brillo - CAMBIO_VOLUMEN);
+                _volumen = bn::max(_volumen - CAMBIO_VOLUMEN, bn::fixed(0));
+                bn::sound::set_master_volume((_volumen) * (_volumen));
+                _updateVolumePoints();
             }
         }
 
@@ -126,6 +135,14 @@ void bna::OptionsMenu::_updateBrightnessPoints() {
 }
 
 void bna::OptionsMenu::_updateVolumePoints() {
-
+    int puntos_activos = (_volumen * 100 / 14).integer();
+    for (int i = 0; i < _brightnessPoints.size(); i++) {
+        if (i < puntos_activos) {
+            _volumePoints[i].set_visible(true);
+        }
+        else {
+            _volumePoints[i].set_visible(false);
+        }
+    }
 }
 

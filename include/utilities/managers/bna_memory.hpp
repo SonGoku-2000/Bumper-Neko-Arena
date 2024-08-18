@@ -21,6 +21,7 @@ namespace bna {
         char label[8] = {};
 
         bn::fixed brillo;
+        bn::fixed volume;
         bn::array<parts::motors, 3> motores;
         bn::array<parts::bodys, 3> cuerpos;
         bn::array<parts::wheels, 3> ruedas;
