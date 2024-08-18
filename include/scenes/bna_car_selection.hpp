@@ -5,8 +5,11 @@
 #include "bna_text_manager.hpp"
 #include "bna_indicator.hpp"
 
-#include "bn_vector.h"
 #include "bn_sprite_ptr.h"
+#include "bn_regular_bg_ptr.h"
+
+#include "bn_vector.h"
+#include "bn_array.h"
 #include "bna_icon_roulette.hpp"
 
 namespace bna {
@@ -21,6 +24,7 @@ namespace bna {
         CarSelection(CarBuilder& carBuilder,
             bn::array<parts::motors, 3>& motores, bn::array<parts::bodys, 3>& cuerpos, bn::array<parts::wheels, 3>& ruedas
         );
+        ~CarSelection() override =default;
         [[nodiscard]] bn::optional<scene_type> update() final;
 
         private:
@@ -43,9 +47,12 @@ namespace bna {
         bn::vector<bna::Indicator, 6> _indicadores;
         bn::optional<bn::sprite_ptr> _puntero;
 
-        bna::IconRoulette _bodysRoulette;
-        bna::IconRoulette _motorsRoulette;
-        bna::IconRoulette _wheelsRoulette;
+        // bna::IconRoulette _bodysRoulette;
+        // bna::IconRoulette _motorsRoulette;
+        // bna::IconRoulette _wheelsRoulette;
+        bn::sprite_ptr _bodysIcon;
+        bn::sprite_ptr _motorsIcon;
+        bn::sprite_ptr _wheelsIcon;
 
         bna::parts::motors _idMotor;
         bna::parts::bodys _idBody;
@@ -59,6 +66,11 @@ namespace bna {
 
         CarBuilder* _carBuilder;
 
+        bn::regular_bg_ptr _background;
+
+        void _updateBodyIcon();
+        void _updateMotorIcon();
+        void _updateWheelIcon();
         void _updateStatsText();
         void _updateBodyText();
         void _updateMotorText();
@@ -66,8 +78,8 @@ namespace bna {
 
         bool _checkValidCombination();
 
-        void _generateMotorRoulette();
-        void _generateBodyRoulette();
-        void _generateWheelRoulette();
+        // void _generateMotorRoulette();
+        // void _generateBodyRoulette();
+        // void _generateWheelRoulette();
     };
 }
