@@ -167,6 +167,7 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
             }
         }
 
+        opcionesPartes opcionAnterior = _idOpcion;
         if (bn::keypad::down_pressed()) {
             _idOpcion = opcionesPartes(bna::loop(int(_idOpcion) + 1, 0, int(opcionesPartes::VOLVER)));
             _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
@@ -179,6 +180,9 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
 
         int cambio_opcion = int(bn::keypad::right_pressed()) - int(bn::keypad::left_pressed());
         if (_idOpcion == opcionesPartes::CUERPO) {
+            if(opcionAnterior !=_idOpcion){
+                _updateBodyAnimation();
+            }
             if (cambio_opcion) {
                 _idBody = bna::parts::bodys(bna::loop(int(_idBody) + cambio_opcion, 0, max_body));
                 _updateBodyText();
@@ -188,6 +192,9 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
             }
         }
         else if (_idOpcion == opcionesPartes::MOTOR) {
+            if(opcionAnterior !=_idOpcion){
+                _updateMotorAnimationm();
+            }
             if (cambio_opcion) {
                 _idMotor = bna::parts::motors(bna::loop(int(_idMotor) + cambio_opcion, 0, max_motor));
                 _updateMotorText();
