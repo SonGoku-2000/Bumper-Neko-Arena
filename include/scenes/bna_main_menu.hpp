@@ -5,6 +5,8 @@
 #include "bna_text_manager.hpp"
 #include "bna_indicator.hpp"
 
+#include "bn_regular_bg_ptr.h"
+
 namespace bna {
     class MainMenu : public scene {
         public:
@@ -17,6 +19,8 @@ namespace bna {
         TextManager _textoMultiplayer;
         TextManager _textoOpciones;
         TextManager _textoCreditos;
+
+        bn::regular_bg_ptr _background;
 
         enum class options :int {
             PLAY, MULTIPLAYER, OPTIONS, CREDITS

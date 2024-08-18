@@ -4,12 +4,14 @@
 #include "bna_scene_type.hpp"
 
 #include "bn_sprite_items_pointer.h"
+#include "bn_regular_bg_items_main_menu.h"
 
 #include "bn_keypad.h"
 
 #include "bna_loop_value.hpp"
 
-bna::MainMenu::MainMenu() {
+bna::MainMenu::MainMenu() :
+    _background(bn::regular_bg_items::main_menu.create_bg(0, 0)) {
     _textoTitulo = bna::TextManager(0, -60, "Bumper Neko Arena");
     _textoTitulo.set_aligment(bn::sprite_text_generator::alignment_type::CENTER);
     _continuar = false;
@@ -59,14 +61,14 @@ bn::optional<bna::scene_type> bna::MainMenu::update() {
         }
         else if (bn::keypad::up_pressed()) {
             _idOpcion = options(bna::loop(int(_idOpcion) - 1, 0, int(options::CREDITS)));
-           _puntero->set_position(_indicadores[int(_idOpcion)]);
+            _puntero->set_position(_indicadores[int(_idOpcion)]);
         }
 
         if (bn::keypad::a_pressed()) {
             if (_idOpcion == options::PLAY) {
                 return bna::scene_type::CHARACTER_SELECTION;
             }
-            else if(_idOpcion== options::MULTIPLAYER){
+            else if (_idOpcion == options::MULTIPLAYER) {
                 return bna::scene_type::PREPARING_CONNECTION;
             }
             else if (_idOpcion == options::OPTIONS) {
