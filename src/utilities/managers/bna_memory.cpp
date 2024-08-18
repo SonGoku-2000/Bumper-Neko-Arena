@@ -22,6 +22,7 @@ bna::Memory::Memory() {
         BN_LOG("Error al leer Memory creando nuevos datos");
 #endif
         brillo = 0;
+        volume = 0.5;
 
         motores.fill(parts::motors::EMPTY);
         motores[0] = parts::motors::SLOW;

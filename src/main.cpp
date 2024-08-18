@@ -72,7 +72,7 @@ int main() {
                 break;
 
             case bna::scene_type::OPTION_MENU:
-                scene.reset(new bna::OptionsMenu(memoria.brillo));
+                scene.reset(new bna::OptionsMenu(memoria.brillo, memoria.volume));
                 break;
 
             case bna::scene_type::TEST_MAP:
