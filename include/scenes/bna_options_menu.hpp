@@ -37,9 +37,12 @@ namespace bna {
 
         bn::optional<bn::sprite_ptr> _puntero;
         bool _continuar;
+        bool _moveUp;
+        int _framesTranscurridos;
 
         void _updateBrightnessText();
         void _updateBrightnessPoints();
         void _updateVolumePoints();
+        void _updateSelectedAnimation();
     };
 }

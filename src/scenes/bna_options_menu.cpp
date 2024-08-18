@@ -25,10 +25,13 @@ bna::OptionsMenu::OptionsMenu(bn::fixed& brillo_memory, bn::fixed& volume) :
     _continuar = false;
     _idOpcion = 0;
 
-    // constexpr int ALINEACION_HORIZONTAL = -40;
-    // constexpr bool MOSTRAR_INDICADORES = false;
-    // _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 0), MOSTRAR_INDICADORES));
-    // _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 20), MOSTRAR_INDICADORES));
+    _framesTranscurridos = 0;
+    _moveUp = false;
+
+    constexpr int ALINEACION_HORIZONTAL = -40;
+    constexpr bool MOSTRAR_INDICADORES = false;
+    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 0), MOSTRAR_INDICADORES));
+    _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 20), MOSTRAR_INDICADORES));
 
     // constexpr int OFFSET_HORIZONTAL_TEXTO = 10;
     // // _textoBrillo = bna::TextManager(
@@ -46,6 +49,7 @@ bna::OptionsMenu::OptionsMenu(bn::fixed& brillo_memory, bn::fixed& volume) :
     // );
 
     _puntero = bn::sprite_items::pointer.create_sprite(_indicadores[_idOpcion]);
+    _puntero->set_visible(false);
 
     _brightnessArrows.push_back(bn::sprite_items::menu_options_arrow.create_sprite(-77, 7));
     _brightnessArrows.push_back(bn::sprite_items::menu_options_arrow.create_sprite(52, 7, 1));
@@ -85,13 +89,13 @@ bn::optional<bna::scene_type> bna::OptionsMenu::update() {
             constexpr bn::fixed CAMBIO_BRILLO = bn::fixed(0.005);
             if (bn::keypad::right_held()) {
                 bna::brightness_manager::set_brightness(brillo + CAMBIO_BRILLO);
-                _updateBrightnessText();
+                // _updateBrightnessText();
                 _updateBrightnessPoints();
             }
             else if (bn::keypad::left_held()) {
                 bna::brightness_manager::set_brightness(brillo - CAMBIO_BRILLO);
                 _updateBrightnessPoints();
-                _updateBrightnessText();
+                // _updateBrightnessText();
             }
         }
         else if (_idOpcion == 1) {
@@ -113,6 +117,8 @@ bn::optional<bna::scene_type> bna::OptionsMenu::update() {
             _brillo = brillo;
             return bna::scene_type::MAIN_MENU;
         }
+
+        _updateSelectedAnimation();
         bn::core::update();
     }
     return bna::scene_type::TEST_MAP;
@@ -146,3 +152,32 @@ void bna::OptionsMenu::_updateVolumePoints() {
     }
 }
 
+void bna::OptionsMenu::_updateSelectedAnimation() {
+    int offset = 1;
+    if (_moveUp) {
+        offset *= -1;
+    }
+
+    _brightnessArrows[0].set_y(_brightnessPoints[0].y());
+    _brightnessArrows[1].set_y(_brightnessPoints[0].y());
+
+    _volumeArrows[0].set_y(_volumePoints[0].y());
+    _volumeArrows[1].set_y(_volumePoints[0].y());
+
+    if (_idOpcion == 0) {
+        _brightnessArrows[0].set_y(_brightnessPoints[0].y() + offset);
+        _brightnessArrows[1].set_y(_brightnessPoints[0].y() + offset);
+    }
+    else {
+        _volumeArrows[0].set_y(_volumePoints[0].y() + offset);
+        _volumeArrows[1].set_y(_volumePoints[0].y() + offset);
+    }
+
+    if (_framesTranscurridos == 60) {
+        _framesTranscurridos = 0;
+        _moveUp = !_moveUp;
+    }
+    else {
+        _framesTranscurridos++;
+    }
+}
