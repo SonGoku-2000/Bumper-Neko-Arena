@@ -31,7 +31,6 @@ bna::MainMenu::MainMenu() :
 
     _playButton.set_priority(bna::Planes::SECOND);
 
-    _continuar = false;
     _idOpcion = options::PLAY;
 
     constexpr int ALINEACION_HORIZONTAL = -40;
@@ -46,80 +45,88 @@ bna::MainMenu::MainMenu() :
 
 
 bn::optional<bna::scene_type> bna::MainMenu::update() {
-    while (!_continuar) {
+    bool button_pressed = false;
+    while (true) {
         _animation.update();
 
-        if (bn::keypad::down_pressed()) {
-            if (options::PLAY == _idOpcion) {
-                _idOpcion = options::OPTIONS;
+        if (button_pressed) {
+            if (_animationPlayButton.has_value()) {
+                if (_animationPlayButton->done()) {
+                    return bna::scene_type::CHARACTER_SELECTION;
+                }
+                _animationPlayButton->update();
             }
-            else if (options::OPTIONS == _idOpcion) {
-                _idOpcion = options::PLAY;
-            }
-            else if (options::BACK == _idOpcion) {
-                _idOpcion = options::PLAY;
+
+            if (_animationOptionBackButton.has_value()) {
+                if (_animationOptionBackButton->done()) {
+                    if (options::OPTIONS == _idOpcion) {
+                        return bna::scene_type::OPTION_MENU;
+                    }
+                    if (options::BACK == _idOpcion) {
+                        return bna::scene_type::TITLE_SCREEN;
+                    }
+                }
+                _animationOptionBackButton->update();
             }
         }
+        else {
+            if (bn::keypad::down_pressed()) {
+                if (options::PLAY == _idOpcion) {
+                    _idOpcion = options::OPTIONS;
+                }
+                else if (options::OPTIONS == _idOpcion) {
+                    _idOpcion = options::PLAY;
+                }
+                else if (options::BACK == _idOpcion) {
+                    _idOpcion = options::PLAY;
+                }
+            }
 
-        if (bn::keypad::up_pressed()) {
-            if (options::PLAY == _idOpcion) {
-                _idOpcion = options::OPTIONS;
+            if (bn::keypad::up_pressed()) {
+                if (options::PLAY == _idOpcion) {
+                    _idOpcion = options::OPTIONS;
+                }
+                else  if (options::OPTIONS == _idOpcion) {
+                    _idOpcion = options::PLAY;
+                }
+                else  if (options::BACK == _idOpcion) {
+                    _idOpcion = options::PLAY;
+                }
             }
-            else  if (options::OPTIONS == _idOpcion) {
-                _idOpcion = options::PLAY;
+
+            if (bn::keypad::left_pressed()) {
+                if (options::PLAY == _idOpcion) {
+                    _idOpcion = options::BACK;
+                }
+                else  if (options::OPTIONS == _idOpcion) {
+                    _idOpcion = options::BACK;
+                }
+                else  if (options::BACK == _idOpcion) {
+                    _idOpcion = options::OPTIONS;
+                }
             }
-            else  if (options::BACK == _idOpcion) {
-                _idOpcion = options::PLAY;
+
+            if (bn::keypad::right_pressed()) {
+                if (options::PLAY == _idOpcion) {
+                    _idOpcion = options::OPTIONS;
+                }
+                else  if (options::OPTIONS == _idOpcion) {
+                    _idOpcion = options::BACK;
+                }
+                else  if (options::BACK == _idOpcion) {
+                    _idOpcion = options::OPTIONS;
+                }
+            }
+
+            if (bn::keypad::a_pressed()) {
+                button_pressed = true;
+                _animatePressedButton();
+            }
+
+            if (bn::keypad::any_pressed()) {
+                _updateSelectedOptionIcon();
             }
         }
-
-        if (bn::keypad::left_pressed()) {
-            if (options::PLAY == _idOpcion) {
-                _idOpcion = options::BACK;
-            }
-            else  if (options::OPTIONS == _idOpcion) {
-                _idOpcion = options::BACK;
-            }
-            else  if (options::BACK == _idOpcion) {
-                _idOpcion = options::OPTIONS;
-            }
-        }
-
-        if (bn::keypad::right_pressed()) {
-            if (options::PLAY == _idOpcion) {
-                _idOpcion = options::OPTIONS;
-            }
-            else  if (options::OPTIONS == _idOpcion) {
-                _idOpcion = options::BACK;
-            }
-            else  if (options::BACK == _idOpcion) {
-                _idOpcion = options::OPTIONS;
-            }
-        }
-
-        if (bn::keypad::any_pressed()) {
-            _updateSelectedOptionIcon();
-        }
-        // if (bn::keypad::down_pressed()) {
-        //     _idOpcion = options(bna::loop(int(_idOpcion) + 1, 0, int(options::CREDITS)));
-        //     _puntero->set_position(_indicadores[int(_idOpcion)]);
-        // }
-        // else if (bn::keypad::up_pressed()) {
-        //     _idOpcion = options(bna::loop(int(_idOpcion) - 1, 0, int(options::CREDITS)));
-        //     _puntero->set_position(_indicadores[int(_idOpcion)]);
-        // }
-
-        // if (bn::keypad::a_pressed()) {
-        //     if (_idOpcion == options::PLAY) {
-        //         return bna::scene_type::CHARACTER_SELECTION;
-        //     }
-        //     else if (_idOpcion == options::MULTIPLAYER) {
-        //         return bna::scene_type::PREPARING_CONNECTION;
-        //     }
-        //     else if (_idOpcion == options::OPTIONS) {
-        //         return bna::scene_type::OPTION_MENU;
-        //     }
-        // }
 
         bn::core::update();
     }
@@ -139,5 +146,22 @@ void bna::MainMenu::_updateSelectedOptionIcon() {
     }
     if (options::BACK == _idOpcion) {
         _backButton.set_item(bn::sprite_items::main_menu_back, 1);
+    }
+}
+
+void bna::MainMenu::_animatePressedButton() {
+    _playButton.set_item(bn::regular_bg_items::main_menu_play, 0);
+    _optionsButton.set_item(bn::sprite_items::main_menu_options, 0);
+    _backButton.set_item(bn::sprite_items::main_menu_back, 0);
+
+    int velocidad_parpadeo = 10;
+    if (options::PLAY == _idOpcion) {
+        _animationPlayButton = bn::create_regular_bg_animate_action_once(_playButton, velocidad_parpadeo, bn::regular_bg_items::main_menu_play.map_item(), 0, 1, 0, 1, 0, 1, 0, 1, 0, 1);
+    }
+    if (options::OPTIONS == _idOpcion) {
+        _animationOptionBackButton = bn::create_sprite_animate_action_once(_optionsButton, velocidad_parpadeo, bn::sprite_items::main_menu_options.tiles_item(), 0, 1, 0, 1, 0, 1, 0, 1, 0, 1);
+    }
+    if (options::BACK == _idOpcion) {
+        _animationOptionBackButton = bn::create_sprite_animate_action_once(_backButton, velocidad_parpadeo, bn::sprite_items::main_menu_back.tiles_item(), 0, 1, 0, 1);
     }
 }
