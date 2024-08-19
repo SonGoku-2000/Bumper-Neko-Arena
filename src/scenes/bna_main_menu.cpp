@@ -123,6 +123,18 @@ bn::optional<bna::scene_type> bna::MainMenu::update() {
                 _animatePressedButton();
             }
 
+            if (bn::keypad::b_pressed()) {
+                button_pressed = true;
+                _idOpcion = options::BACK;
+                _animatePressedButton();
+            }
+
+            if (bn::keypad::start_pressed()) {
+                button_pressed = true;
+                _idOpcion = options::PLAY;
+                _animatePressedButton();
+            }
+
             if (bn::keypad::any_pressed()) {
                 _updateSelectedOptionIcon();
             }
@@ -162,6 +174,6 @@ void bna::MainMenu::_animatePressedButton() {
         _animationOptionBackButton = bn::create_sprite_animate_action_once(_optionsButton, velocidad_parpadeo, bn::sprite_items::main_menu_options.tiles_item(), 0, 1, 0, 1, 0, 1, 0, 1, 0, 1);
     }
     if (options::BACK == _idOpcion) {
-        _animationOptionBackButton = bn::create_sprite_animate_action_once(_backButton, velocidad_parpadeo, bn::sprite_items::main_menu_back.tiles_item(), 0, 1, 0, 1);
+        _animationOptionBackButton = bn::create_sprite_animate_action_once(_backButton, velocidad_parpadeo, bn::sprite_items::main_menu_back.tiles_item(), 0, 1, 0, 1, 0, 1);
     }
 }
