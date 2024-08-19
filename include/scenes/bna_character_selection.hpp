@@ -31,8 +31,7 @@ namespace bna {
             PERSIAN,
             SIAMESE,
             TRICOLOUR,
-            NEXT,
-            VOLVER
+            BACK
         };
         opcionesCharacter _idOpcion;
         opcionesCharacter _idOpcionSeleccionada;
@@ -49,6 +48,7 @@ namespace bna {
         bn::optional<bn::sprite_ptr> _puntero;
 
         bn::optional<bn::sprite_ptr> _character_image;
+        bn::optional<bn::sprite_animate_action<4>> _pointerAnimation;
 
         void _updateArrowPress();
         void _updateCharacterSelected();

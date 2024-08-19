@@ -1,8 +1,6 @@
 #include "bna_character_selection.hpp"
 #include "bn_core.h"
 
-#include "bn_sprite_items_pointer.h"
-
 #include "bna_scene_type.hpp"
 
 #include "bn_keypad.h"
@@ -11,7 +9,10 @@
 #include "bn_string.h"
 #include "bna_characters_id.hpp"
 #include "bn_regular_bg_items_cat_gray.h"
+
 #include "bn_sprite_items_icons_selection.h"
+
+#include "bn_sprite_items_cat_selection_border.h"
 
 #include "bn_sprite_items_cat_black_selection_icon.h"
 #include "bn_sprite_items_cat_persian_selection_icon.h"
@@ -74,13 +75,13 @@ bna::CharacterSelection::CharacterSelection(CharactersId& character) :
     );
 
     _seleccionado = false;
-    _puntero = bn::sprite_items::pointer.create_sprite(_indicadores[int(_idOpcion) + 1]);
+    _puntero = bn::sprite_items::cat_selection_border.create_sprite(_indicadores[int(_idOpcion) + 1]);
+    _pointerAnimation = bn::create_sprite_animate_action_forever(_puntero.value(), 8, bn::sprite_items::cat_selection_border.tiles_item(), 0, 1, 2, 3);
     _updateCharacterSelected();
 }
 
 
 bn::optional<bna::scene_type> bna::CharacterSelection::update() {
-    bn::fixed brillo;
     while (!_continuar) {
         if (_seleccionado) {
             if (_animationIcon->done()) {
@@ -90,21 +91,17 @@ bn::optional<bna::scene_type> bna::CharacterSelection::update() {
             _animationIcon->update();
         }
         else {
+            _pointerAnimation->update();
             _updateArrowPress();
 
             if (bn::keypad::a_pressed()) {
-                if (_idOpcion == opcionesCharacter::VOLVER) {
+                if (_idOpcion == opcionesCharacter::BACK) {
                     return bna::scene_type::MAIN_MENU;
-                }
-                if (_idOpcion == opcionesCharacter::NEXT) {
-                    if (_seleccionado == true) {
-                        _updateCharacterPointer();
-                        return bna::scene_type::CAR_SELECTION;
-                    }
                 }
                 else {
                     _idOpcionSeleccionada = _idOpcion;
                     _seleccionado = true;
+                    _puntero->set_visible(false);
                     _updateCharacterSelected();
                 }
             }
@@ -132,28 +129,29 @@ bn::optional<bna::scene_type> bna::CharacterSelection::update() {
 }
 
 void bna::CharacterSelection::_updateArrowPress() {
+    bn::fixed_point offset_puntero(0, 0);
     if (bn::keypad::down_pressed()) {
         if (int(_idOpcion) == 0 or int(_idOpcion) == 1) {
             _idOpcion = opcionesCharacter(int(_idOpcion) + 2);
         }
         else if (int(_idOpcion) == 2 or int(_idOpcion) == 3) {
-            _idOpcion = opcionesCharacter::NEXT;
+            _idOpcion = opcionesCharacter::BACK;
         }
         else {
-            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) + 1, 0, int(opcionesCharacter::VOLVER)));
+            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) + 1, 0, int(opcionesCharacter::BACK)));
         }
-        _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
+        _puntero->set_position(_indicadores[int(_idOpcion) + 1] + offset_puntero);
         _updateCharacterSelected();
     }
     else if (bn::keypad::up_pressed()) {
         if (int(_idOpcion) == 0 or int(_idOpcion) == 1) {
-            _idOpcion = opcionesCharacter::VOLVER;
+            _idOpcion = opcionesCharacter::BACK;
         }
         else if (int(_idOpcion) == 2 or int(_idOpcion) == 3) {
             _idOpcion = opcionesCharacter(int(_idOpcion) - 2);
         }
         else {
-            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) - 1, 0, int(opcionesCharacter::VOLVER)));
+            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) - 1, 0, int(opcionesCharacter::BACK)));
         }
         _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
         _updateCharacterSelected();
@@ -207,9 +205,9 @@ void bna::CharacterSelection::_updateCharacterSelected() {
         if (opcionesCharacter::SIAMESE == _idOpcionSeleccionada) {
             _textoCharacterSeleccionado.updateText("Cat 3");
         }
-        if (opcionesCharacter::VOLVER == _idOpcionSeleccionada) {
-            _textoCharacterSeleccionado.updateText("Cat Bird");
-        }
+        // if (opcionesCharacter::VOLVER == _idOpcionSeleccionada) {
+        //     _textoCharacterSeleccionado.updateText("Cat Bird");
+        // }
         _textoCharacterSeleccionado.setVisible(false);
         return;
     }
@@ -232,12 +230,12 @@ void bna::CharacterSelection::_updateCharacterSelected() {
         _character_image = bn::sprite_items::cat_tricolour_selection_body.create_sprite(position);
         _textoCharacterSeleccionado.updateText("Cat Bird");
     }
-    if (opcionesCharacter::NEXT == _idOpcion) {
-        _textoCharacterSeleccionado.updateText("");
-    }
-    if (opcionesCharacter::VOLVER == _idOpcion) {
-        _textoCharacterSeleccionado.updateText("");
-    }
+    // if (opcionesCharacter::NEXT == _idOpcion) {
+    //     _textoCharacterSeleccionado.updateText("");
+    // }
+    // if (opcionesCharacter::VOLVER == _idOpcion) {
+    //     _textoCharacterSeleccionado.updateText("");
+    // }
     _textoCharacterSeleccionado.setVisible(false);
 }
 
