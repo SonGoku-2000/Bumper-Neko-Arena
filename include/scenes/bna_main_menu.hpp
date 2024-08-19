@@ -21,11 +21,15 @@ namespace bna {
         TextManager _textoOpciones;
         TextManager _textoCreditos;
 
+        bn::regular_bg_ptr _playButton;
+        bn::sprite_ptr _optionsButton;
+        bn::sprite_ptr _backButton;
+
         bn::regular_bg_ptr _background;
         bn::regular_bg_animate_action<6> _animation;
 
         enum class options :int {
-            PLAY, MULTIPLAYER, OPTIONS, CREDITS
+            PLAY, OPTIONS, BACK
         };
         options _idOpcion;
 
