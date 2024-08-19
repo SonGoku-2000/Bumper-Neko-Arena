@@ -1,5 +1,6 @@
 namespace bna {
     enum class scene_type {
+        GBA_JAM_LOGO,
         TITLE_SCREEN,
         MAIN_MENU,
         CHARACTER_SELECTION,
