@@ -15,12 +15,6 @@ namespace bna {
         [[nodiscard]] bn::optional<scene_type> update() final;
 
         private:
-        TextManager _textoTitulo;
-        TextManager _textoJugar;
-        TextManager _textoMultiplayer;
-        TextManager _textoOpciones;
-        TextManager _textoCreditos;
-
         bn::regular_bg_ptr _playButton;
         bn::sprite_ptr _optionsButton;
         bn::sprite_ptr _backButton;
@@ -34,7 +28,8 @@ namespace bna {
         options _idOpcion;
 
         bn::vector<bna::Indicator, 5> _indicadores;
-        bn::optional<bn::sprite_ptr> _puntero;
         bool _continuar;
+
+        void _updateSelectedOptionIcon();
     };
 }

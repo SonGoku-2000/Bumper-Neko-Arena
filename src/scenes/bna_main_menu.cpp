@@ -16,6 +16,8 @@
 #include "bna_loop_value.hpp"
 
 
+#include "bn_log.h"
+
 bna::MainMenu::MainMenu() :
     _playButton(bn::regular_bg_items::main_menu_play.create_bg(61, -8)),
     _optionsButton(bn::sprite_items::main_menu_options.create_sprite(68, 42)),
@@ -29,8 +31,6 @@ bna::MainMenu::MainMenu() :
 
     _playButton.set_priority(bna::Planes::SECOND);
 
-    _textoTitulo = bna::TextManager(0, -60, "Bumper Neko Arena");
-    _textoTitulo.set_aligment(bn::sprite_text_generator::alignment_type::CENTER);
     _continuar = false;
     _idOpcion = options::PLAY;
 
@@ -41,38 +41,65 @@ bna::MainMenu::MainMenu() :
     _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 40), MOSTRAR_INDICADORES));
     _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 60), MOSTRAR_INDICADORES));
 
-    constexpr int OFFSET_HORIZONTAL_TEXTO = 10;
-    _textoJugar = bna::TextManager(
-        _indicadores[int(options::PLAY)].x() + OFFSET_HORIZONTAL_TEXTO,
-        _indicadores[int(options::PLAY)].y(),
-        "Play"
-    );
-
-    // _textoMultiplayer = bna::TextManager(
-    //     _indicadores[int(options::MULTIPLAYER)].x() + OFFSET_HORIZONTAL_TEXTO,
-    //     _indicadores[int(options::MULTIPLAYER)].y(),
-    //     "Multiplayer"
-    // );
-
-    // _textoOpciones = bna::TextManager(
-    //     _indicadores[int(options::OPTIONS)].x() + OFFSET_HORIZONTAL_TEXTO,
-    //     _indicadores[int(options::OPTIONS)].y(),
-    //     "Options"
-    // );
-
-    // _textoCreditos = bna::TextManager(
-    //     _indicadores[int(options::CREDITS)].x() + OFFSET_HORIZONTAL_TEXTO,
-    //     _indicadores[int(options::CREDITS)].y(),
-    //     "Credits"
-    // );
-
-    _puntero = bn::sprite_items::pointer.create_sprite(_indicadores[int(_idOpcion)]);
+    _updateSelectedOptionIcon();
 }
 
 
 bn::optional<bna::scene_type> bna::MainMenu::update() {
     while (!_continuar) {
         _animation.update();
+
+        if (bn::keypad::down_pressed()) {
+            if (options::PLAY == _idOpcion) {
+                _idOpcion = options::OPTIONS;
+            }
+            else if (options::OPTIONS == _idOpcion) {
+                _idOpcion = options::PLAY;
+            }
+            else if (options::BACK == _idOpcion) {
+                _idOpcion = options::PLAY;
+            }
+        }
+
+        if (bn::keypad::up_pressed()) {
+            if (options::PLAY == _idOpcion) {
+                _idOpcion = options::OPTIONS;
+            }
+            else  if (options::OPTIONS == _idOpcion) {
+                _idOpcion = options::PLAY;
+            }
+            else  if (options::BACK == _idOpcion) {
+                _idOpcion = options::PLAY;
+            }
+        }
+
+        if (bn::keypad::left_pressed()) {
+            if (options::PLAY == _idOpcion) {
+                _idOpcion = options::BACK;
+            }
+            else  if (options::OPTIONS == _idOpcion) {
+                _idOpcion = options::BACK;
+            }
+            else  if (options::BACK == _idOpcion) {
+                _idOpcion = options::OPTIONS;
+            }
+        }
+
+        if (bn::keypad::right_pressed()) {
+            if (options::PLAY == _idOpcion) {
+                _idOpcion = options::OPTIONS;
+            }
+            else  if (options::OPTIONS == _idOpcion) {
+                _idOpcion = options::BACK;
+            }
+            else  if (options::BACK == _idOpcion) {
+                _idOpcion = options::OPTIONS;
+            }
+        }
+
+        if (bn::keypad::any_pressed()) {
+            _updateSelectedOptionIcon();
+        }
         // if (bn::keypad::down_pressed()) {
         //     _idOpcion = options(bna::loop(int(_idOpcion) + 1, 0, int(options::CREDITS)));
         //     _puntero->set_position(_indicadores[int(_idOpcion)]);
@@ -99,3 +126,18 @@ bn::optional<bna::scene_type> bna::MainMenu::update() {
     return bna::scene_type::TEST_MAP;
 }
 
+void bna::MainMenu::_updateSelectedOptionIcon() {
+    _playButton.set_item(bn::regular_bg_items::main_menu_play, 0);
+    _optionsButton.set_item(bn::sprite_items::main_menu_options, 0);
+    _backButton.set_item(bn::sprite_items::main_menu_back, 0);
+
+    if (options::PLAY == _idOpcion) {
+        _playButton.set_item(bn::regular_bg_items::main_menu_play, 1);
+    }
+    if (options::OPTIONS == _idOpcion) {
+        _optionsButton.set_item(bn::sprite_items::main_menu_options, 1);
+    }
+    if (options::BACK == _idOpcion) {
+        _backButton.set_item(bn::sprite_items::main_menu_back, 1);
+    }
+}
