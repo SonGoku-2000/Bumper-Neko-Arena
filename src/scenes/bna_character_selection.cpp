@@ -181,6 +181,23 @@ void bna::CharacterSelection::_updateCharacterPointer() {
 
 void bna::CharacterSelection::_updateCharacterSelected() {
     _animateSelectedIcon();
+    bn::fixed_point position(65, 0);
+
+    if (opcionesCharacter::BLACK == _idOpcion) {
+        _character_image = bn::sprite_items::cat_black_selection_body.create_sprite(position);
+    }
+    if (opcionesCharacter::PERSIAN == _idOpcion) {
+        _character_image = bn::sprite_items::cat_persian_selection_body.create_sprite(position);
+    }
+    if (opcionesCharacter::SIAMESE == _idOpcion) {
+        _character_image = bn::sprite_items::cat_siamese_selection_body.create_sprite(position);
+    }
+    if (opcionesCharacter::TRICOLOUR == _idOpcion) {
+        _character_image = bn::sprite_items::cat_tricolour_selection_body.create_sprite(position);
+    }
+    if(opcionesCharacter::BACK==_idOpcion){
+        _character_image.reset();
+    }
 }
 
 void bna::CharacterSelection::_animateSelectedIcon() {
