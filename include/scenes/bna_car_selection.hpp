@@ -7,6 +7,7 @@
 
 #include "bn_sprite_ptr.h"
 #include "bn_sprite_animate_actions.h"
+#include "bn_sprite_actions.h"
 #include "bn_regular_bg_ptr.h"
 
 #include "bn_vector.h"
@@ -51,9 +52,6 @@ namespace bna {
         bn::vector<bna::Indicator, 6> _indicadores;
         bn::optional<bn::sprite_ptr> _puntero;
 
-        // bna::IconRoulette _bodysRoulette;
-        // bna::IconRoulette _motorsRoulette;
-        // bna::IconRoulette _wheelsRoulette;
         bn::sprite_ptr _bodysIcon;
         bn::sprite_ptr _motorsIcon;
         bn::sprite_ptr _wheelsIcon;
@@ -80,9 +78,12 @@ namespace bna {
         void _updateBodyIcon();
         void _updateMotorIcon();
         void _updateWheelIcon();
+
         void _updateBodyAnimation();
         void _updateMotorAnimation();
         void _updateWheelAnimation();
+
+        void _updateSelectedLoopMovement();
 
         void _updateStatsText();
         void _updateBodyText();
@@ -90,9 +91,5 @@ namespace bna {
         void _updateWheelText();
 
         bool _checkValidCombination();
-
-        // void _generateMotorRoulette();
-        // void _generateBodyRoulette();
-        // void _generateWheelRoulette();
     };
 }
