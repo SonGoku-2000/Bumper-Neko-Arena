@@ -7,22 +7,29 @@
 
 #include "bna_scene.hpp"
 #include "bna_scene_type.hpp"
+
+#include "bna_gba_jam_logo.hpp"
 #include "bna_title_screen.hpp"
 #include "bna_main_menu.hpp"
 #include "bna_options_menu.hpp"
+
+#include "bna_preparing_connection.hpp"
+#include "bna_test_map_link.hpp"
+
+#include "bna_character_selection.hpp"
 #include "bna_car_selection.hpp"
 #include "bna_car_selection_multiplayer.hpp"
 #include "bna_test_map.hpp"
-#include "bna_test_map_link.hpp"
+
 #include "bna_scene_win.hpp"
 #include "bna_scene_loose.hpp"
-#include "bna_brightness_manager.hpp"
+
 #include "bna_car_builder.hpp"
 #include "bna_characters_id.hpp"
-#include "bna_preparing_connection.hpp"
-#include "bna_character_selection.hpp"
 
 #include "bna_memory.hpp"
+
+// #define SKIP_JAM_LOGO
 #define DEBUG
 #ifdef DEBUG
 #include "bn_log.h"
@@ -38,7 +45,13 @@ int main() {
 
     bn::unique_ptr<bna::scene> scene;
 
-    bn::optional<bna::scene_type> next_scene = bna::scene_type::TITLE_SCREEN;
+    bn::optional<bna::scene_type> next_scene;
+
+#ifdef SKIP_JAM_LOGO
+    next_scene = bna::scene_type::TITLE_SCREEN;
+#else
+    next_scene = bna::scene_type::GBA_JAM_LOGO;
+#endif
 
     bna::CarBuilder playerCar;
     bna::CharactersId& playerCharacter = playerCar.cat_id;
@@ -47,6 +60,10 @@ int main() {
 
     while (true) {
         switch (next_scene.value()) {
+            case bna::scene_type::GBA_JAM_LOGO:
+                scene.reset(new bna::GbaJamLogo());
+                break;
+
             case bna::scene_type::TITLE_SCREEN:
                 scene.reset(new bna::TitleScreen());
                 break;

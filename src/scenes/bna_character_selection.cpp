@@ -1,8 +1,6 @@
 #include "bna_character_selection.hpp"
 #include "bn_core.h"
 
-#include "bn_sprite_items_pointer.h"
-
 #include "bna_scene_type.hpp"
 
 #include "bn_keypad.h"
@@ -11,7 +9,10 @@
 #include "bn_string.h"
 #include "bna_characters_id.hpp"
 #include "bn_regular_bg_items_cat_gray.h"
+
 #include "bn_sprite_items_icons_selection.h"
+
+#include "bn_sprite_items_cat_selection_border.h"
 
 #include "bn_sprite_items_cat_black_selection_icon.h"
 #include "bn_sprite_items_cat_persian_selection_icon.h"
@@ -24,6 +25,7 @@
 #include "bn_sprite_items_cat_tricolour_selection_body.h"
 
 #include "bn_regular_bg_items_character_selection.h"
+#include "bn_sprite_items_main_menu_back.h"
 
 
 #ifdef DEBUG
@@ -32,7 +34,8 @@
 
 
 bna::CharacterSelection::CharacterSelection(CharactersId& character) :
-    _background(bn::regular_bg_items::character_selection.create_bg(0, 0)) {
+    _background(bn::regular_bg_items::character_selection.create_bg(0, 0)),
+    _backButton(bn::sprite_items::main_menu_back.create_sprite(-104, 64)) {
     _character = &character;
     _continuar = false;
     _idOpcion = opcionesCharacter(0);
@@ -48,75 +51,46 @@ bna::CharacterSelection::CharacterSelection(CharactersId& character) :
     _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 40), MOSTRAR_INDICADORES));
     _indicadores.push_back(bna::Indicator(bn::fixed_point(ALINEACION_HORIZONTAL, 60), MOSTRAR_INDICADORES));
 
-    constexpr int OFFSET_HORIZONTAL_TEXTO = 10;
-
-    _textoCharacterSeleccionado = bna::TextManager(
-        _indicadores[0].x(),
-        _indicadores[0].y(),
-        ""
-    );
-    _textoCharacterSeleccionado.set_aligment(bn::sprite_text_generator::alignment_type::CENTER);
-
     _iconosCharacters.push_back(bn::sprite_items::cat_black_selection_icon.create_sprite(_indicadores[1]));
     _iconosCharacters.push_back(bn::sprite_items::cat_persian_selection_icon.create_sprite(_indicadores[2]));
     _iconosCharacters.push_back(bn::sprite_items::cat_siamese_selection_icon.create_sprite(_indicadores[3]));
     _iconosCharacters.push_back(bn::sprite_items::cat_tricolour_selection_icon.create_sprite(_indicadores[4]));
 
-    _textoNext = bna::TextManager(
-        _indicadores[5].x() + OFFSET_HORIZONTAL_TEXTO,
-        _indicadores[5].y(),
-        "Next"
-    );
-    _textoVolver = bna::TextManager(
-        _indicadores[6].x() + OFFSET_HORIZONTAL_TEXTO,
-        _indicadores[6].y(),
-        "Back"
-    );
-
     _seleccionado = false;
-    _puntero = bn::sprite_items::pointer.create_sprite(_indicadores[int(_idOpcion) + 1]);
+    _puntero = bn::sprite_items::cat_selection_border.create_sprite(_indicadores[int(_idOpcion) + 1]);
+    _pointerAnimation = bn::create_sprite_animate_action_forever(_puntero.value(), 8, bn::sprite_items::cat_selection_border.tiles_item(), 0, 1, 2, 3);
     _updateCharacterSelected();
 }
 
 
 bn::optional<bna::scene_type> bna::CharacterSelection::update() {
-    bn::fixed brillo;
     while (!_continuar) {
         if (_seleccionado) {
             if (_animationIcon->done()) {
                 _updateCharacterPointer();
+                if (_idOpcionSeleccionada == opcionesCharacter::BACK) {
+                    return bna::scene_type::MAIN_MENU;
+                }
                 return bna::scene_type::CAR_SELECTION;
             }
             _animationIcon->update();
         }
         else {
+            _pointerAnimation->update();
             _updateArrowPress();
 
             if (bn::keypad::a_pressed()) {
-                if (_idOpcion == opcionesCharacter::VOLVER) {
-                    return bna::scene_type::MAIN_MENU;
-                }
-                if (_idOpcion == opcionesCharacter::NEXT) {
-                    if (_seleccionado == true) {
-                        _updateCharacterPointer();
-                        return bna::scene_type::CAR_SELECTION;
-                    }
-                }
-                else {
-                    _idOpcionSeleccionada = _idOpcion;
-                    _seleccionado = true;
-                    _updateCharacterSelected();
-                }
+                _idOpcionSeleccionada = _idOpcion;
+                _seleccionado = true;
+                _puntero->set_visible(false);
+                _updateCharacterSelected();
             }
 
             if (bn::keypad::b_pressed()) {
-                if (_seleccionado == true) {
-                    _seleccionado = false;
-                    _updateCharacterSelected();
-                }
-                else {
-                    return bna::scene_type::MAIN_MENU;
-                }
+                _idOpcionSeleccionada = opcionesCharacter::BACK;
+                _seleccionado = true;
+                _updateCharacterSelected();
+                _puntero->set_visible(false);
             }
             if (bn::keypad::start_pressed()) {
                 if (_seleccionado) {
@@ -132,28 +106,29 @@ bn::optional<bna::scene_type> bna::CharacterSelection::update() {
 }
 
 void bna::CharacterSelection::_updateArrowPress() {
+    bn::fixed_point offset_puntero(0, 0);
     if (bn::keypad::down_pressed()) {
         if (int(_idOpcion) == 0 or int(_idOpcion) == 1) {
             _idOpcion = opcionesCharacter(int(_idOpcion) + 2);
         }
         else if (int(_idOpcion) == 2 or int(_idOpcion) == 3) {
-            _idOpcion = opcionesCharacter::NEXT;
+            _idOpcion = opcionesCharacter::BACK;
         }
         else {
-            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) + 1, 0, int(opcionesCharacter::VOLVER)));
+            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) + 1, 0, int(opcionesCharacter::BACK)));
         }
-        _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
+        _puntero->set_position(_indicadores[int(_idOpcion) + 1] + offset_puntero);
         _updateCharacterSelected();
     }
     else if (bn::keypad::up_pressed()) {
         if (int(_idOpcion) == 0 or int(_idOpcion) == 1) {
-            _idOpcion = opcionesCharacter::VOLVER;
+            _idOpcion = opcionesCharacter::BACK;
         }
         else if (int(_idOpcion) == 2 or int(_idOpcion) == 3) {
             _idOpcion = opcionesCharacter(int(_idOpcion) - 2);
         }
         else {
-            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) - 1, 0, int(opcionesCharacter::VOLVER)));
+            _idOpcion = opcionesCharacter(bna::loop(int(_idOpcion) - 1, 0, int(opcionesCharacter::BACK)));
         }
         _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
         _updateCharacterSelected();
@@ -178,6 +153,15 @@ void bna::CharacterSelection::_updateArrowPress() {
         _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
         _updateCharacterSelected();
     }
+
+    if (opcionesCharacter::BACK == _idOpcion) {
+        _puntero->set_visible(false);
+        _backButton.set_item(bn::sprite_items::main_menu_back, 1);
+    }
+    else {
+        _puntero->set_visible(true);
+        _backButton.set_item(bn::sprite_items::main_menu_back);
+    }
 }
 
 void bna::CharacterSelection::_updateCharacterPointer() {
@@ -197,48 +181,6 @@ void bna::CharacterSelection::_updateCharacterPointer() {
 
 void bna::CharacterSelection::_updateCharacterSelected() {
     _animateSelectedIcon();
-    if (_seleccionado == true) {
-        if (opcionesCharacter::BLACK == _idOpcionSeleccionada) {
-            _textoCharacterSeleccionado.updateText("Cat 1");
-        }
-        if (opcionesCharacter::PERSIAN == _idOpcionSeleccionada) {
-            _textoCharacterSeleccionado.updateText("Cat 2");
-        }
-        if (opcionesCharacter::SIAMESE == _idOpcionSeleccionada) {
-            _textoCharacterSeleccionado.updateText("Cat 3");
-        }
-        if (opcionesCharacter::VOLVER == _idOpcionSeleccionada) {
-            _textoCharacterSeleccionado.updateText("Cat Bird");
-        }
-        _textoCharacterSeleccionado.setVisible(false);
-        return;
-    }
-
-    bn::fixed_point position(65, 0);
-
-    if (opcionesCharacter::BLACK == _idOpcion) {
-        _character_image = bn::sprite_items::cat_black_selection_body.create_sprite(position);
-        _textoCharacterSeleccionado.updateText("Cat 1");
-    }
-    if (opcionesCharacter::PERSIAN == _idOpcion) {
-        _character_image = bn::sprite_items::cat_persian_selection_body.create_sprite(position);
-        _textoCharacterSeleccionado.updateText("Cat 2");
-    }
-    if (opcionesCharacter::SIAMESE == _idOpcion) {
-        _character_image = bn::sprite_items::cat_siamese_selection_body.create_sprite(position);
-        _textoCharacterSeleccionado.updateText("Cat 3");
-    }
-    if (opcionesCharacter::TRICOLOUR == _idOpcion) {
-        _character_image = bn::sprite_items::cat_tricolour_selection_body.create_sprite(position);
-        _textoCharacterSeleccionado.updateText("Cat Bird");
-    }
-    if (opcionesCharacter::NEXT == _idOpcion) {
-        _textoCharacterSeleccionado.updateText("");
-    }
-    if (opcionesCharacter::VOLVER == _idOpcion) {
-        _textoCharacterSeleccionado.updateText("");
-    }
-    _textoCharacterSeleccionado.setVisible(false);
 }
 
 void bna::CharacterSelection::_animateSelectedIcon() {
@@ -254,5 +196,9 @@ void bna::CharacterSelection::_animateSelectedIcon() {
     }
     if (opcionesCharacter::TRICOLOUR == _idOpcionSeleccionada) {
         _animationIcon = bn::create_sprite_animate_action_once(_iconosCharacters[3], 9, bn::sprite_items::cat_tricolour_selection_icon.tiles_item(), 0, 1, 2, 3, 4, 4, 4, 4, 4, 4);
+    }
+    if (opcionesCharacter::BACK == _idOpcionSeleccionada) {
+        int velocidad_parpadeo = 10;
+        _animationIcon = bn::create_sprite_animate_action_once(_backButton, velocidad_parpadeo, bn::sprite_items::main_menu_back.tiles_item(), 0, 1, 0, 1, 0, 1);
     }
 }
