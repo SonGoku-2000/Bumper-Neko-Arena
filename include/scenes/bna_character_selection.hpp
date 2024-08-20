@@ -18,13 +18,13 @@ namespace bna {
         [[nodiscard]] bn::optional<scene_type> update() final;
 
         private:
-        TextManager _textoCharacterSeleccionado;
-        TextManager _textoCharacter1;
-        TextManager _textoCharacter2;
-        TextManager _textoCharacter3;
-        TextManager _textoCharacter4;
-        TextManager _textoNext;
-        TextManager _textoVolver;
+        // TextManager _textoCharacterSeleccionado;
+        // TextManager _textoCharacter1;
+        // TextManager _textoCharacter2;
+        // TextManager _textoCharacter3;
+        // TextManager _textoCharacter4;
+        // TextManager _textoNext;
+        // TextManager _textoVolver;
 
         enum class opcionesCharacter :int {
             BLACK,
@@ -46,6 +46,7 @@ namespace bna {
         bn::vector<bn::sprite_ptr, 4> _iconosCharacters;
         bn::optional<bn::sprite_animate_action<12>> _animationIcon;
         bn::optional<bn::sprite_ptr> _puntero;
+        bn::sprite_ptr _backButton;
 
         bn::optional<bn::sprite_ptr> _character_image;
         bn::optional<bn::sprite_animate_action<4>> _pointerAnimation;
