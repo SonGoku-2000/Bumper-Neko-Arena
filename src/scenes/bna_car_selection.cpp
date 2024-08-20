@@ -57,7 +57,7 @@ bna::CarSelection::CarSelection(CarBuilder& carBuilder,
     _continuar = false;
     _idOpcion = opcionesPartes(0);
 
-BN_LOG("char:",int(playerCharacter));
+    BN_LOG("char:", int(playerCharacter));
     if (bna::CharactersId::BLACK == playerCharacter) {
         _car = bn::regular_bg_items::cat_black_car.create_bg(-2, 37);
     }
@@ -190,17 +190,17 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
         }
 
         opcionesPartes opcionAnterior = _idOpcion;
-        if (bn::keypad::down_pressed()) {
+        if (bn::keypad::left_pressed()) {
             _idOpcion = opcionesPartes(bna::loop(int(_idOpcion) + 1, 0, int(opcionesPartes::VOLVER)));
             _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
         }
-        else if (bn::keypad::up_pressed()) {
+        else if (bn::keypad::right_pressed()) {
             _idOpcion = opcionesPartes(bna::loop(int(_idOpcion) - 1, 0, int(opcionesPartes::VOLVER)));
             _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
         }
 
 
-        int cambio_opcion = int(bn::keypad::right_pressed()) - int(bn::keypad::left_pressed());
+        int cambio_opcion = int(bn::keypad::up_pressed()) - int(bn::keypad::down_pressed());
         if (_idOpcion == opcionesPartes::CUERPO) {
             if (opcionAnterior != _idOpcion) {
                 _updateBodyAnimation();
@@ -309,7 +309,7 @@ void bna::CarSelection::_updateWheelIcon() {
 
 void bna::CarSelection::_updateBodyAnimation() {
     if (bna::parts::bodys::LIGHT == _idBody) {
-        _animationSelectedBody = bn::create_sprite_animate_action_once(_bodysIcon, 7, bn::sprite_items::selection_icons_weight_light.tiles_item(), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+        _animationSelectedBody = bn::create_sprite_animate_action_once(_bodysIcon, 7, bn::sprite_items::selection_icons_weight_light.tiles_item(), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 8);
     }
     if (bna::parts::bodys::MEDIUM == _idBody) {
         _animationSelectedBody = bn::create_sprite_animate_action_once(_bodysIcon, 6, bn::sprite_items::selection_icons_weight_normal.tiles_item(), 0, 1, 2, 3, 4, 4);
