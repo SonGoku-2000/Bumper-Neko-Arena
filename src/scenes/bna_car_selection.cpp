@@ -193,12 +193,40 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
 
         opcionesPartes opcionAnterior = _idOpcion;
         if (bn::keypad::left_pressed()) {
-            _idOpcion = opcionesPartes(bna::loop(int(_idOpcion) + 1, 0, int(opcionesPartes::VOLVER)));
+            if(opcionesPartes::PLAY==_idOpcion){
+                _idOpcion = opcionesPartes::WHEEL;
+            }
+            else if(opcionesPartes::WHEEL==_idOpcion){
+                _idOpcion = opcionesPartes::CUERPO;
+            }
+            else if(opcionesPartes::CUERPO==_idOpcion){
+                _idOpcion = opcionesPartes::MOTOR;
+            }
+            else if(opcionesPartes::MOTOR==_idOpcion){
+                _idOpcion = opcionesPartes::VOLVER;
+            }
+            else if(opcionesPartes::VOLVER==_idOpcion){
+                _idOpcion = opcionesPartes::PLAY;
+            }
             _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
             _updateSelectedLoopMovement();
         }
         else if (bn::keypad::right_pressed()) {
-            _idOpcion = opcionesPartes(bna::loop(int(_idOpcion) - 1, 0, int(opcionesPartes::VOLVER)));
+            if(opcionesPartes::VOLVER==_idOpcion){
+                _idOpcion = opcionesPartes::MOTOR;
+            }
+            else if(opcionesPartes::MOTOR==_idOpcion){
+                _idOpcion = opcionesPartes::CUERPO;
+            }
+            else if(opcionesPartes::CUERPO==_idOpcion){
+                _idOpcion = opcionesPartes::WHEEL;
+            }
+            else if(opcionesPartes::WHEEL==_idOpcion){
+                _idOpcion = opcionesPartes::PLAY;
+            }
+            else if(opcionesPartes::PLAY==_idOpcion){
+                _idOpcion = opcionesPartes::VOLVER;
+            }
             _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
             _updateSelectedLoopMovement();
         }
