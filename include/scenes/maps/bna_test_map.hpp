@@ -2,6 +2,7 @@
 
 #include "bn_optional.h"
 #include "bn_vector.h"
+#include "bna_vector.hpp"
 
 #include "bn_regular_bg_ptr.h"
 #include "bn_camera_ptr.h"
@@ -47,7 +48,7 @@ namespace bna {
 
         bn::vector<bna::Enemie, limit_values::MAX_ENEMIES> _enemies;
         bn::vector<bna::Car, limit_values::MAX_ENEMIES + 1> _cars;
-        bn::vector<bna::CarSpawnPoint, limit_values::MAX_ENEMIES + 1> _spawnPoints;
+        bna::vector<bna::CarSpawnPoint, limit_values::MAX_ENEMIES + 1> _spawnPoints;
         bn::array<bn::fixed_point, limit_values::MAX_ENEMIES + 1> _ejes;
         bn::vector<bna::PowerObjectSpawn, 4> _powerObjectsSpawns;
 

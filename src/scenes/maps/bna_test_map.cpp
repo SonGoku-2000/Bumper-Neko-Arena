@@ -61,6 +61,8 @@ void bna::TestMap::_generateSpawnPoints() {
     _spawnPoints.push_back(bna::CarSpawnPoint(bna::Indicator(200, -200, debug), 225));
     _spawnPoints.push_back(bna::CarSpawnPoint(bna::Indicator(0, 0, debug), 0));
 
+    _spawnPoints.shuffle();
+
     for (int i = 0; i < _spawnPoints.size(); i++) {
         _spawnPoints[i].indicator.set_camera(_camera);
     }
@@ -216,9 +218,9 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
 
         // _enemiesManager.update();
         bn::core::update();
-    }
+        }
     return bna::scene_type::TEST_MAP;
-}
+    }
 
 void bna::TestMap::_setCamera(bn::camera_ptr& camera) {
     _fondo.set_camera(camera);
