@@ -13,6 +13,8 @@
 #include "bn_sprite_items_cat_siamese_drivin.h"
 #include "bn_sprite_items_cat_tricolour_driving.h"
 
+#include "bn_sprite_items_car_explosion.h"
+
 #include "bna_characters_id.hpp"
 
 
@@ -54,6 +56,10 @@ bna::Car::Car(bn::fixed_point pos, bn::fixed rotation, Stats stats, CharactersId
     _hitbox(_generateHitbox()) {
     _setSprite();
     _setAnimation();
+
+    _explosionSprite = bn::sprite_items::car_explosion.create_sprite(_pos);
+    _explosionAnimation = bn::create_sprite_animate_action_once(_explosionSprite.value(), 8, bn::sprite_items::car_explosion.tiles_item(), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+    _explosionSprite->set_visible(false);
 
     _maxSpeed = stats.maxSpeed;
     _aceleration = stats.aceleration;
@@ -102,6 +108,7 @@ void bna::Car::spawn(bn::camera_ptr& camera, bn::size tamanoMapa) {
     _sprite->set_camera(camera);
     _hitbox.setCamera(camera);
     _mapBorders = tamanoMapa;
+    _explosionSprite->set_camera(camera);
 }
 
 void bna::Car::update(bna::Vector2 eje) {
@@ -161,12 +168,26 @@ void bna::Car::update(bna::Vector2 eje) {
             _sprite->set_rotation_angle(getRotation());
 
             if (_life <= 0) {
-                _sprite->set_visible(false);
-                _state = state::DEATH;
+                _state = state::EXPLODING;
+                _explosionSprite->set_position(_pos);
+                _explosionSprite->set_visible(true);
             }
 
             _checkTimePower();
             break;
+        }
+
+        case state::EXPLODING: {
+            if (_explosionAnimation->done()) {
+                _sprite->set_visible(false);
+                _state = state::DEATH;
+            }
+            else {
+                _explosionAnimation->update();
+                if (_explosionAnimation->current_index() == 5) {
+                    _sprite->set_visible(false);
+                }
+            }
         }
 
         case state::DEATH:

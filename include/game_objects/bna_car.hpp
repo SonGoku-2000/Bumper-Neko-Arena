@@ -98,10 +98,14 @@ namespace bna {
         bn::optional<bn::sprite_ptr> _sprite;
         bn::optional<bn::sprite_animate_action<10>> _animation;
 
+        bn::optional<bn::sprite_ptr> _explosionSprite;
+        bn::optional<bn::sprite_animate_action<15>> _explosionAnimation;
+
         bn::size _mapBorders;
 
         enum state {
             LIFE,
+            EXPLODING,
             DEATH
         };
 
