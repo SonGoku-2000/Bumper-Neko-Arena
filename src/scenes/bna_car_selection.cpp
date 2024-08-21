@@ -302,15 +302,20 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
                 }
             }
             if (bn::keypad::b_pressed()) {
-                return bna::scene_type::CHARACTER_SELECTION;
+                _idOpcion = opcionesPartes::VOLVER;
+                _updateSelectedLoopMovement();
+                _pressButton();
+                boton_presionado = true;
             }
             if (bn::keypad::start_pressed()) {
-                if (_checkValidCombination()) {
-                    _carBuilder->body = _idBody;
-                    _carBuilder->motor = _idMotor;
-                    _carBuilder->wheel = _idWheel;
-                    return bna::scene_type::TEST_MAP;
-                }
+                _carBuilder->body = _idBody;
+                _carBuilder->motor = _idMotor;
+                _carBuilder->wheel = _idWheel;
+                _idOpcion = opcionesPartes::VOLVER;
+                _updateSelectedLoopMovement();
+                _pressButton();
+                boton_presionado = true;
+
             }
         }
         bn::core::update();
