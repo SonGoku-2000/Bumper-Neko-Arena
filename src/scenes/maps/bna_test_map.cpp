@@ -55,14 +55,14 @@ bna::TestMap::TestMap(CarBuilder& playerCarBuilder, CharactersId& playerCharacte
 
 void bna::TestMap::_generateSpawnPoints() {
     constexpr bool debug = true;
-    _spawnPoints.push_back(bna::Indicator(200, 200, debug));
-    _spawnPoints.push_back(bna::Indicator(-200, 200, debug));
-    _spawnPoints.push_back(bna::Indicator(-200, -200, debug));
-    _spawnPoints.push_back(bna::Indicator(200, -200, debug));
-    _spawnPoints.push_back(bna::Indicator(0, 0, debug));
+    _spawnPoints.push_back(bna::CarSpawnPoint(bna::Indicator(200, 200, debug), 135));
+    _spawnPoints.push_back(bna::CarSpawnPoint(bna::Indicator(-200, 200, debug), 45));
+    _spawnPoints.push_back(bna::CarSpawnPoint(bna::Indicator(-200, -200, debug), 315));
+    _spawnPoints.push_back(bna::CarSpawnPoint(bna::Indicator(200, -200, debug), 225));
+    _spawnPoints.push_back(bna::CarSpawnPoint(bna::Indicator(0, 0, debug), 0));
 
     for (int i = 0; i < _spawnPoints.size(); i++) {
-        _spawnPoints[i].set_camera(_camera);
+        _spawnPoints[i].indicator.set_camera(_camera);
     }
 }
 
@@ -81,7 +81,7 @@ void bna::TestMap::_generateWalls() {
 }
 
 void bna::TestMap::_generatePlayer(CarBuilder& playerCarBuilder, CharactersId& playerCharacter) {
-    playerCarBuilder.position = _spawnPoints[0];
+    playerCarBuilder.position = _spawnPoints[0].indicator;
     _cars.push_back(playerCarBuilder.build());
     _player.setBody(_cars[0]);
     _player.setCharacter(playerCharacter);
@@ -96,15 +96,15 @@ void bna::TestMap::_generateEnemies() {
     car_builder.motor = bna::parts::motors::SLOW;
     car_builder.wheel = bna::parts::wheels::NORMAL;
 
-    car_builder.position = _spawnPoints[_cars.size()];
+    car_builder.position = _spawnPoints[_cars.size()].indicator;
     _cars.push_back(car_builder.build());
     _enemies.push_back(_cars.back());
 
-    car_builder.position = _spawnPoints[_cars.size()];
+    car_builder.position = _spawnPoints[_cars.size()].indicator;
     _cars.push_back(car_builder.build());
     _enemies.push_back(_cars.back());
 
-    car_builder.position = _spawnPoints[_cars.size()];
+    car_builder.position = _spawnPoints[_cars.size()].indicator;
     _cars.push_back(car_builder.build());
     _enemies.push_back(_cars.back());
 
@@ -178,8 +178,8 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
                     if (id_car == 0) {
                         _player.givePower(_powerObjectsSpawns[id_power_object_spawn].takePower());
                     }
-                    else{
-                        _enemiesManager.givePower(_powerObjectsSpawns[id_power_object_spawn].takePower(),id_car);
+                    else {
+                        _enemiesManager.givePower(_powerObjectsSpawns[id_power_object_spawn].takePower(), id_car);
                     }
                     break;
                 }
