@@ -28,7 +28,7 @@ namespace bna {
             bn::array<parts::motors, 3>& motores, bn::array<parts::bodys, 3>& cuerpos, bn::array<parts::wheels, 3>& ruedas,
             CharactersId& playerCharacter
         );
-        ~CarSelection() override =default;
+        ~CarSelection() override = default;
         [[nodiscard]] bn::optional<scene_type> update() final;
 
         private:
@@ -58,6 +58,10 @@ namespace bna {
         bn::optional<bn::sprite_animate_action<12>> _animationSelectedBody;
         bn::optional<bn::sprite_animate_action<12>> _animationSelectedMotor;
         bn::optional<bn::sprite_animate_action<12>> _animationSelectedWheel;
+
+        bn::sprite_ptr _backButton;
+        bn::sprite_ptr _playButton;
+        bn::optional<bn::sprite_animate_action<12>> _animationPressedButton;
 
 
         bna::parts::motors _idMotor;
@@ -89,6 +93,7 @@ namespace bna {
         void _updateBodyText();
         void _updateMotorText();
         void _updateWheelText();
+        void _pressButton();
 
         bool _checkValidCombination();
     };
