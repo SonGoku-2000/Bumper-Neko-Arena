@@ -13,7 +13,7 @@
 
 #define MOVE_ENEMIES
 
-// #define IGNORE_WIN
+#define IGNORE_WIN
 #define DEBUG_CPU
 #ifdef DEBUG_CPU
 constexpr int CPU_CICLES = 64;
@@ -82,6 +82,7 @@ void bna::TestMap::_generateWalls() {
 
 void bna::TestMap::_generatePlayer(CarBuilder& playerCarBuilder, CharactersId& playerCharacter) {
     playerCarBuilder.position = _spawnPoints[0].indicator;
+    playerCarBuilder.rotation = _spawnPoints[0].rotation;
     _cars.push_back(playerCarBuilder.build());
     _player.setBody(_cars[0]);
     _player.setCharacter(playerCharacter);

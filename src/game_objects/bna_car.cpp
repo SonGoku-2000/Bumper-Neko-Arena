@@ -44,7 +44,11 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed maxSpeed, bn::fixed 
     Car(hitbox, pos, bna::Stats(maxSpeed, aceleration, turn, weight), charactersId) {
 }
 
-bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats, CharactersId charactersId) :
+bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats, CharactersId characterId) :
+    Car(hitbox, pos, 0, stats, characterId) {
+}
+
+bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed rotation, Stats stats, CharactersId charactersId) :
     _hitbox(hitbox) {
 
     _catId = charactersId;
@@ -60,7 +64,7 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats, CharactersId char
     _externalForce = bn::fixed_point(0, 0);
     _dx = 0;
     _dy = 0;
-    _rotation = 0;
+    _rotation = rotation;
 
     _life = bna::limit_values::MAX_LIFE;
     _state = state::LIFE;
