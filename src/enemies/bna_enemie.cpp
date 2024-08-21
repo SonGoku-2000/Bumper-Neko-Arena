@@ -224,12 +224,8 @@ bna::Car& bna::Enemie::getCar() {
     return *_cuerpo;
 }
 
-void bna::Enemie::setCharacter(const Characters character) {
-    _character = character;
-}
-
-bna::Characters bna::Enemie::getCharacter() {
-    return _character;
+bna::CharactersId bna::Enemie::getCharacter() {
+    return _cuerpo->getCharacterId();
 }
 
 bool bna::Enemie::isAlive() {

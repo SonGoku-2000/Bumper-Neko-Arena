@@ -64,7 +64,7 @@ namespace bna {
         void _generateSpawnPoints();
         void _generateWalls();
         void _generatePlayer(CarBuilder& playerCarBuilder, CharactersId& playerCharacter);
-        void _generateEnemies();
+        void _generateEnemies(const CharactersId& playerCharacter);
         void _generatePowerObjectsSpawns();
 
         bool _checkEnemiesAlive();

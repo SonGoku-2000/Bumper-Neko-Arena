@@ -13,7 +13,7 @@
 namespace bna {
     class Player;
     class CarBuilder;
-    enum class Characters :int;
+    enum class CharactersId :int;
     enum class car_powers_id :int;
     class Enemie {
         public:
@@ -30,8 +30,7 @@ namespace bna {
         bn::fixed_point getEje();
         bn::fixed_point getPosition();
 
-        void setCharacter(const Characters character);
-        bna::Characters getCharacter();
+        bna::CharactersId getCharacter();
 
         bool isAlive();
 
@@ -39,7 +38,7 @@ namespace bna {
 
         private:
         bna::Car* _cuerpo;
-        bna::Characters _character;
+        bna::CharactersId _character;
         bn::fixed_rect _vision;
 
         bn::vector<bna::Car, limit_values::MAX_ENEMIES + 1>* _carros;

@@ -46,7 +46,7 @@ bna::TestMap::TestMap(CarBuilder& playerCarBuilder, CharactersId& playerCharacte
 
     _setCamera(_camera);
 
-    _generateEnemies();
+    _generateEnemies(playerCharacter);
 
     _generatePowerObjectsSpawns();
 
@@ -93,27 +93,37 @@ void bna::TestMap::_generatePlayer(CarBuilder& playerCarBuilder, CharactersId& p
     _uiLife.setCar(_cars[0]);
 }
 
-void bna::TestMap::_generateEnemies() {
+void bna::TestMap::_generateEnemies(const CharactersId& playerCharacter) {
     CarBuilder car_builder;
     car_builder.body = bna::parts::bodys::MEDIUM;
     car_builder.motor = bna::parts::motors::SLOW;
     car_builder.wheel = bna::parts::wheels::NORMAL;
 
-    car_builder.position = _spawnPoints[_cars.size()].indicator;
-    _cars.push_back(car_builder.build());
-    _enemies.push_back(_cars.back());
-
-    car_builder.position = _spawnPoints[_cars.size()].indicator;
-    _cars.push_back(car_builder.build());
-    _enemies.push_back(_cars.back());
-
-    car_builder.position = _spawnPoints[_cars.size()].indicator;
-    _cars.push_back(car_builder.build());
-    _enemies.push_back(_cars.back());
-
-    for (int i = 0; i < _enemies.size(); i++) {
-        _enemies[i].setCharacter(bna::Characters(i));
+    car_builder.cat_id = bna::CharactersId(0);
+    if (car_builder.cat_id == playerCharacter) {
+        car_builder.cat_id = bna::CharactersId(int(car_builder.cat_id) + 1);
     }
+
+    car_builder.position = _spawnPoints[_cars.size()].indicator;
+    _cars.push_back(car_builder.build());
+    _enemies.push_back(_cars.back());
+
+    car_builder.cat_id = bna::CharactersId(int(car_builder.cat_id) + 1);
+    if (car_builder.cat_id == playerCharacter) {
+        car_builder.cat_id = bna::CharactersId(int(car_builder.cat_id) + 1);
+    }
+    car_builder.position = _spawnPoints[_cars.size()].indicator;
+    _cars.push_back(car_builder.build());
+    _enemies.push_back(_cars.back());
+
+    car_builder.cat_id = bna::CharactersId(int(car_builder.cat_id) + 1);
+    if (car_builder.cat_id == playerCharacter) {
+        car_builder.cat_id = bna::CharactersId(int(car_builder.cat_id) + 1);
+    }
+    car_builder.position = _spawnPoints[_cars.size()].indicator;
+    _cars.push_back(car_builder.build());
+    _enemies.push_back(_cars.back());
+
 
     for (int i = 0; i < _cars.size(); i++) {
         _cars[i].spawn(_camera, getSize());
@@ -218,9 +228,9 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
 
         // _enemiesManager.update();
         bn::core::update();
-        }
-    return bna::scene_type::TEST_MAP;
     }
+    return bna::scene_type::TEST_MAP;
+}
 
 void bna::TestMap::_setCamera(bn::camera_ptr& camera) {
     _fondo.set_camera(camera);
