@@ -96,47 +96,6 @@ bna::CarSelection::CarSelection(CarBuilder& carBuilder,
     _bodysIcon.set_position(_indicadores[2]);
     _wheelsIcon.set_position(_indicadores[3]);
 
-    constexpr int OFFSET_HORIZONTAL_TEXTO = 10;
-
-    _textoStats = bna::TextManager(
-        _indicadores[0].x(),
-        _indicadores[0].y(),
-        ""
-    );
-    _textoStats.set_aligment(bn::sprite_text_generator::alignment_type::CENTER);
-
-    // _generateBodyRoulette();
-    _textoCuerpo = bna::TextManager(
-        _indicadores[2].x() + OFFSET_HORIZONTAL_TEXTO,
-        _indicadores[2].y() + OFFSET_HORIZONTAL_TEXTO,
-        ""
-    );
-
-    // _generateMotorRoulette();
-    _textoMotor = bna::TextManager(
-        _indicadores[1].x() + OFFSET_HORIZONTAL_TEXTO,
-        _indicadores[1].y() + OFFSET_HORIZONTAL_TEXTO,
-        ""
-    );
-
-    // _generateWheelRoulette();
-    _textoRueda = bna::TextManager(
-        _indicadores[3].x() + OFFSET_HORIZONTAL_TEXTO,
-        _indicadores[3].y() + OFFSET_HORIZONTAL_TEXTO,
-        ""
-    );
-
-    _textoPlay = bna::TextManager(
-        _indicadores[4].x() + OFFSET_HORIZONTAL_TEXTO,
-        _indicadores[4].y(),
-        "Play"
-    );
-    _textoVolver = bna::TextManager(
-        _indicadores[5].x() + OFFSET_HORIZONTAL_TEXTO,
-        _indicadores[5].y(),
-        "Back"
-    );
-
     _idBody = bna::parts::bodys(0);
     _idMotor = bna::parts::motors(0);
     _idWheel = bna::parts::wheels(0);
@@ -146,8 +105,6 @@ bna::CarSelection::CarSelection(CarBuilder& carBuilder,
     _updateBodyText();
     _updateMotorText();
     _updateWheelText();
-
-    _puntero = bn::sprite_items::pointer.create_sprite(_indicadores[int(_idOpcion) + 1]);
 }
 
 
@@ -229,7 +186,6 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
                 else if (opcionesPartes::VOLVER == _idOpcion) {
                     _idOpcion = opcionesPartes::PLAY;
                 }
-                _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
                 _updateSelectedLoopMovement();
             }
             else if (bn::keypad::right_pressed()) {
@@ -248,7 +204,6 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
                 else if (opcionesPartes::PLAY == _idOpcion) {
                     _idOpcion = opcionesPartes::VOLVER;
                 }
-                _puntero->set_position(_indicadores[int(_idOpcion) + 1]);
                 _updateSelectedLoopMovement();
             }
 
@@ -311,7 +266,7 @@ bn::optional<bna::scene_type> bna::CarSelection::update() {
                 _carBuilder->body = _idBody;
                 _carBuilder->motor = _idMotor;
                 _carBuilder->wheel = _idWheel;
-                _idOpcion = opcionesPartes::VOLVER;
+                _idOpcion = opcionesPartes::PLAY;
                 _updateSelectedLoopMovement();
                 _pressButton();
                 boton_presionado = true;
@@ -450,12 +405,6 @@ void bna::CarSelection::_updateStatsText() {
     texto.append(bn::to_string<10>(stats.turn));
     texto.append(" Weight: ");
     texto.append(bn::to_string<10>(stats.weight));
-
-    _textoStats.updateText(
-        texto,
-        35
-    );
-    _textoStats.setVisible(false);
 }
 void bna::CarSelection::_updateBodyText() {
     bn::string<111> texto = "Body: ";
@@ -469,9 +418,6 @@ void bna::CarSelection::_updateBodyText() {
     if (bna::parts::bodys::HEAVY == _idBody) {
         texto.append("Heavy");
     }
-
-    _textoCuerpo.updateText(texto);
-    _textoCuerpo.setVisible(false);
 }
 void bna::CarSelection::_updateMotorText() {
     bn::string<111> texto = "Motor: ";
@@ -485,9 +431,6 @@ void bna::CarSelection::_updateMotorText() {
     if (bna::parts::motors::FAST == _idMotor) {
         texto.append("Fast");
     }
-
-    _textoMotor.updateText(texto);
-    _textoMotor.setVisible(false);
 }
 void bna::CarSelection::_updateWheelText() {
     bn::string<111> texto = "Wheel: ";
@@ -501,9 +444,6 @@ void bna::CarSelection::_updateWheelText() {
     if (bna::parts::wheels::SPIKES == _idWheel) {
         texto.append("Spikes");
     }
-
-    _textoRueda.updateText(texto);
-    _textoRueda.setVisible(false);
 }
 
 bool bna::CarSelection::_checkValidCombination() {

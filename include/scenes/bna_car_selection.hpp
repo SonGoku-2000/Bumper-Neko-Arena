@@ -32,13 +32,6 @@ namespace bna {
         [[nodiscard]] bn::optional<scene_type> update() final;
 
         private:
-        TextManager _textoStats;
-        TextManager _textoCuerpo;
-        TextManager _textoMotor;
-        TextManager _textoRueda;
-        TextManager _textoPlay;
-        TextManager _textoVolver;
-
         enum class opcionesPartes :int {
             CUERPO,
             MOTOR,
@@ -50,7 +43,6 @@ namespace bna {
         CharactersId _character;
 
         bn::vector<bna::Indicator, 6> _indicadores;
-        bn::optional<bn::sprite_ptr> _puntero;
 
         bn::sprite_ptr _bodysIcon;
         bn::sprite_ptr _motorsIcon;
