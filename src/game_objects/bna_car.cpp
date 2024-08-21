@@ -36,22 +36,22 @@ namespace bna {
     constexpr bn::fixed MULTIPLICADOR_REBOTE = 1.5;
 } // namespace bna
 
-bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed weight) :
-    Car(hitbox, pos, bna::Stats(bna::default_values::MAX_SPEED, bna::default_values::ACELERATION, bna::default_values::TURN, weight), bna::CharactersId::TRICOLOUR) {
+bna::Car::Car(bn::fixed_point pos, bn::fixed weight) :
+    Car(pos, bna::Stats(bna::default_values::MAX_SPEED, bna::default_values::ACELERATION, bna::default_values::TURN, weight), bna::CharactersId::TRICOLOUR) {
 }
 
-bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed maxSpeed, bn::fixed aceleration, bn::fixed turn, bn::fixed weight, CharactersId charactersId) :
-    Car(hitbox, pos, bna::Stats(maxSpeed, aceleration, turn, weight), charactersId) {
+bna::Car::Car(bn::fixed_point pos, bn::fixed maxSpeed, bn::fixed aceleration, bn::fixed turn, bn::fixed weight, CharactersId charactersId) :
+    Car(pos, bna::Stats(maxSpeed, aceleration, turn, weight), charactersId) {
 }
 
-bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats, CharactersId characterId) :
-    Car(hitbox, pos, 0, stats, characterId) {
+bna::Car::Car(bn::fixed_point pos, Stats stats, CharactersId characterId) :
+    Car(pos, 0, stats, characterId) {
 }
 
-bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed rotation, Stats stats, CharactersId charactersId) :
-    _hitbox(hitbox) {
-
-    _catId = charactersId;
+bna::Car::Car(bn::fixed_point pos, bn::fixed rotation, Stats stats, CharactersId charactersId) :
+    _pos(pos),
+    _catId(charactersId),
+    _hitbox(_generateHitbox()) {
     _setSprite();
     _setAnimation();
 
@@ -60,7 +60,6 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed rotation, Stats stat
     _turn = stats.turn;
     _weight = stats.weight;
 
-    _pos = pos;
     _externalForce = bn::fixed_point(0, 0);
     _dx = 0;
     _dy = 0;
@@ -73,6 +72,29 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed rotation, Stats stat
 
     _active_power = bna::car_powers_id::NONE;
     _elapsedTimeActivePower = 0;
+}
+
+bna::Hitbox bna::Car::_generateHitbox() {
+#ifdef DEBUG
+    constexpr bool visible = true;
+#else
+    constexpr bool visible = false;
+#endif
+    // return bna::Car(bna::Hitbox(bna::Vector2(position), bna::Vector2(10, 20), true), position, rotation, stats, cat_id);
+
+    if (bna::CharactersId::TRICOLOUR == _catId) {
+        return bna::Hitbox(_pos, bna::Vector2(16, 30), visible);
+    }
+    else if (bna::CharactersId::BLACK == _catId) {
+        return bna::Hitbox(_pos, bna::Vector2(16, 30), visible, 7);
+    }
+    else if (bna::CharactersId::SIAMESE == _catId) {
+        return bna::Hitbox(_pos, bna::Vector2(20, 30), visible);
+    }
+    else if (bna::CharactersId::PERSIAN == _catId) {
+        return bna::Hitbox(_pos, bna::Vector2(20, 30), visible);
+    }
+    return bna::Hitbox(_pos, bna::Vector2(16, 30), visible);
 }
 
 
