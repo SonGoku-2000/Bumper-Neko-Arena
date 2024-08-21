@@ -18,6 +18,7 @@ namespace bna {
         parts::bodys body;
         parts::wheels wheel;
         bn::fixed_point position;
+        bn::fixed rotation;
         CharactersId cat_id;
     };
 } // namespace bna

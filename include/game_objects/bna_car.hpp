@@ -20,9 +20,10 @@ namespace bna {
     enum class CharactersId :int;
     class Car {
         public:
-        Car(Hitbox hitbox, bn::fixed_point position, bn::fixed weight);
-        Car(Hitbox hitbox, bn::fixed_point position, bn::fixed maxSpeed, bn::fixed aceleration, bn::fixed turn, bn::fixed weight, CharactersId charactersId);
-        Car(Hitbox hitbox, bn::fixed_point position, Stats stats, CharactersId charactersId);
+        Car(bn::fixed_point position, bn::fixed weight);
+        Car(bn::fixed_point position, bn::fixed maxSpeed, bn::fixed aceleration, bn::fixed turn, bn::fixed weight, CharactersId charactersId);
+        Car(bn::fixed_point position, Stats stats, CharactersId charactersId);
+        Car(bn::fixed_point position, bn::fixed rotation, Stats stats, CharactersId charactersId);
         ~Car() = default;
 
         void update(bna::Vector2 eje);
@@ -90,17 +91,21 @@ namespace bna {
 
         bn::fixed _life;
 
+        CharactersId _catId;
+
         Hitbox _hitbox;
 
         bn::optional<bn::sprite_ptr> _sprite;
         bn::optional<bn::sprite_animate_action<10>> _animation;
 
-        CharactersId _catId;
+        bn::optional<bn::sprite_ptr> _explosionSprite;
+        bn::optional<bn::sprite_animate_action<15>> _explosionAnimation;
 
         bn::size _mapBorders;
 
         enum state {
             LIFE,
+            EXPLODING,
             DEATH
         };
 
@@ -118,6 +123,8 @@ namespace bna {
         void _setAnimation();
         void _setSprite();
         void _resetSprite();
+
+        bna::Hitbox _generateHitbox();
     };
 } // namespace bna
 

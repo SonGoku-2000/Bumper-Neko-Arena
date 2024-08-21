@@ -13,6 +13,8 @@
 #include "bn_sprite_items_cat_siamese_drivin.h"
 #include "bn_sprite_items_cat_tricolour_driving.h"
 
+#include "bn_sprite_items_car_explosion.h"
+
 #include "bna_characters_id.hpp"
 
 
@@ -36,31 +38,38 @@ namespace bna {
     constexpr bn::fixed MULTIPLICADOR_REBOTE = 1.5;
 } // namespace bna
 
-bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed weight) :
-    Car(hitbox, pos, bna::Stats(bna::default_values::MAX_SPEED, bna::default_values::ACELERATION, bna::default_values::TURN, weight), bna::CharactersId::TRICOLOUR) {
+bna::Car::Car(bn::fixed_point pos, bn::fixed weight) :
+    Car(pos, bna::Stats(bna::default_values::MAX_SPEED, bna::default_values::ACELERATION, bna::default_values::TURN, weight), bna::CharactersId::TRICOLOUR) {
 }
 
-bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, bn::fixed maxSpeed, bn::fixed aceleration, bn::fixed turn, bn::fixed weight, CharactersId charactersId) :
-    Car(hitbox, pos, bna::Stats(maxSpeed, aceleration, turn, weight), charactersId) {
+bna::Car::Car(bn::fixed_point pos, bn::fixed maxSpeed, bn::fixed aceleration, bn::fixed turn, bn::fixed weight, CharactersId charactersId) :
+    Car(pos, bna::Stats(maxSpeed, aceleration, turn, weight), charactersId) {
 }
 
-bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats, CharactersId charactersId) :
-    _hitbox(hitbox) {
+bna::Car::Car(bn::fixed_point pos, Stats stats, CharactersId characterId) :
+    Car(pos, 0, stats, characterId) {
+}
 
-    _catId = charactersId;
+bna::Car::Car(bn::fixed_point pos, bn::fixed rotation, Stats stats, CharactersId charactersId) :
+    _pos(pos),
+    _catId(charactersId),
+    _hitbox(_generateHitbox()) {
     _setSprite();
     _setAnimation();
+
+    _explosionSprite = bn::sprite_items::car_explosion.create_sprite(_pos);
+    _explosionAnimation = bn::create_sprite_animate_action_once(_explosionSprite.value(), 8, bn::sprite_items::car_explosion.tiles_item(), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+    _explosionSprite->set_visible(false);
 
     _maxSpeed = stats.maxSpeed;
     _aceleration = stats.aceleration;
     _turn = stats.turn;
     _weight = stats.weight;
 
-    _pos = pos;
     _externalForce = bn::fixed_point(0, 0);
     _dx = 0;
     _dy = 0;
-    _rotation = 0;
+    _rotation = rotation;
 
     _life = bna::limit_values::MAX_LIFE;
     _state = state::LIFE;
@@ -71,11 +80,35 @@ bna::Car::Car(Hitbox hitbox, bn::fixed_point pos, Stats stats, CharactersId char
     _elapsedTimeActivePower = 0;
 }
 
+bna::Hitbox bna::Car::_generateHitbox() {
+#ifdef DEBUG
+    constexpr bool visible = true;
+#else
+    constexpr bool visible = false;
+#endif
+    // return bna::Car(bna::Hitbox(bna::Vector2(position), bna::Vector2(10, 20), true), position, rotation, stats, cat_id);
+
+    if (bna::CharactersId::TRICOLOUR == _catId) {
+        return bna::Hitbox(_pos, bna::Vector2(16, 30), visible);
+    }
+    else if (bna::CharactersId::BLACK == _catId) {
+        return bna::Hitbox(_pos, bna::Vector2(16, 30), visible, 7);
+    }
+    else if (bna::CharactersId::SIAMESE == _catId) {
+        return bna::Hitbox(_pos, bna::Vector2(20, 30), visible);
+    }
+    else if (bna::CharactersId::PERSIAN == _catId) {
+        return bna::Hitbox(_pos, bna::Vector2(20, 30), visible);
+    }
+    return bna::Hitbox(_pos, bna::Vector2(16, 30), visible);
+}
+
 
 void bna::Car::spawn(bn::camera_ptr& camera, bn::size tamanoMapa) {
     _sprite->set_camera(camera);
     _hitbox.setCamera(camera);
     _mapBorders = tamanoMapa;
+    _explosionSprite->set_camera(camera);
 }
 
 void bna::Car::update(bna::Vector2 eje) {
@@ -135,12 +168,26 @@ void bna::Car::update(bna::Vector2 eje) {
             _sprite->set_rotation_angle(getRotation());
 
             if (_life <= 0) {
-                _sprite->set_visible(false);
-                _state = state::DEATH;
+                _state = state::EXPLODING;
+                _explosionSprite->set_position(_pos);
+                _explosionSprite->set_visible(true);
             }
 
             _checkTimePower();
             break;
+        }
+
+        case state::EXPLODING: {
+            if (_explosionAnimation->done()) {
+                _sprite->set_visible(false);
+                _state = state::DEATH;
+            }
+            else {
+                _explosionAnimation->update();
+                if (_explosionAnimation->current_index() == 5) {
+                    _sprite->set_visible(false);
+                }
+            }
         }
 
         case state::DEATH:
