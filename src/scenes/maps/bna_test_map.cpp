@@ -16,12 +16,12 @@
 #define IGNORE_WIN
 #define DEBUG_CPU
 #ifdef DEBUG_CPU
+#include "bna_debug_cpu.hpp"
 constexpr int CPU_CICLES = 64;
-#include "bn_log.h"
 #ifdef BN_CFG_PROFILER_ENABLED
 #include "bn_profiler.h"
 #include "bn_keypad.h"
-// #define PROFILE
+#define PROFILE
 #endif
 #endif
 
@@ -142,22 +142,10 @@ void bna::TestMap::_generatePowerObjectsSpawns() {
 
 
 bn::optional<bna::scene_type> bna::TestMap::update() {
-#ifdef DEBUG_CPU
-    int cpuCont = 0;
-    bn::fixed cpu = 0;
-#endif
     bn::music_items::forward.play();
     while (true) {
 #ifdef DEBUG_CPU
-        if (cpuCont == CPU_CICLES) {
-            BN_LOG("CPU : % ", cpu / CPU_CICLES * 100);
-            cpu = 0;
-            cpuCont = 0;
-        }
-        else {
-            cpu += bn::core::last_cpu_usage();
-            cpuCont++;
-        }
+        debug_cpu<CPU_CICLES>();
 #endif
 #ifdef PROFILE
         if (bn::keypad::l_held() and
