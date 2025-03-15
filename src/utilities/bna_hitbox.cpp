@@ -302,6 +302,7 @@ bna::CollisionPoint bna::Hitbox::checkCollisionPoint(Hitbox& hitbox) {
     if (!checkAABB(hitbox.getAABB())) {
         CollisionPoint collisionPoint;
         collisionPoint.collided = false;
+        return collisionPoint;
     }
     return bna::checkCollisionPointV2(*this, hitbox);
 }
