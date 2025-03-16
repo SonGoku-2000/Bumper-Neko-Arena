@@ -44,7 +44,7 @@ void bna::UILife::update() {
         _previousLife = _car->getLife();
     }
 
-    _shakeBar();
+    // _shakeBar();
 
     constexpr int numero_divisiones = 13;
     int sprite_index = numero_divisiones - (numero_divisiones * _car->getLife() / limit_values::MAX_LIFE).ceil_integer();
@@ -113,4 +113,13 @@ void bna::UILife::_resetAnimation() {
         _catAnimation = bn::create_sprite_animate_action_once(_catFace.value(), 8, bn::sprite_items::health_bar_cat_tricolour_face.tiles_item(), 1, 1, 2, 3, 0);
         _catAnimation2 = bn::create_sprite_animate_action_once(_catFace2.value(), 8, bn::sprite_items::health_bar_cat_tricolour_hat.tiles_item(), 1, 1, 2, 3, 0);
     }
+}
+
+void bna::UILife::set_camera(bn::camera_ptr& camera) {
+    _catFace->set_camera(camera);
+    if (_catFace2.has_value()) {
+        _catFace->set_camera(camera);
+    }
+
+    _healthBar.set_camera(camera);
 }

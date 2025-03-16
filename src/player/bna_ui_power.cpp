@@ -21,3 +21,7 @@ void bna::UIPower::_set_sprite() {
 void bna::UIPower::update() {
     _set_sprite();
 }
+
+void bna::UIPower::set_camera(bn::camera_ptr& camera){
+    _power_icon.set_camera(camera);
+}

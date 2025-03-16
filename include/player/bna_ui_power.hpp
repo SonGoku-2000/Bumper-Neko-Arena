@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bn_sprite_ptr.h"
+#include "bn_camera_ptr.h"
 
 namespace bna {
     class Player;
@@ -11,6 +12,7 @@ namespace bna {
 
         void update();
         void set_player(bna::Player& player);
+        void set_camera(bn::camera_ptr& camera);
 
         private:
         bn::sprite_ptr _power_icon;

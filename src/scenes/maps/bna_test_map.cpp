@@ -13,7 +13,9 @@
 
 #define MOVE_ENEMIES
 
-#define IGNORE_WIN
+// #define IGNORE_WIN
+constexpr bool DEBUG_SPAWN_POINTS = false;
+constexpr bool DEBUG_WALLS = false;
 #define DEBUG_CPU
 #ifdef DEBUG_CPU
 #include "bna_debug_cpu.hpp"
@@ -54,7 +56,7 @@ bna::TestMap::TestMap(CarBuilder& playerCarBuilder, CharactersId& playerCharacte
 }
 
 void bna::TestMap::_generateSpawnPoints() {
-    constexpr bool debug = true;
+    constexpr bool debug = DEBUG_SPAWN_POINTS;
     _spawnPoints.push_back(bna::CarSpawnPoint(bna::Indicator(200, 200, debug), 135));
     _spawnPoints.push_back(bna::CarSpawnPoint(bna::Indicator(-200, 200, debug), 45));
     _spawnPoints.push_back(bna::CarSpawnPoint(bna::Indicator(-200, -200, debug), 315));
@@ -69,7 +71,7 @@ void bna::TestMap::_generateSpawnPoints() {
 }
 
 void bna::TestMap::_generateWalls() {
-    constexpr bool debug = true;
+    constexpr bool debug = DEBUG_WALLS;
     constexpr int separacion = 10;
     _walls.push_back(bna::Hitbox(bna::Vector2(0, (_size.height() / -2) + separacion), bna::Vector2(10, _size.width() - 10), debug, 0));
     _walls.push_back(bna::Hitbox(bna::Vector2(0, (_size.height() / 2) - separacion), bna::Vector2(10, _size.width() - 10), debug, 1));
@@ -90,7 +92,7 @@ void bna::TestMap::_generatePlayer(CarBuilder& playerCarBuilder, CharactersId& p
     _player.setCharacter(playerCharacter);
 
     _player.spawn(_cars, getWalls(), 0, _camera, getSize());
-    _uiLife.setCar(_cars[0]);
+    _ui.set_player(_player);
 }
 
 void bna::TestMap::_generateEnemies(const CharactersId& playerCharacter) {
@@ -198,7 +200,7 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
 
 
         _player.update();
-        _uiLife.update();
+        _ui.update();
         _positionIconManager.update();
         _enemiesManager.update();
 

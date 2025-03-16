@@ -14,7 +14,7 @@
 #include "bna_enemie.hpp"
 #include "bna_enemies_manager.hpp"
 #include "bna_player.hpp"
-#include "bna_ui_life.hpp"
+#include "bna_ui.hpp"
 #include "bna_scene.hpp"
 
 #include "bna_position_icon_manager.hpp"
@@ -57,7 +57,7 @@ namespace bna {
 
         bn::camera_ptr _camera;
 
-        bna::UILife _uiLife;
+        UI _ui;
         bna::Player _player;
 
         void _setCamera(bn::camera_ptr& camera);
