@@ -46,27 +46,9 @@ void bna::UILife::update() {
 
     _shakeBar();
 
-    if (_car->getLife() > (bna::limit_values::MAX_LIFE / 7) * 6) {
-        _healthBar.set_item(bn::sprite_items::health_bar, 0);
-    }
-    else if (_car->getLife() > (bna::limit_values::MAX_LIFE / 7) * 5) {
-        _healthBar.set_item(bn::sprite_items::health_bar, 1);
-    }
-    else if (_car->getLife() > (bna::limit_values::MAX_LIFE / 7) * 4) {
-        _healthBar.set_item(bn::sprite_items::health_bar, 2);
-    }
-    else if (_car->getLife() > (bna::limit_values::MAX_LIFE / 7) * 3) {
-        _healthBar.set_item(bn::sprite_items::health_bar, 3);
-    }
-    else if (_car->getLife() > (bna::limit_values::MAX_LIFE / 7) * 2) {
-        _healthBar.set_item(bn::sprite_items::health_bar, 4);
-    }
-    else if (_car->getLife() > (bna::limit_values::MAX_LIFE / 7)) {
-        _healthBar.set_item(bn::sprite_items::health_bar, 5);
-    }
-    else {
-        _healthBar.set_item(bn::sprite_items::health_bar, 6);
-    }
+    constexpr int numero_divisiones = 13;
+    int sprite_index = numero_divisiones - (numero_divisiones * _car->getLife() / limit_values::MAX_LIFE).ceil_integer();
+    _healthBar.set_item(bn::sprite_items::health_bar, sprite_index);
 }
 
 void bna::UILife::_shakeBar() {
@@ -82,7 +64,7 @@ void bna::UILife::_shakeBar() {
     if (bna::CharactersId::SIAMESE == _catId) {
         offset = -1;
     }
-    if (_catAnimation->current_index() == 0 || _catAnimation->current_index() == 1|| _catAnimation->current_index() == 2) {
+    if (_catAnimation->current_index() == 0 || _catAnimation->current_index() == 1 || _catAnimation->current_index() == 2) {
         _healthBar.set_x(_catFace->x() + offset);
     }
     else {
