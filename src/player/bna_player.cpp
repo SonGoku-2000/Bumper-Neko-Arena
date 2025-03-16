@@ -87,3 +87,6 @@ void bna::Player::givePower(bna::car_powers_id carPower) {
     _carPower = carPower;
 }
 
+bna::car_powers_id bna::Player::get_car_power(){
+    return _carPower;
+}
