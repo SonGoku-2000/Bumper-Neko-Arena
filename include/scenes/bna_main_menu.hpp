@@ -23,8 +23,9 @@ namespace bna {
         bn::optional<bn::regular_bg_animate_action<10>> _animationPlayButton;
         bn::optional<bn::sprite_animate_action<10>> _animationOptionBackButton;
 
+        bn::regular_bg_ptr _clouds;
         bn::regular_bg_ptr _background;
-        bn::regular_bg_animate_action<6> _animation;
+        bn::regular_bg_animate_action<10> _animation;
 
         enum class options :int {
             PLAY, OPTIONS, BACK
