@@ -13,6 +13,7 @@ bna::Hitbox::Hitbox(Vector2 center, Vector2 size, bn::fixed rotation, bool debug
     _axesNormalidedUpdated = false;
     _axesUpdated = false;
     _aabbUpdated = false;
+    _active = true;
 
     for (int i = 0; i < 4; i++) {
         _projectionsInfo[i].updated = false;
@@ -104,6 +105,10 @@ void bna::Hitbox::setCamera(bn::camera_ptr& camera) {
     for (int i = 0; i < _spritesVertices.size(); i++) {
         _spritesVertices[i].set_camera(camera);
     }
+}
+
+void bna::Hitbox::setActive(bool active) {
+    _active = active;
 }
 
 void bna::Hitbox::setRotation(bn::fixed angle) {
@@ -251,6 +256,10 @@ bn::fixed bna::Hitbox::width() const {
 
 
 bool bna::Hitbox::checkCollision(bna::Hitbox& hitbox) {
+    if (!_active) {
+        return false;
+    }
+
     if (!checkAABB(hitbox.getAABB())) {
         return false;
     }
@@ -299,6 +308,11 @@ bool bna::Hitbox::checkAABB(const AABB& other) {
 }
 
 bna::CollisionPoint bna::Hitbox::checkCollisionPoint(Hitbox& hitbox) {
+    if (!_active) {
+        CollisionPoint collisionPoint;
+        collisionPoint.collided = false;
+        return collisionPoint;
+    }
     if (!checkAABB(hitbox.getAABB())) {
         CollisionPoint collisionPoint;
         collisionPoint.collided = false;

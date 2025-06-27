@@ -46,6 +46,7 @@ namespace bna {
         CollisionPoint checkCollisionPoint(Hitbox& hitbox);
 
         void setCamera(bn::camera_ptr& camera);
+        void setActive(bool avtive);
 
         bn::vector<bna::Vector2, 4> getAxesNormalized();
         bn::vector<bna::Vector2, 4> getAxes();
@@ -78,6 +79,7 @@ namespace bna {
         bool _axesNormalidedUpdated;
         bool _axesUpdated;
         bool _aabbUpdated;
+        bool _active;
 
         bn::vector<Vector2, 4> _generateVertices() const;
         bn::vector<Vector2, 4> _generateVertices2() const;
