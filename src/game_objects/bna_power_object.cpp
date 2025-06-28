@@ -24,7 +24,6 @@ bna::PowerObject::PowerObject(bn::fixed_point position, bna::car_powers_id carPo
     _carPower = carPower;
 }
 
-
 void bna::PowerObject::set_camera(bn::camera_ptr& camera) {
     _sprite.set_camera(camera);
     _hitbox.setCamera(camera);
@@ -36,4 +35,12 @@ bna::car_powers_id bna::PowerObject::getCarPowerId() {
 
 bna::Hitbox& bna::PowerObject::get_hitbox() {
     return _hitbox;
+}
+
+void bna::PowerObject::put_below() {
+    _sprite.put_below();
+}
+
+void bna::PowerObject::set_active(bool active) {
+    _hitbox.setActive(active);
 }

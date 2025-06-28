@@ -8,6 +8,8 @@
 
 #include "bna_power_object.hpp"
 #include "bna_hitbox.hpp"
+#include "bn_sprite_ptr.h"
+#include "bn_sprite_animate_actions.h"
 
 
 namespace bna {
@@ -21,7 +23,7 @@ namespace bna {
         void update();
 
         bool checkColission(bna::Hitbox& otherHitbox);
-        
+
         car_powers_id takePower();
 
         private:
@@ -30,7 +32,21 @@ namespace bna {
         bn::random _random;
         int _remainingTime;
 
+        bn::sprite_ptr _sprite;
+        bn::optional<bn::sprite_animate_action<10>> _animation;
+
         bn::optional<bna::PowerObject> _powerObject;
+
+        enum state {
+            EMPTY,
+            OPPENING,
+            READY,
+            CLOSSIONG,
+        };
+        state _state;
+
+        enum class fase { START, READY };
+        fase _fase;
 
         car_powers_id _generateCarPowerId();
     };
