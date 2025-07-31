@@ -53,6 +53,13 @@ bna::TestMap::TestMap(CarBuilder& playerCarBuilder, CharactersId& playerCharacte
     _generatePowerObjectsSpawns();
 
     _positionIconManager.generateIcons();
+
+    _text_presss_start.updateText("Press start to continue");
+    _text_presss_start.set_aligment(bn::sprite_text_generator::alignment_type::CENTER);
+    _text_presss_start.set_y(20);
+
+    _text_presss_start.set_aligment(bn::sprite_text_generator::alignment_type::CENTER);
+    _text_win.set_y(-20);
 }
 
 void bna::TestMap::_generateSpawnPoints() {
@@ -154,7 +161,7 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
             bn::keypad::r_held() and
             bn::keypad::start_held()) {
             bn::profiler::show();
-        }
+    }
 #endif
 
         _ejes[0] = _player.getEje();
@@ -218,7 +225,7 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
 
         // _enemiesManager.update();
         bn::core::update();
-    }
+}
     return bna::scene_type::TEST_MAP;
 }
 

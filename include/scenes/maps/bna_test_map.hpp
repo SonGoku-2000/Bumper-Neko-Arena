@@ -22,6 +22,8 @@
 #include "bna_test_values.hpp"
 #include "bna_power_object_spawn.hpp"
 
+#include "bna_text_manager.hpp"
+
 
 namespace bna {
     class CarBuilder;
@@ -59,6 +61,9 @@ namespace bna {
 
         UI _ui;
         bna::Player _player;
+
+        bna::TextManager _text_win;
+        bna::TextManager _text_presss_start;
 
         void _setCamera(bn::camera_ptr& camera);
         void _generateSpawnPoints();
