@@ -6,7 +6,7 @@
 #include "bna_brightness_manager.hpp"
 #include "bna_parts.hpp"
 
-#define DEBUG
+// #define DEBUG
 #ifdef DEBUG
 #include "bn_log.h"
 #endif
