@@ -152,9 +152,10 @@ void bna::TestMap::_generateEnemies(const CharactersId& playerCharacter) {
 }
 
 void bna::TestMap::_generatePowerObjectsSpawns() {
-    _powerObjectsSpawns.push_back(PowerObjectSpawn(bn::fixed_point(30, 30), _camera));
-    _powerObjectsSpawns.push_back(PowerObjectSpawn(bn::fixed_point(30, 50), _camera));
-    _powerObjectsSpawns.push_back(PowerObjectSpawn(bn::fixed_point(30, 70), _camera));
+    _powerObjectsSpawns.push_back(PowerObjectSpawn(bn::fixed_point(-100, -100), _camera));
+    _powerObjectsSpawns.push_back(PowerObjectSpawn(bn::fixed_point(-100, 100), _camera));
+    _powerObjectsSpawns.push_back(PowerObjectSpawn(bn::fixed_point(100, 100), _camera));
+    _powerObjectsSpawns.push_back(PowerObjectSpawn(bn::fixed_point(100, -100), _camera));
 }
 
 

@@ -6,7 +6,7 @@
 
 
 namespace bna {
-    constexpr bool SHOW_HITBOX = true;
+    constexpr bool SHOW_HITBOX = false;
 } // namespace bna
 
 

@@ -27,6 +27,7 @@ bna::Enemie::Enemie(Car& body) :
     _goingBack = false;
     _elapsedFrames = 0;
     _objetivoIdleActualizado = false;
+    _objetivoSprite.set_visible(false);
 }
 
 void bna::Enemie::update() {

@@ -29,7 +29,7 @@ namespace bna {
         private:
         bna::Indicator _position;
         bn::camera_ptr _camera;
-        bn::random _random;
+        static bn::random _random;
         int _remainingTime;
 
         bn::sprite_ptr _sprite;

@@ -7,12 +7,17 @@
 #include "bn_sprite_items_spawner_powers_open.h"
 #include "bn_sprite_items_spawner_powers_close.h"
 
+#include "bna_planes.hpp"
+
+bn::random bna::PowerObjectSpawn::_random;
 
 bna::PowerObjectSpawn::PowerObjectSpawn(bn::fixed_point position, bn::camera_ptr& camera) :
     _camera(camera),
     _sprite(bn::sprite_items::spawner_powers_open.create_sprite(position)) {
     _sprite.set_camera(_camera);
-    _position = bna::Indicator(position, true);
+    _sprite.set_bg_priority(Planes::BACKGROUND);
+    _sprite.put_below();
+    _position = bna::Indicator(position, false);
     _position.set_camera(camera);
     _remainingTime = _random.get_int(bna::time::seconds_to_frames(5), bna::time::seconds_to_frames(10));
 
