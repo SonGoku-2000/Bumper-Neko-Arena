@@ -5,6 +5,7 @@
 
 #include "bn_sprite_items_pointer.h"
 #include "bn_regular_bg_items_main_menu.h"
+#include "bn_regular_bg_items_main_menu_clouds.h"
 
 #include "bn_regular_bg_items_main_menu_play.h"
 #include "bn_sprite_items_main_menu_options.h"
@@ -23,9 +24,10 @@ bna::MainMenu::MainMenu() :
     _optionsButton(bn::sprite_items::main_menu_options.create_sprite(68, 42)),
     _backButton(bn::sprite_items::main_menu_back.create_sprite(19, 45)),
 
+    _clouds(bn::regular_bg_items::main_menu_clouds.create_bg()),
     _background(bn::regular_bg_items::main_menu.create_bg(0, 0)),
 
-    _animation(bn::create_regular_bg_animate_action_forever(_background, 25, bn::regular_bg_items::main_menu.map_item(), 0, 1, 2, 3, 4, 5)) {
+    _animation(bn::create_regular_bg_animate_action_forever(_background, 25, bn::regular_bg_items::main_menu.map_item(), 0, 1, 1, 2, 3, 4, 4, 5)) {
 
     _background.set_priority(bna::Planes::BACKGROUND);
 
@@ -48,6 +50,7 @@ bn::optional<bna::scene_type> bna::MainMenu::update() {
     bool button_pressed = false;
     while (true) {
         _animation.update();
+        _clouds.set_x(_clouds.x() + 0.3);
 
         if (button_pressed) {
             if (_animationPlayButton.has_value()) {

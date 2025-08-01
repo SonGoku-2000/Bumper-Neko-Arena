@@ -44,28 +44,18 @@ void bna::UILife::update() {
         _previousLife = _car->getLife();
     }
 
-    _shakeBar();
+    // _shakeBar();
 
-    if (_car->getLife() > (bna::limit_values::MAX_LIFE / 7) * 6) {
-        _healthBar.set_item(bn::sprite_items::health_bar, 0);
-    }
-    else if (_car->getLife() > (bna::limit_values::MAX_LIFE / 7) * 5) {
-        _healthBar.set_item(bn::sprite_items::health_bar, 1);
-    }
-    else if (_car->getLife() > (bna::limit_values::MAX_LIFE / 7) * 4) {
-        _healthBar.set_item(bn::sprite_items::health_bar, 2);
-    }
-    else if (_car->getLife() > (bna::limit_values::MAX_LIFE / 7) * 3) {
-        _healthBar.set_item(bn::sprite_items::health_bar, 3);
-    }
-    else if (_car->getLife() > (bna::limit_values::MAX_LIFE / 7) * 2) {
-        _healthBar.set_item(bn::sprite_items::health_bar, 4);
-    }
-    else if (_car->getLife() > (bna::limit_values::MAX_LIFE / 7)) {
-        _healthBar.set_item(bn::sprite_items::health_bar, 5);
-    }
-    else {
-        _healthBar.set_item(bn::sprite_items::health_bar, 6);
+    constexpr int numero_divisiones = 13;
+    int sprite_index = numero_divisiones - (numero_divisiones * _car->getLife() / limit_values::MAX_LIFE).ceil_integer();
+    _healthBar.set_item(bn::sprite_items::health_bar, sprite_index);
+}
+
+void bna::UILife::set_visible(bool visible) {
+    _healthBar.set_visible(visible);
+    _catFace->set_visible(visible);
+    if (_catFace2.has_value()) {
+        _catFace2->set_visible(visible);
     }
 }
 
@@ -82,7 +72,7 @@ void bna::UILife::_shakeBar() {
     if (bna::CharactersId::SIAMESE == _catId) {
         offset = -1;
     }
-    if (_catAnimation->current_index() == 0 || _catAnimation->current_index() == 1|| _catAnimation->current_index() == 2) {
+    if (_catAnimation->current_index() == 0 || _catAnimation->current_index() == 1 || _catAnimation->current_index() == 2) {
         _healthBar.set_x(_catFace->x() + offset);
     }
     else {
@@ -131,4 +121,13 @@ void bna::UILife::_resetAnimation() {
         _catAnimation = bn::create_sprite_animate_action_once(_catFace.value(), 8, bn::sprite_items::health_bar_cat_tricolour_face.tiles_item(), 1, 1, 2, 3, 0);
         _catAnimation2 = bn::create_sprite_animate_action_once(_catFace2.value(), 8, bn::sprite_items::health_bar_cat_tricolour_hat.tiles_item(), 1, 1, 2, 3, 0);
     }
+}
+
+void bna::UILife::set_camera(bn::camera_ptr& camera) {
+    _catFace->set_camera(camera);
+    if (_catFace2.has_value()) {
+        _catFace->set_camera(camera);
+    }
+
+    _healthBar.set_camera(camera);
 }

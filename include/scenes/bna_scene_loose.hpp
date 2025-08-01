@@ -15,5 +15,6 @@ namespace bna {
 
         private:
         bna::TextManager _texto_loose;
+        bna::TextManager _texto_continue;
     };
 } // namespace bna

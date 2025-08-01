@@ -28,6 +28,7 @@ namespace bna {
         void spawn(bn::vector<bna::Car, limit_values::MAX_ENEMIES + 1>& cars, bn::vector<bna::Hitbox, 4>& walls, int id_propia, bn::camera_ptr& camera, bn::size size);
 
         bn::fixed_point getPosition();
+        car_powers_id get_car_power();
 
         void setBody(Car& body);
         void setCharacter(const CharactersId& character);

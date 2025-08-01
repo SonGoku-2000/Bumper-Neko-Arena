@@ -16,6 +16,7 @@ bna::SceneWin::SceneWin(bn::array<parts::motors, 3>& motores, bn::array<parts::b
 
 [[nodiscard]] bn::optional<bna::scene_type> bna::SceneWin::update() {
     _checkUnlockable();
+    return bna::scene_type::MAIN_MENU;
 
     while (true) {
         if (bn::keypad::start_pressed()) {

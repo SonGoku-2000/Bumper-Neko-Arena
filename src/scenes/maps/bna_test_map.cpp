@@ -13,15 +13,17 @@
 
 #define MOVE_ENEMIES
 
-#define IGNORE_WIN
+// #define IGNORE_WIN
+constexpr bool DEBUG_SPAWN_POINTS = false;
+constexpr bool DEBUG_WALLS = false;
 #define DEBUG_CPU
 #ifdef DEBUG_CPU
-constexpr int CPU_CICLES = 64;
-#include "bn_log.h"
+#include "bna_debug_cpu.hpp"
+constexpr int CPU_CICLES = 128;
 #ifdef BN_CFG_PROFILER_ENABLED
 #include "bn_profiler.h"
 #include "bn_keypad.h"
-// #define PROFILE
+#define PROFILE
 #endif
 #endif
 
@@ -29,12 +31,17 @@ constexpr int CPU_CICLES = 64;
 #include "bn_sound_items.h"
 #include "bn_music.h"
 #include "bna_car_powers_id.hpp"
+#include "bn_regular_bg_items_black_screen.h"
+#include "bn_blending.h"
+#include "bna_planes.hpp"
+#include "bn_keypad.h"
 
 bna::TestMap::TestMap(CarBuilder& playerCarBuilder, CharactersId& playerCharacter) :
     _fondo(bn::regular_bg_items::mapa_prueba.create_bg(0, 0)),
     _enemiesManager(_enemies),
     _positionIconManager(_camera, _enemies),
-    _camera(bn::camera_ptr::create(0, 0)) {
+    _camera(bn::camera_ptr::create(0, 0)),
+    _black_screen(bn::regular_bg_items::black_screen.create_bg()) {
     _size = _fondo.dimensions();
 
 
@@ -51,10 +58,22 @@ bna::TestMap::TestMap(CarBuilder& playerCarBuilder, CharactersId& playerCharacte
     _generatePowerObjectsSpawns();
 
     _positionIconManager.generateIcons();
+
+    _text_presss_start.updateText("Press start to continue");
+    _text_presss_start.set_aligment(bn::sprite_text_generator::alignment_type::CENTER);
+    _text_presss_start.set_y(20);
+    _text_presss_start.setVisible(false);
+
+    _text_win.set_aligment(bn::sprite_text_generator::alignment_type::CENTER);
+    _text_win.set_y(-20);
+    _black_screen.set_blending_enabled(true);
+    _black_screen.set_priority(Planes::FIRST);
+    bn::blending::set_transparency_alpha(0);
+    _state = state::IN_GAME;
 }
 
 void bna::TestMap::_generateSpawnPoints() {
-    constexpr bool debug = true;
+    constexpr bool debug = DEBUG_SPAWN_POINTS;
     _spawnPoints.push_back(bna::CarSpawnPoint(bna::Indicator(200, 200, debug), 135));
     _spawnPoints.push_back(bna::CarSpawnPoint(bna::Indicator(-200, 200, debug), 45));
     _spawnPoints.push_back(bna::CarSpawnPoint(bna::Indicator(-200, -200, debug), 315));
@@ -69,7 +88,7 @@ void bna::TestMap::_generateSpawnPoints() {
 }
 
 void bna::TestMap::_generateWalls() {
-    constexpr bool debug = true;
+    constexpr bool debug = DEBUG_WALLS;
     constexpr int separacion = 10;
     _walls.push_back(bna::Hitbox(bna::Vector2(0, (_size.height() / -2) + separacion), bna::Vector2(10, _size.width() - 10), debug, 0));
     _walls.push_back(bna::Hitbox(bna::Vector2(0, (_size.height() / 2) - separacion), bna::Vector2(10, _size.width() - 10), debug, 1));
@@ -90,7 +109,7 @@ void bna::TestMap::_generatePlayer(CarBuilder& playerCarBuilder, CharactersId& p
     _player.setCharacter(playerCharacter);
 
     _player.spawn(_cars, getWalls(), 0, _camera, getSize());
-    _uiLife.setCar(_cars[0]);
+    _ui.set_player(_player);
 }
 
 void bna::TestMap::_generateEnemies(const CharactersId& playerCharacter) {
@@ -133,31 +152,20 @@ void bna::TestMap::_generateEnemies(const CharactersId& playerCharacter) {
 }
 
 void bna::TestMap::_generatePowerObjectsSpawns() {
-    _powerObjectsSpawns.push_back(PowerObjectSpawn(bn::fixed_point(30, 30), _camera));
-    _powerObjectsSpawns.push_back(PowerObjectSpawn(bn::fixed_point(30, 50), _camera));
-    _powerObjectsSpawns.push_back(PowerObjectSpawn(bn::fixed_point(30, 70), _camera));
+    _powerObjectsSpawns.push_back(PowerObjectSpawn(bn::fixed_point(-100, -100), _camera));
+    _powerObjectsSpawns.push_back(PowerObjectSpawn(bn::fixed_point(-100, 100), _camera));
+    _powerObjectsSpawns.push_back(PowerObjectSpawn(bn::fixed_point(100, 100), _camera));
+    _powerObjectsSpawns.push_back(PowerObjectSpawn(bn::fixed_point(100, -100), _camera));
 }
 
 
 
 
 bn::optional<bna::scene_type> bna::TestMap::update() {
-#ifdef DEBUG_CPU
-    int cpuCont = 0;
-    bn::fixed cpu = 0;
-#endif
     bn::music_items::forward.play();
     while (true) {
 #ifdef DEBUG_CPU
-        if (cpuCont == CPU_CICLES) {
-            BN_LOG("CPU : % ", cpu / CPU_CICLES * 100);
-            cpu = 0;
-            cpuCont = 0;
-        }
-        else {
-            cpu += bn::core::last_cpu_usage();
-            cpuCont++;
-        }
+        debug_cpu<CPU_CICLES>();
 #endif
 #ifdef PROFILE
         if (bn::keypad::l_held() and
@@ -166,6 +174,7 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
             bn::profiler::show();
         }
 #endif
+
 
         _ejes[0] = _player.getEje();
 
@@ -210,23 +219,51 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
 
 
         _player.update();
-        _uiLife.update();
+        _ui.update();
         _positionIconManager.update();
         _enemiesManager.update();
 
+        if (state::IN_GAME == _state) {
 #ifndef IGNORE_WIN
-        if (!_checkEnemiesAlive()) {
-            bn::music::stop();
-            return bna::scene_type::SCENE_WIN;
-        }
+            if (!_checkEnemiesAlive()) {
+                _state = state::SHOW_WIN_SCREEN;
+                _fase = fase::START;
+            }
 
-        if (!_checkPlayerAlive()) {
-            bn::music::stop();
-            return bna::scene_type::SCENE_LOOSE;
-        }
+            if (!_checkPlayerAlive()) {
+                _state = state::SHOW_LOOSE_SCREEN;
+                _fase = fase::START;
+            }
 #endif
-
-        // _enemiesManager.update();
+        }
+        else if (state::SHOW_WIN_SCREEN == _state) {
+            if (fase::START == _fase) {
+                _fase = fase::READY;
+                _text_win.updateText("You WIN");
+                _text_presss_start.setVisible(true);
+                _ui.set_visible(false);
+            }
+            bn::fixed transparency_alpha = bn::blending::transparency_alpha();
+            bn::blending::set_transparency_alpha(bn::min(transparency_alpha + 0.01, bn::fixed(0.8)));
+            if (transparency_alpha == bn::fixed(0.8) and bn::keypad::start_pressed()) {
+                bn::music::stop();
+                return bna::scene_type::SCENE_WIN;
+            }
+        }
+        else if (state::SHOW_LOOSE_SCREEN == _state) {
+            if (fase::START == _fase) {
+                _fase = fase::READY;
+                _text_win.updateText("You LOSE");
+                _text_presss_start.setVisible(true);
+                _ui.set_visible(false);
+            }
+            bn::fixed transparency_alpha = bn::blending::transparency_alpha();
+            bn::blending::set_transparency_alpha(bn::min(transparency_alpha + 0.01, bn::fixed(0.8)));
+            if (transparency_alpha == bn::fixed(0.8) and bn::keypad::start_pressed()) {
+                bn::music::stop();
+                return bna::scene_type::SCENE_WIN;
+            }
+        }
         bn::core::update();
     }
     return bna::scene_type::TEST_MAP;

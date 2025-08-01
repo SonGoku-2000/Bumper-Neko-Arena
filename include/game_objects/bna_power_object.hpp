@@ -19,6 +19,9 @@ namespace bna {
         void set_camera(bn::camera_ptr& camera);
 
         bna::Hitbox& get_hitbox();
+        
+        void put_below();
+        void set_active(bool acive);
 
         private:
         bna::car_powers_id _carPower;

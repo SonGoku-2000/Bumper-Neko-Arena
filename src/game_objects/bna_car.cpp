@@ -19,7 +19,7 @@
 
 
 
-#define DEBUG
+// #define DEBUG
 #ifdef  DEBUG
 #include "bn_log.h"
 #endif
@@ -248,8 +248,9 @@ void bna::Car::checkCollision(bna::Car& otherCar) {
         return;
     }
 
-    if (isColliding(otherCar)) {
-        resolveCollision(otherCar);
+    CollisionPoint collision_point = isColliding(otherCar);
+    if (collision_point.collided) {
+        resolveCollision(otherCar,collision_point);
         _hurt(otherCar);
         _crash = true;
     }
@@ -267,8 +268,12 @@ void bna::Car::checkCollision(bna::Hitbox& otherHitbox) {
     }
 }
 
-bool bna::Car::isColliding(Car& other) {
+bool bna::Car::is_colliding_fast(Car& other) {
     return other.getHitbox().checkCollision(getHitbox());
+}
+
+bna::CollisionPoint bna::Car::isColliding(Car& other) {
+    return other.getHitbox().checkCollisionPoint(getHitbox());
 }
 
 bna::CollisionPoint bna::Car::isColliding(bna::Hitbox& other) {
@@ -291,9 +296,9 @@ bna::CharactersId bna::Car::getCharacterId() {
     return _catId;
 }
 
-void bna::Car::resolveCollision(Car& other) {
-    bn::fixed dx = _pos.x() - other.getPosition().x();
-    bn::fixed dy = _pos.y() - other.getPosition().y();
+void bna::Car::resolveCollision(Car& other, CollisionPoint collision_point) {
+    bn::fixed dx = collision_point.correctionVector.x();
+    bn::fixed dy = collision_point.correctionVector.y();
     bn::fixed distance = bn::sqrt(dx * dx + dy * dy);
 
     if (distance == 0) return;

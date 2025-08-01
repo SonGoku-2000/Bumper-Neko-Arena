@@ -56,6 +56,7 @@ INCLUDES    	:=  include ../../common/include \
 DATA        	:=
 GRAPHICS    	:=	graphics ../../common/graphics\
 					graphics/cats\
+					graphics/maps\
 					graphics/menus\
 					graphics/parts\
 					graphics/placeholders\

@@ -29,7 +29,7 @@
 
 #include "bna_memory.hpp"
 
-// #define SKIP_JAM_LOGO
+#define SKIP_JAM_LOGO
 #define DEBUG
 #ifdef DEBUG
 #include "bn_log.h"

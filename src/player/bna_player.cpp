@@ -18,6 +18,7 @@ constexpr bn::fixed VELOCIDAD_MOVIMIENTO_LIBRE = 2.5;
 
 
 bna::Player::Player() {
+    _carPower = car_powers_id::NONE;
 }
 
 void bna::Player::full_update() {
@@ -87,3 +88,6 @@ void bna::Player::givePower(bna::car_powers_id carPower) {
     _carPower = carPower;
 }
 
+bna::car_powers_id bna::Player::get_car_power() {
+    return _carPower;
+}

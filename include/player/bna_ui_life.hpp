@@ -15,6 +15,8 @@ namespace bna {
 
         void update();
         void setCar(bna::Car& car);
+        void set_camera(bn::camera_ptr& camera);
+        void set_visible(bool visible);
 
         private:
         bn::optional<bn::sprite_ptr> _catFace;

@@ -29,7 +29,8 @@
         "**/*.d":true,
         "**/*.bin":true,
         "**/.vscode": true,
-        "**/.vs": true
+        "**/.vs": true,
+        "**/*.txt": true,
     },
     "search.exclude": {
         "**/*.o":true,

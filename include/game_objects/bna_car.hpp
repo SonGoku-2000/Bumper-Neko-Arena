@@ -34,11 +34,12 @@ namespace bna {
         void checkCollision(Hitbox& otherCar);
         void checkFastCollision(Hitbox& otherCar);
 
-        bool isColliding(Car& other);
+        CollisionPoint isColliding(Car& other);
+        bool is_colliding_fast(Car& other);
         CollisionPoint isColliding(Hitbox& other);
         bool isCollidingFast(Hitbox& other);
 
-        void resolveCollision(Car& other);
+        void resolveCollision(Car& other,CollisionPoint collisionPoint);
         void resolveCollision(CollisionPoint collisionPoint);
 
         bna::Hitbox& getHitbox();
