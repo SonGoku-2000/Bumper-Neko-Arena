@@ -13,6 +13,7 @@ namespace bna {
         void update();
         void set_player(bna::Player& player);
         void set_camera(bn::camera_ptr& camera);
+        void set_visible(bool visible);
 
         private:
         bn::sprite_ptr _power_icon;

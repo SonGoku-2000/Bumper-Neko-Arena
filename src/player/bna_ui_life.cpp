@@ -51,6 +51,14 @@ void bna::UILife::update() {
     _healthBar.set_item(bn::sprite_items::health_bar, sprite_index);
 }
 
+void bna::UILife::set_visible(bool visible) {
+    _healthBar.set_visible(visible);
+    _catFace->set_visible(visible);
+    if (_catFace2.has_value()) {
+        _catFace2->set_visible(visible);
+    }
+}
+
 void bna::UILife::_shakeBar() {
     if (!_catAnimation.has_value()) {
         return;

@@ -64,6 +64,13 @@ namespace bna {
 
         bna::TextManager _text_win;
         bna::TextManager _text_presss_start;
+        bn::regular_bg_ptr _black_screen;
+
+        enum state { IN_GAME, SHOW_WIN_SCREEN, SHOW_LOOSE_SCREEN };
+        state _state;
+
+        enum fase { START, READY };
+        fase _fase;
 
         void _setCamera(bn::camera_ptr& camera);
         void _generateSpawnPoints();

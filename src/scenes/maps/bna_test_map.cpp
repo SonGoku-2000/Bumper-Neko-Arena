@@ -19,7 +19,7 @@ constexpr bool DEBUG_WALLS = false;
 #define DEBUG_CPU
 #ifdef DEBUG_CPU
 #include "bna_debug_cpu.hpp"
-constexpr int CPU_CICLES = 64;
+constexpr int CPU_CICLES = 128;
 #ifdef BN_CFG_PROFILER_ENABLED
 #include "bn_profiler.h"
 #include "bn_keypad.h"
@@ -31,12 +31,17 @@ constexpr int CPU_CICLES = 64;
 #include "bn_sound_items.h"
 #include "bn_music.h"
 #include "bna_car_powers_id.hpp"
+#include "bn_regular_bg_items_black_screen.h"
+#include "bn_blending.h"
+#include "bna_planes.hpp"
+#include "bn_keypad.h"
 
 bna::TestMap::TestMap(CarBuilder& playerCarBuilder, CharactersId& playerCharacter) :
     _fondo(bn::regular_bg_items::mapa_prueba.create_bg(0, 0)),
     _enemiesManager(_enemies),
     _positionIconManager(_camera, _enemies),
-    _camera(bn::camera_ptr::create(0, 0)) {
+    _camera(bn::camera_ptr::create(0, 0)),
+    _black_screen(bn::regular_bg_items::black_screen.create_bg()) {
     _size = _fondo.dimensions();
 
 
@@ -57,9 +62,14 @@ bna::TestMap::TestMap(CarBuilder& playerCarBuilder, CharactersId& playerCharacte
     _text_presss_start.updateText("Press start to continue");
     _text_presss_start.set_aligment(bn::sprite_text_generator::alignment_type::CENTER);
     _text_presss_start.set_y(20);
+    _text_presss_start.setVisible(false);
 
-    _text_presss_start.set_aligment(bn::sprite_text_generator::alignment_type::CENTER);
+    _text_win.set_aligment(bn::sprite_text_generator::alignment_type::CENTER);
     _text_win.set_y(-20);
+    _black_screen.set_blending_enabled(true);
+    _black_screen.set_priority(Planes::FIRST);
+    bn::blending::set_transparency_alpha(0);
+    _state = state::IN_GAME;
 }
 
 void bna::TestMap::_generateSpawnPoints() {
@@ -161,8 +171,9 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
             bn::keypad::r_held() and
             bn::keypad::start_held()) {
             bn::profiler::show();
-    }
+        }
 #endif
+
 
         _ejes[0] = _player.getEje();
 
@@ -211,21 +222,49 @@ bn::optional<bna::scene_type> bna::TestMap::update() {
         _positionIconManager.update();
         _enemiesManager.update();
 
+        if (state::IN_GAME == _state) {
 #ifndef IGNORE_WIN
-        if (!_checkEnemiesAlive()) {
-            bn::music::stop();
-            return bna::scene_type::SCENE_WIN;
-        }
+            if (!_checkEnemiesAlive()) {
+                _state = state::SHOW_WIN_SCREEN;
+                _fase = fase::START;
+            }
 
-        if (!_checkPlayerAlive()) {
-            bn::music::stop();
-            return bna::scene_type::SCENE_LOOSE;
-        }
+            if (!_checkPlayerAlive()) {
+                _state = state::SHOW_LOOSE_SCREEN;
+                _fase = fase::START;
+            }
 #endif
-
-        // _enemiesManager.update();
+        }
+        else if (state::SHOW_WIN_SCREEN == _state) {
+            if (fase::START == _fase) {
+                _fase = fase::READY;
+                _text_win.updateText("You WIN");
+                _text_presss_start.setVisible(true);
+                _ui.set_visible(false);
+            }
+            bn::fixed transparency_alpha = bn::blending::transparency_alpha();
+            bn::blending::set_transparency_alpha(bn::min(transparency_alpha + 0.01, bn::fixed(0.8)));
+            if (transparency_alpha == bn::fixed(0.8) and bn::keypad::start_pressed()) {
+                bn::music::stop();
+                return bna::scene_type::SCENE_WIN;
+            }
+        }
+        else if (state::SHOW_LOOSE_SCREEN == _state) {
+            if (fase::START == _fase) {
+                _fase = fase::READY;
+                _text_win.updateText("You LOSE");
+                _text_presss_start.setVisible(true);
+                _ui.set_visible(false);
+            }
+            bn::fixed transparency_alpha = bn::blending::transparency_alpha();
+            bn::blending::set_transparency_alpha(bn::min(transparency_alpha + 0.01, bn::fixed(0.8)));
+            if (transparency_alpha == bn::fixed(0.8) and bn::keypad::start_pressed()) {
+                bn::music::stop();
+                return bna::scene_type::SCENE_WIN;
+            }
+        }
         bn::core::update();
-}
+    }
     return bna::scene_type::TEST_MAP;
 }
 

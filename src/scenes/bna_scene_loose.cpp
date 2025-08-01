@@ -11,6 +11,7 @@ bna::SceneLoose::SceneLoose() {
 }
 
 [[nodiscard]] bn::optional<bna::scene_type> bna::SceneLoose::update() {
+    return bna::scene_type::MAIN_MENU;
     while (true) {
         bn::core::update();
         if (bn::keypad::start_pressed()) {

@@ -13,6 +13,7 @@ namespace bna {
         ~UI() = default;
         void update();
         void set_player(Player& player);
+        void set_visible(bool visible);
 
         private:
         bn::camera_ptr _camera;

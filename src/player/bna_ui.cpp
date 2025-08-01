@@ -52,3 +52,8 @@ void bna::UI::update() {
         }
     }
 }
+
+void bna::UI::set_visible(bool visible) {
+    _ui_life.set_visible(visible);
+    _ui_power.set_visible(visible);
+}

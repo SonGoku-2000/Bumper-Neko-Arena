@@ -14,6 +14,10 @@ void bna::UIPower::set_player(bna::Player& player) {
     _set_sprite();
 }
 
+void bna::UIPower::set_visible(bool visible) {
+    _power_icon.set_visible(visible);
+}
+
 void bna::UIPower::_set_sprite() {
     _power_icon.set_item(bn::sprite_items::health_bar_power_icon, int(_player->get_car_power()));
 }
@@ -22,6 +26,6 @@ void bna::UIPower::update() {
     _set_sprite();
 }
 
-void bna::UIPower::set_camera(bn::camera_ptr& camera){
+void bna::UIPower::set_camera(bn::camera_ptr& camera) {
     _power_icon.set_camera(camera);
 }
