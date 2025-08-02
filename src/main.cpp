@@ -28,6 +28,7 @@
 #include "bna_characters_id.hpp"
 
 #include "bna_memory.hpp"
+#include "bn_blending.h"
 
 // #define SKIP_JAM_LOGO
 #define DEBUG
@@ -118,6 +119,8 @@ int main() {
         scene.reset();
 
         memoria.write();
+
+        bn::blending::restore();
 
         bn::core::update();
     }
